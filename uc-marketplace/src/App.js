@@ -15,8 +15,11 @@ function App() {
       <Context.Provider value={userInfo}>
         <Router />
       </Context.Provider>
+      <div className="content">
+        {/* This is where images or welcome part is */}
+      </div>
       <div>
-        <p>Hello</p>
+        {/* This is where categories will go */}
       </div>
     </div>
   );
