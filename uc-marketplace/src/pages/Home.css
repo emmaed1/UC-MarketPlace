@@ -1,0 +1,68 @@
+.categories {
+  padding: 5rem 5rem;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  list-style: none;
+  justify-content: center;
+}
+
+.cat-title {
+  height: 3rem;
+  padding-top: 1.5rem;
+  background-color: rgba(207, 65, 65, 0.967);
+  opacity: 90%;
+  color: #ffffff;
+}
+
+.categories ul {
+  display: flex;
+}
+
+.categories li {
+  display: flex;
+  padding: 7rem;
+  background-color: rgb(212, 220, 220);
+}
+
+.categories a {
+  justify-content: center;
+  text-decoration: none;
+  padding: 0 0.25rem;
+  border-radius: 15px;
+  transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.categories a:hover {
+  border-radius: 20px;
+  box-shadow: inset 100px 0 0 0 #f23838f0;
+  opacity: 75%;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
+
+.reviews {
+  background-color: #ffffff;
+  padding: 10rem 10rem;
+}
+
+.review-cards {
+  font-size: 24px;
+  overflow-x: auto;
+}
+
+.review-cards table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.review-cards th {
+  border: 5px solid rgb(255, 255, 255);
+  background-color: rgb(255, 146, 146);
+}
+
+.review-content td{
+    font-size: 16pt;
+    height: 200px;
+}

@@ -1,33 +1,26 @@
-.login-btn {
-    font-size: 18px;
-    border-radius: 9999rem;
-    justify-content: center;
-  }
-
-.nav-bar {
+.categories {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 2rem;
-    background-color: #ffffff;
+    padding: 5rem 5rem;
+    background-color: #f3eadf;
     color: #000000;
     opacity: 75%;
     font-size: 18px;
   }
   
-  .nav-bar ul {
+  .categories ul {
     list-style: none;
     display: flex;
   }
   
-  .nav-bar ul li {
+  .categories ul li {
     padding-left: 5rem;
   }
   
-  .nav-bar a {
+  .categories a {
     text-decoration: none;
-    color: #000000;
+    color: #ffffff;
   }
-  .nav-bar a:hover {
+  .categories a:hover {
     text-decoration: underline;
   }
-

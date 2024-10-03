@@ -1,4 +1,5 @@
 import Header from './Header/Header'
+import Home from '../pages/Home';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
 export default function Router() {
@@ -16,7 +17,7 @@ export default function Router() {
             <BrowserRouter>
                 <Routes>
                 <Route path="/" element={<Layout />}>
-                    {/* <Route path="/" element={<Home />} /> */}
+                    <Route path="/" element={<Home />} />
                     {/* <Route path="/" element={<Products />} />
                     <Route path="/" element={<ContactUs />} /> */}
                 </Route>

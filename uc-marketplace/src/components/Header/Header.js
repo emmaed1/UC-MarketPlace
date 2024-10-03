@@ -10,7 +10,7 @@ export default function Header() {
             <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>
             <li><a href="/services">Services</a></li>
-            <li><a href="/contact-us">Contact</a></li>    
+            <li><a href="/contact-us">Contact Us</a></li>    
             {/* <li>Hello {userData.name}</li>
             <li>Cart: {userData.cartItems}</li> */}
         </ul>
