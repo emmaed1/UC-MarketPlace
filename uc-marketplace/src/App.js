@@ -16,6 +16,7 @@ function App() {
         <Router />
       </Context.Provider>
       <div className="content">
+        <p>Hello World</p>
         {/* This is where images or welcome part is */}
       </div>
       <div>
