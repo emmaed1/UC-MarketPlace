@@ -38,15 +38,19 @@ export default function Home() {
               <th>Student 3</th>
             </tr>
             <tr className="review-content">
-                <td>great!</td>
-                <td>awesome!</td>
-                <td>cool!</td>
+              <td>great!</td>
+              <td>awesome!</td>
+              <td>cool!</td>
             </tr>
           </table>
         </div>
       </div>
       <div className="faq">
-
+        <h2>Frequently Asked Questions</h2>
+        <p>Find answers to common questions about our platform and services.</p>
+        <div className="faq-cards">
+          
+        </div>
       </div>
     </div>
   );
