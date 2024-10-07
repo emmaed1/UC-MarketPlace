@@ -3,7 +3,8 @@ import "./Home.css";
 export default function Home() {
   return (
     <div className="content">
-      <img src="../temp_logo.jpg" alt="uc-marketplace-logo" className="logo" />
+      <object data="../../assets/uc-MP-logo.png" type="image/jpg">
+      <img src="../../assets/uc-MP-logo.png" alt="uc marketplace logo"/></object>
       <div className="categories">
         <h3 className="cat-title">Browse Categories</h3>
         <ul>
