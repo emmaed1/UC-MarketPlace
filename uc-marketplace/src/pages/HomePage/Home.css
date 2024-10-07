@@ -16,7 +16,7 @@
 .cat-title {
   height: 3rem;
   padding-top: 1.5rem;
-  background-color: rgba(207, 65, 65, 0.967);
+  background-color: #e00122;
   opacity: 90%;
   color: #ffffff;
 }
@@ -45,7 +45,7 @@
 
 .categories a:hover {
   border-radius: 20px;
-  box-shadow: inset 100px 0 0 0 #f23838f0;
+  box-shadow: inset 100px 0 0 0 #e00122;
   opacity: 75%;
   color: rgb(255, 255, 255);
   text-decoration: none;
@@ -69,7 +69,8 @@
 
 .review-cards th {
   border: 5px solid rgb(255, 255, 255);
-  background-color: rgb(255, 146, 146);
+  background-color: #e00122;
+  color: #ffffff;
 }
 
 .review-content td {
