@@ -20,6 +20,7 @@
 }
 
 .categories li {
+  justify-content: center;
   display: flex;
   width: 100%;
   padding: 100px 0px 100px 0px;
