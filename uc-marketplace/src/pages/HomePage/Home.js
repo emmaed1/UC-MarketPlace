@@ -1,10 +1,12 @@
 import "./Home.css";
+import logo from '../../assets/uc-MP-logo.png'
 
 export default function Home() {
   return (
     <div className="content">
-      <object data="../../assets/uc-MP-logo.png" type="image/jpg">
-      <img src="../../assets/uc-MP-logo.png" alt="uc marketplace logo"/></object>
+      <div className="welcome-content">
+        <img src={logo} alt='uc marketplace-logo'></img>
+      </div>
       <div className="categories">
         <h3 className="cat-title">Browse Categories</h3>
         <ul>
