@@ -31,8 +31,7 @@
   display: flex;
   width: 100%;
   padding: 100px 0px 100px 0px;
-  
-  background-color: rgb(212, 220, 220);
+  background-color: rgb(231, 227, 227);
 }
 
 .categories a {
@@ -88,7 +87,7 @@
   display: inline-block;
   width: 100%;
   height: 30rem;
-  background-color: #ffe0da;
+  background-color: #e00122;
   opacity: 75%;
 }
 
