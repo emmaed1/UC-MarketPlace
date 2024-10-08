@@ -3,7 +3,7 @@
   display: flex;  
   align-items: center;
   padding: 1rem 2rem;
-  border-radius: 8px;
+  border-radius: .5px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
 }
 .welcome-content img {
@@ -70,7 +70,7 @@
 }
 
 .reviews {
-  background-color: #ffffff;
+  background-color: #e00122;
   padding: 10rem 10rem;
 }
 
