@@ -10,26 +10,22 @@ export default function AccountView() {
             <h1>Welcome to Your Account</h1>
           </div>
       </div>
+
       <div className="listings">
         <h3 className="list-title">View Your Current Listings</h3>
-        <ul>
-          <li>
-            <div className="imgresize"><img src={logo} alt='uc marketplace-logo'></img></div>
-            <a href="/listing/1">Listing 1</a>
-          </li>
-          <li>
-          <div className="imgresize"><img src={logo} alt='uc marketplace-logo'></img></div>
-            <a href="/listing/2">Listing 2</a>
-          </li>
-          <li>
-          <div className="imgresize"><img src={logo} alt='uc marketplace-logo'></img></div>
-            <a href="/listing/3">Listing 3</a>
-          </li>
+        <ul className="list-items">
+          {[1, 2, 3].map(id => (
+          <li key={id}>
+              <div className="imgresize">
+                <img src={logo} alt={'Listing ${id} Image'} />
+              </div>
+              <a href={'/listing/${id}'}>Listing {id}</a>
+           </li>
+          ))}
         </ul>
       </div>
 
     <div className="newlisting-reviews-container">
-
       <div className="newlisting">
         <h3 className="newlist-title">Have another product or service to sell?</h3>
         <a href="/new-listing">Create Listing</a>
@@ -40,16 +36,20 @@ export default function AccountView() {
         <p>Hear from students who have purchased from this seller.</p>
         <div className="review-cards">
           <table>
-            <tr className="review-header">
-              <th>Student 1</th>
-              <th>Student 2</th>
-              <th>Student 3</th>
-            </tr>
-            <tr className="review-content">
-              <td>great!</td>
-              <td>awesome!</td>
-              <td>cool!</td>
-            </tr>
+            <thead>
+              <tr className="review-header">
+                <th>Student 1</th>
+                <th>Student 2</th>
+                <th>Student 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="review-content">
+                <td>great!</td>
+                <td>awesome!</td>
+                <td>cool!</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -57,9 +57,7 @@ export default function AccountView() {
       <div className="faq">
         <h2>Frequently Asked Questions</h2>
         <p>Find answers to common questions about our platform and services.</p>
-        <div className="faq-cards">
-          
-        </div>
+        <div className="faq-cards"></div>
       </div>
     </div>
   );
