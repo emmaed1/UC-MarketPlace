@@ -1,0 +1,169 @@
+.welcome-content {
+  background-color: #ffffff;
+  content: "";
+  display: table;
+  clear: both;
+  padding: 1rem 15rem 1rem 15rem;
+}
+.welcome-content img {
+  float: left;
+  width: 30%;
+}
+
+.welcome-text {
+  float: left;
+  padding: 70px 0;
+  width: 70%;
+}
+
+.listings {
+  padding: 1rem 5rem 1rem 5rem;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  list-style: none;
+}
+
+.list-title {
+  height: 3rem;
+  padding-top: 1.5rem;
+  background-color: #e00122;
+  opacity: 90%;
+  color: #ffffff;
+  border-radius: 15px;
+}
+
+.listings ul {
+  display: flex;
+  padding: 0rem;
+}
+
+.imgresize {
+  display: flex;
+  justify-content: center;
+}
+
+.imgresize img {
+  width: 100%;
+  height: auto;
+}
+.listings li {
+  justify-content: center;
+  display: inline;
+  width: 33%;
+  padding: 100px 0px 100px 0px;
+  background-color: rgb(231, 227, 227);
+
+}
+
+.listings a {
+  text-align: center;
+  text-decoration: none;
+  padding: 0 0.25rem;
+  border-radius: 15px;
+  transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.listings a:hover {
+  border-radius: 20px;
+  box-shadow: inset 100px 0 0 0 #e00122;
+  opacity: 75%;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
+
+.newlisting-reviews-container {
+  display: flex;
+  gap: 2rem; 
+  margin-top: 2rem;
+}
+
+.newlisting, .reviews {
+  flex: 1;
+  padding: 1rem;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.newlisting {
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.newlist-title {
+  height: 3rem;
+  padding-top: 1.5rem;
+  background-color: #e00122;
+  opacity: 90%;
+  color: #ffffff;
+  border-radius: 15px;
+}
+
+.newlisting ul {
+  display: flex;
+  padding: 0rem;
+}
+
+.newlisting a {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  background-color: #e00122;
+  color : #ffffff;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.newlisting a:hover {
+  border-radius: 20px;
+  background-color:  #000000;
+  opacity: 75%;
+  color: rgb(255, 255, 255);
+}
+
+.reviews{
+  text-align: center;
+}
+
+.review-cards {
+  font-size: 24px;
+  overflow-x: auto;
+}
+
+.review-cards table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.review-cards th {
+  border: 5px solid rgb(255, 255, 255);
+  background-color: #e00122;
+  color: #ffffff;
+}
+
+.review-content td {
+  font-size: 16pt;
+  height: 200px;
+}
+
+.faq {
+  background-color: rgb(255, 255, 255);
+}
+
+.faq-cards {
+  font-size: 24px;
+  overflow-x: auto;
+  display: inline-block;
+  width: 100%;
+  height: 30rem;
+  background-color: #e00122;
+  opacity: 75%;
+}
+
+.faq-cards div {
+  height: 100px;
+}

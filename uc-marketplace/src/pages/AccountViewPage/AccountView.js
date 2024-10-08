@@ -1,7 +1,7 @@
 import "./AccountView.css";
 import logo from '../../assets/uc-MP-logo.png'
 
-export default function A() {
+export default function AccountView() {
   return (
     <div className="content">
       <div className="welcome-content">
