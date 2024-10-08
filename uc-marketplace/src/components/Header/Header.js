@@ -1,11 +1,13 @@
 import { useContext } from 'react'
 import Context from '../Context'
 import './Header.css'
+import logo from '../../assets/uc-MP-logo.png'
 
 export default function Header() {
     // const userData = useContext(Context)
     return (
         <nav className="nav-bar">
+            <img src={logo} alt='uc marketplace-logo' className='app-logo'></img>
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>

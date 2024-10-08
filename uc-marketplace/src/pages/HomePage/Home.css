@@ -1,32 +1,41 @@
+.welcome-content {
+  background-color: #ffffff;
+}
+.welcome-content img {
+  display: flex;
+}
+
 .categories {
-  padding: 5rem 5rem;
+  padding: 1rem 5rem 1rem 5rem;
   background-color: #ffffff;
   color: #000000;
   font-size: 18px;
   list-style: none;
-  justify-content: center;
 }
 
 .cat-title {
   height: 3rem;
   padding-top: 1.5rem;
-  background-color: rgba(207, 65, 65, 0.967);
+  background-color: #e00122;
   opacity: 90%;
   color: #ffffff;
 }
 
 .categories ul {
   display: flex;
+  padding: 0rem;
 }
 
 .categories li {
+  justify-content: center;
   display: flex;
-  padding: 7rem;
-  background-color: rgb(212, 220, 220);
+  width: 100%;
+  padding: 100px 0px 100px 0px;
+  background-color: rgb(231, 227, 227);
 }
 
 .categories a {
-  justify-content: center;
+  text-align: center;
   text-decoration: none;
   padding: 0 0.25rem;
   border-radius: 15px;
@@ -35,7 +44,7 @@
 
 .categories a:hover {
   border-radius: 20px;
-  box-shadow: inset 100px 0 0 0 #f23838f0;
+  box-shadow: inset 100px 0 0 0 #e00122;
   opacity: 75%;
   color: rgb(255, 255, 255);
   text-decoration: none;
@@ -59,10 +68,29 @@
 
 .review-cards th {
   border: 5px solid rgb(255, 255, 255);
-  background-color: rgb(255, 146, 146);
+  background-color: #e00122;
+  color: #ffffff;
 }
 
-.review-content td{
-    font-size: 16pt;
-    height: 200px;
+.review-content td {
+  font-size: 16pt;
+  height: 200px;
+}
+
+.faq {
+  background-color: rgb(255, 255, 255);
+}
+
+.faq-cards {
+  font-size: 24px;
+  overflow-x: auto;
+  display: inline-block;
+  width: 100%;
+  height: 30rem;
+  background-color: #e00122;
+  opacity: 75%;
+}
+
+.faq-cards div {
+  height: 100px;
 }

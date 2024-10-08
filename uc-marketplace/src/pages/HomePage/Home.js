@@ -1,9 +1,12 @@
 import "./Home.css";
+import logo from '../../assets/uc-MP-logo.png'
 
 export default function Home() {
   return (
     <div className="content">
-      <img src="../temp_logo.jpg" alt="uc-marketplace-logo" className="logo" />
+      <div className="welcome-content">
+        <img src={logo} alt='uc marketplace-logo'></img>
+      </div>
       <div className="categories">
         <h3 className="cat-title">Browse Categories</h3>
         <ul>
@@ -38,15 +41,19 @@ export default function Home() {
               <th>Student 3</th>
             </tr>
             <tr className="review-content">
-                <td>great!</td>
-                <td>awesome!</td>
-                <td>cool!</td>
+              <td>great!</td>
+              <td>awesome!</td>
+              <td>cool!</td>
             </tr>
           </table>
         </div>
       </div>
       <div className="faq">
-
+        <h2>Frequently Asked Questions</h2>
+        <p>Find answers to common questions about our platform and services.</p>
+        <div className="faq-cards">
+          
+        </div>
       </div>
     </div>
   );
