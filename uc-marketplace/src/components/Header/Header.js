@@ -13,6 +13,7 @@ export default function Header() {
             <li><a href="/products">Products</a></li>
             <li><a href="/services">Services</a></li>
             <li><a href="/contact-us">Contact Us</a></li>    
+            <li><a href="/account-view">Account View</a></li>
             {/* <li>Hello {userData.name}</li>
             <li>Cart: {userData.cartItems}</li> */}
         </ul>
