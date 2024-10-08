@@ -28,6 +28,8 @@ export default function A() {
         </ul>
       </div>
 
+    <div className="newlisting-reviews-container">
+
       <div className="newlisting">
         <h3 className="newlist-title">Have another product or service to sell?</h3>
         <a href="/new-listing">Create Listing</a>
@@ -51,6 +53,7 @@ export default function A() {
           </table>
         </div>
       </div>
+    </div>
       <div className="faq">
         <h2>Frequently Asked Questions</h2>
         <p>Find answers to common questions about our platform and services.</p>

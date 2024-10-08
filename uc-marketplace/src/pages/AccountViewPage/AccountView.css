@@ -72,12 +72,24 @@
   text-decoration: none;
 }
 
-.newlisting {
-  padding: 1rem 5rem 1rem 5rem;
+.newlisting-reviews-container {
+  display: flex;
+  gap: 2rem; 
+  margin-top: 2rem;
+}
+
+.newlisting, .reviews {
+  flex: 1;
+  padding: 1rem;
   background-color: #ffffff;
   color: #000000;
-  font-size: 18px;
-  list-style: none;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.newlisting {
+  background-color: #f9f9f9;
+  text-align: center;
 }
 
 .newlist-title {
@@ -94,14 +106,15 @@
   padding: 0rem;
 }
 
-
 .newlisting a {
+  display: inline-block;
   text-align: center;
   text-decoration: none;
-  padding: 1rem 1rem 1rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 15px;
   background-color: #e00122;
   color : #ffffff;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .newlisting a:hover {
@@ -111,9 +124,8 @@
   color: rgb(255, 255, 255);
 }
 
-.reviews {
-  background-color: #ffffff;
-  padding: 10rem 10rem;
+.reviews{
+  text-align: center;
 }
 
 .review-cards {
