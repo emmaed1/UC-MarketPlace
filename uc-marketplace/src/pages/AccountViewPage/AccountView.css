@@ -1,100 +1,114 @@
-.content {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem 1rem;
-}
 .welcome-content {
   background-color: #f5f5f5;
   display: flex;  
   align-items: center;
   padding: 1rem 2rem;
-  border-radius: 8px;
+  border-radius: .5px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
 }
+
 .welcome-content img {
   margin-right: 1rem;
-  height: 50px;
+  height: auto;
+  max-height: 200px;
+  width: auto;
+}
+
+.welcome-text {
+  flex-grow: 1;
   width: auto;
 }
 
 .welcome-text h1 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: #333;
   margin: 0;
   font-weight: 600;
 }
 
 .listings {
-  padding: 1rem 0;
+  padding: 1rem 5rem;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
+  color: #000000;
+  font-size: 18px;
+  list-style: none; /* Removes bullet points */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
+  margin-top: 2rem;
 }
 
 .list-title {
-  padding: 0.75rem;
+  height: 3rem;
+  padding-top: 1.5rem;
   background-color: #e00122;
+  opacity: 90%;
   color: #ffffff;
-  border-radius: 8px 8px 0 0;
+  border-radius: 15px;
   text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
 }
 
-.list-items {
+.listings ul {
   display: flex;
-  justify-content: space-around;
-  padding: 1rem;
-  list-style: none;
-}
-
-.list-items li {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.list-items li:hover {
-  transform: translateY(-5px);
+  padding: 0;
+  gap: 1rem; /* Adds space between list items */
+  flex-wrap: wrap; /* Ensures items wrap to the next line if necessary */
 }
 
 .imgresize {
   display: flex;
   justify-content: center;
-  margin-bottom: 0.5rem;
 }
 
 .imgresize img {
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-.list-items a {
-  text-decoration: none;
-  color: #e00122;
-  font-weight: bold;
-  transition: color 0.3s ease;
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a small shadow around the image */
 }
 
-.list-items a:hover {
-  color: #000;
+.listings li {
+  flex: 1 1 30%; /* Ensures items take up 30% of the container width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(231, 227, 227);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.listings li:hover {
+  transform: translateY(-5px);
+}
+
+.listings a {
+  margin-top: 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  background-color: #e00122;
+  color: #ffffff;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.listings a:hover {
+  background-color: #c3001d;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .newlisting-reviews-container {
   display: flex;
-  flex-wrap: wrap;
   gap: 2rem; 
   margin-top: 2rem;
-}
-
-.newlisting, .reviews {
-  flex: 1;
-  padding: 1.5rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Ensures that the container doesn't exceed the screen width */
+  box-sizing: border-box; /* Includes padding and borders in the element's width */
+  overflow: hidden; /* Prevents horizontal overflow */
+  padding: 0 1rem; /* Adds a bit of padding to the sides to avoid touching the screen edges */
 }
 
 .newlisting {
@@ -108,16 +122,18 @@
   justify-content: center;
   align-items: center;
   transition: transform 0.2s ease-in-out;
+  flex: 0 0 30%; /* Takes up 30% of the width */
+  box-sizing: border-box; /* Ensures padding is included in the width */
 }
 
 .newlisting:hover {
-  transform: translateY(-5px)
+  transform: translateY(-5px);
 }
 
 .newlist-title {
-  padding: 0.75rem;
   background-color: #e00122;
   color: #ffffff;
+  padding: 0.75rem;
   border-radius: 8px;
   margin-bottom: 1rem;
   font-size: 1.2rem;
@@ -127,7 +143,6 @@
   display: inline-block;
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background-color: #e00122;
   background: linear-gradient(135deg, #e00122, #d5001e);
   color: #ffffff;
   border-radius: 20px;
@@ -141,9 +156,31 @@
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
-.reviews h2, .faq h2 {
-  font-size: 1.5rem;
-  color: #333;
+.reviews {
+  background: linear-gradient(135deg, #f9f9f9, #e8e8e8);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+  transition: transform 0.2s ease-in-out;
+  flex: 0 0 70%; /* Takes up 70% of the width */
+  box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.reviews:hover {
+  transform: translateY(-5px);
+}
+
+.reviews h2 {
+  font-size: 1.8rem;
+  color: #e00122;
+  margin-bottom: 1rem;
+}
+
+.review-cards {
+  font-size: 16px;
+  overflow-x: auto;
+  margin-top: 1rem;
 }
 
 .review-cards table {
@@ -160,49 +197,13 @@
 .review-content td {
   text-align: center;
   padding: 1rem;
-  background-color: #f5f5f5;
-}
-
-.faq {
-  margin-top: 2rem;
   background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0; /* Adds a subtle border around each cell */
+  transition: background-color 0.2s ease;
 }
 
-.faq-cards {
-  height: 20rem;
-  background-color: #e00122;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-
-.account-reviews{
-  text-align: center;
-  border-radius: 15px;
-}
-
-.review-cards {
-  font-size: 24px;
-  overflow-x: auto;
-}
-
-.review-cards table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.review-cards th {
-  border: 5px solid rgb(255, 255, 255);
-  background-color: #e00122;
-  color: #ffffff;
-}
-
-.review-content td {
-  font-size: 16pt;
-  height: 200px;
+.review-content td:hover {
+  background-color: #f0f0f0; /* Light background on hover */
 }
 
 .faq {
