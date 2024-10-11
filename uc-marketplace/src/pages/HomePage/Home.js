@@ -6,6 +6,9 @@ export default function Home() {
     <div className="content">
       <div className="welcome-content">
         <img src={logo} alt='uc marketplace-logo'></img>
+        <div className="welcome-text">
+            <h1>Welcome to UC MarketPlace</h1>
+          </div>
       </div>
       <div className="categories">
         <h3 className="cat-title">Browse Categories</h3>

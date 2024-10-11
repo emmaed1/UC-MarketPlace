@@ -1,6 +1,8 @@
 import Header from './Header/Header'
 import Home from '../pages/HomePage/Home';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import AccountView from '../pages/AccountViewPage/AccountView';
+import NewListing from '../pages/new-listing/new-listing';
 
 export default function Router() {
     const Layout = () => {
@@ -18,6 +20,8 @@ export default function Router() {
                 <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route path="/" element={<Home />} />
+                    <Route path="/account-view" element={<AccountView />} />
+                    <Route path="/new-listing" element={<NewListing />} />
                     {/* <Route path="/" element={<Products />} />
                     <Route path="/" element={<ContactUs />} /> */}
                 </Route>
