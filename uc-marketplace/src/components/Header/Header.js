@@ -11,7 +11,7 @@ export default function Header() {
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/products">Products</a></li>
-            <li><a href="/services">Services</a></li>
+            <li><a href="/Services">Services</a></li>
             <li><a href="/contact-us">Contact Us</a></li>    
             <li><a href="/account-view">Account View</a></li> 
             {/* ACCOUNT VIEW link can be removed once there is a way to actually access it by
