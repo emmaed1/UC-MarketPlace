@@ -150,4 +150,22 @@
     color: #666;
     margin-top: 0.5rem;
   }
-  
+  .search-bar {
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.search-bar input {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    width: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease-in-out;
+}
+
+.search-bar input:focus {
+    border-color: #e00122;
+    outline: none;
+}

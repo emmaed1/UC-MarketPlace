@@ -8,8 +8,16 @@ export default function ServicesView() {
         <img src={logo} alt='uc-marketplace-logo' className="banner-logo" />
         <div className="banner-text">
           <h1>Explore Our Services</h1>
-          <p>Discover the services tailored to your academic needs and beyond.</p>
+          <p>Find the services tailored to your academic needs and beyond.</p>
         </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search services..."
+        />
       </div>
 
       <div className="services-listings">
