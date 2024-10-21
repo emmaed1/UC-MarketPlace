@@ -8,8 +8,7 @@ async function main() {
     update: {},
     create: {
         email: 'test@test.com',
-        name: 'Test User',
-        password: '1234'
+        name: 'Test User'
     }
   })
   console.log({ user })
