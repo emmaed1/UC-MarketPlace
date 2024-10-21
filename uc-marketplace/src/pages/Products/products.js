@@ -31,6 +31,28 @@ export default function Products() {
                     </ul>
                 </div>
             </div>
+
+            <div className="features-container">
+                <div className="featured-section">
+                <h3 className="featured-title">Special Offers</h3>
+                <a href="/special-offers">View Offers</a>
+                </div>
+
+                <div className="featured-section">
+                <h3 className="featured-title">Top Services</h3>
+                <a href="/top-services">Explore Now</a>
+                </div>
+
+                <div className="featured-section">
+                <h3 className="featured-title">New Arrivals</h3>
+                <a href="/new-arrivals">See What's New</a>
+                </div>
+            </div>
+            
+            <div className="faq-section">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to common questions about our services.</p>
+            </div>
         </div>
     );
 }
