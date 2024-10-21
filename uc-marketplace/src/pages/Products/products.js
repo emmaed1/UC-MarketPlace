@@ -1,7 +1,27 @@
 import "./products.css";
 import logo from '../../assets/uc-MP-logo.png';
+import { useState } from 'react';
 
 export default function Products() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const products = [
+        { id: 1, name: 'Product 1', details: 'Details about Product 1', sellerLink: 'https://example.com/seller1' },
+        { id: 2, name: 'Product 2', details: 'Details about Product 2', sellerLink: 'https://example.com/seller2' },
+        { id: 3, name: 'Product 3', details: 'Details about Product 3', sellerLink: 'https://example.com/seller3' }
+    ];
+
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedProduct(null);
+    };
+
     return (
         <div>
             {/* Content Section */}
@@ -13,26 +33,38 @@ export default function Products() {
                     </div>
                 </div>
             </div>
-            
+
             {/* Product Listing Section */}
             <div className="container">
-            <div className="searchbar">
-                <input type="text" id="search" placeholder="Search for products..." /> 
-            </div>
-                <div className="listings">
-                    <h3 className="list-title">View Your Current Listings</h3>
-                    <ul className="list-items">
-                        {[1, 2, 3].map(id => (
-                            <li key={id}>
+                <h2 className="product-title">Products</h2>
+                <div className="search-bar">
+                    <input type="text" id="search" placeholder="Search for products..." /> 
+                </div>
+                <div className="products">
+                    <ul className="product-items">
+                        {products.map(product => (
+                            <li key={product.id}>
                                 <div className="imgresize">
-                                    <img src={logo} alt={`Listing ${id} Image`} />
+                                    <img src={logo} alt={`Listing ${product.id} Image`} />
                                 </div>
-                                <a href={`/listing/${id}`}>Listing {id}</a>
+                                <a href="#" onClick={() => handleProductClick(product)}>{product.name}</a>
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
+
+            {/* Modal for Product Details */}
+            {isModalOpen && selectedProduct && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>{selectedProduct.name}</h2>
+                        <p>{selectedProduct.details}</p>
+                        <a href={selectedProduct.sellerLink} target="_blank" rel="noopener noreferrer">Visit Seller</a>
+                        <button onClick={closeModal}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

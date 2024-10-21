@@ -1,0 +1,221 @@
+.welcome-content {
+    background-color: #f5f5f5;
+    display: flex;  
+    align-items: center;
+    padding: 1rem 2rem;
+    border-radius: .5px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .welcome-content img {
+    margin-right: 1rem;
+    height: auto;
+    max-height: 200px;
+    width: auto;
+  }
+  
+  .welcome-text {
+    flex-grow: 1;
+    width: auto;
+  }
+  
+  .welcome-text h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .search-bar {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .search-bar input {
+    width: 50px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc
+  }
+
+  .products {
+    padding: 1.5rem 6rem; /* Increased padding */
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 18px; /* Keep base font size the same */
+    list-style: none; /* Removes bullet points */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
+    margin-top: 2rem;
+  }
+  
+  .product-title {
+    height: 3rem;
+    padding-top: 1.5rem;
+    background-color: #e00122;
+    opacity: 90%;
+    color: #ffffff;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 1rem; /* Decreased font size */
+    margin-bottom: 1rem;
+  }
+  
+  .products ul {
+    display: flex;
+    padding: 0;
+    gap: 1rem; /* Adds space between list items */
+    flex-wrap: wrap; /* Ensures items wrap to the next line if necessary */
+  }
+  
+  .imgresize {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .imgresize img {
+    width: 100%;
+    height: auto;
+    max-height: 150px; /* You can also adjust this if you want bigger images */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a small shadow around the image */
+  }
+  
+  .products li {
+    flex: 1 1 30%; /* Ensures items take up 30% of the container width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(231, 227, 227);
+    padding: 1.5rem; /* Increased padding for larger product cards */
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .products li:hover {
+    transform: translateY(-5px);
+  }
+  
+  .products a {
+    margin-top: 0.5rem;
+    text-align: center;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    background-color: #e00122;
+    color: #ffffff;
+    font-size: 0.9rem; /* Decreased font size */
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  .products a:hover {
+    background-color: #c3001d;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  .newlisting-reviews-container {
+    display: flex;
+    gap: 2rem; 
+    margin-top: 2rem;
+    max-width: 100%; /* Ensures that the container doesn't exceed the screen width */
+    box-sizing: border-box; /* Includes padding and borders in the element's width */
+    overflow: hidden; /* Prevents horizontal overflow */
+    padding: 0 1rem; /* Adds a bit of padding to the sides to avoid touching the screen edges */
+  }
+  
+  .newlisting {
+    background: linear-gradient(135deg, #f9f9f9, #e8e8e8);
+    padding: 2.5rem; /* Increased padding for larger product cards */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+    flex: 0 0 30%; /* Takes up 30% of the width */
+    box-sizing: border-box; /* Ensures padding is included in the width */
+  }
+  
+  .newlisting:hover {
+    transform: translateY(-5px);
+  }
+  
+  .newlist-title {
+    background-color: #e00122;
+    color: #ffffff;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 1rem; /* Decreased font size */
+  }
+  
+  .newlisting a {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #e00122, #d5001e);
+    color: #ffffff;
+    border-radius: 20px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  .newlisting a:hover {
+    background-color: #c3001d;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears on top of other elements */
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+}
+
+.modal-content p {
+    margin-bottom: 1rem;
+}
+
+.modal-content a {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #e00122;
+    color: #ffffff;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.modal-content button {
+    padding: 0.5rem 1rem;
+    background-color: #c3001d;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+  
