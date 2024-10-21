@@ -22,7 +22,7 @@ export default function Router() {
                     <Route path="/" element={<Home />} />
                     <Route path="/account-view" element={<AccountView />} />
                     <Route path="/new-listing" element={<NewListing />} />
-                    /* <Route path="/" element={<Products />} />
+                    <Route path="/products" element={<Products />} />
                     {/* <Route path="/" element={<ContactUs />} /> */ }
                 </Route>
                 </Routes>
