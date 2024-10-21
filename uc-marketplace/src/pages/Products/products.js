@@ -60,7 +60,7 @@ export default function Products() {
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2>{selectedProduct.name}</h2>
                         <p>{selectedProduct.details}</p>
-                        <a href={selectedProduct.sellerLink} target="_blank" rel="noopener noreferrer">Visit Seller</a>
+                        <a href="/account-view" target="_blank" rel="noopener noreferrer">Visit Seller</a>
                         <button onClick={closeModal}>Close</button>
                     </div>
                 </div>
