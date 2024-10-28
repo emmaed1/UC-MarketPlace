@@ -23,6 +23,9 @@ export default function Header() {
         <ul>
             <li class="login-btn"><a href="/login">Login</a></li>
         </ul>
+        <div title='Cart' className="cart_icon">
+            <img src="../../images/bag-icon.svg" alt="bag-icon"></img>
+        </div>
         </nav>
     )
 }
