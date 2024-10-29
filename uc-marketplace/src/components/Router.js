@@ -5,7 +5,6 @@ import AccountView from '../pages/AccountViewPage/AccountView';
 import NewListing from '../pages/new-listing/new-listing';
 import Products from '../pages/Products/products';
 import Services from '../pages/ServicesPage/Services';
-import ShoppingCart from '../components/ShoppingCart/ShoppingCart'
 
 export default function Router() {
     const Layout = () => {

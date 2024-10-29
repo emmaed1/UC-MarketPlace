@@ -41,7 +41,7 @@ export default function Header() {
         </li>
       </ul>
       <div title="Cart" className="cart_icon">
-        <img src={cartLogo}></img>
+        <img src={cartLogo} alt="bag-icon"></img>
       </div>
     </nav>
   );

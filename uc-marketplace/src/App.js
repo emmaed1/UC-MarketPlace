@@ -1,7 +1,7 @@
 import Router from "./components/Router";
 import Context from "./components/Context";
 import "./App.css";
-import CartContext from './components/ShoppingCart/Context/CartContext'
+import { CartContext } from './components/ShoppingCart/Context/CartContext'
 
 function App() {
   const userInfo = {
