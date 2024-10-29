@@ -43,10 +43,10 @@
   font-size: 16px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  max-width: 800px; /* Optional: set a max-width to limit how wide it can get */
+  max-width: 900px; /* Optional: set a max-width to limit how wide it can get */
 }
 .products-content {
-  padding: 6rem 1rem 4rem;
+  padding: 2rem 1rem 4rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 1rem;
