@@ -1,6 +1,7 @@
 import Router from "./components/Router";
 import Context from "./components/Context";
 import "./App.css";
+import CartContext from './components/ShoppingCart/Context/CartContext'
 
 function App() {
   const userInfo = {
@@ -12,9 +13,11 @@ function App() {
 
   return (
     <div className="App">
+      <CartContext.Provider>
       <Context.Provider value={userInfo}>
         <Router />
       </Context.Provider>
+      </CartContext.Provider>
     </div>
   );
 }
