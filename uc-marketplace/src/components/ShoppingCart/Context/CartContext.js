@@ -1,37 +1,92 @@
 import React, { createContext, useReducer } from 'react';
+import cartReducer from './cartReducer';
 
-const CartContext = createContext();
+/* Cart Context */
+const cartContext = createContext();
 
-const initialState = { items: [], total: 0 };
-
-const cartReducer = (state, action) => {
-  switch (action.type) {
-    case 'ADD_ITEM':
-      return {
-        ...state,
-        items: [...state.items, action.payload],
-        total: state.total + action.payload.price * action.payload.quantity,
-      };
-    case 'REMOVE_ITEM':
-      const itemToRemove = state.items.find(item => item.id === action.payload);
-      return {
-        ...state,
-        items: state.items.filter(item => item.id !== action.payload),
-        total: state.total - itemToRemove.price * itemToRemove.quantity,
-      };
-    default:
-      return state;
-  }
+/* Initial State */
+const initialState = {
+    isCartOpen: false,
+    cartItems: []
 };
 
+/* Cart-Provider Component */
 const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
 
-  return (
-    <CartContext.Provider value={{ state, dispatch }}>
-      {children}
-    </CartContext.Provider>
-  );
+    const [state, dispatch] = useReducer(cartReducer, initialState);
+
+    /* Dispatched Actions */
+
+    const toggleCart = (toggle) => {
+      console.log("Clicked Shopping Cart")
+        return dispatch({
+            type: 'TOGGLE_CART',
+            payload: {
+                toggle
+            }
+        });
+    };
+
+    const addItem = (item) => {
+        return dispatch({
+            type: 'ADD_TO_CART',
+            payload: {
+                item
+            }
+        });
+    };
+
+    const removeItem = (itemId) => {
+        return dispatch({
+            type: 'REMOVE_FROM_CART',
+            payload: {
+                itemId
+            }
+        });
+    };
+
+    const incrementItem = (itemId) => {
+        return dispatch({
+            type: 'INCREMENT',
+            payload: {
+                itemId
+            }
+        });
+    };
+
+    const decrementItem = (itemId) => {
+        return dispatch({
+            type: 'DECREMENT',
+            payload: {
+                itemId
+            }
+        });
+    };
+
+    const clearCart = () => {
+        return dispatch({
+            type: 'CLEAR_CART'
+        });
+    };
+
+    // Context values
+    const values = {
+        ...state,
+        toggleCart,
+        addItem,
+        removeItem,
+        incrementItem,
+        decrementItem,
+        clearCart
+    };
+
+    return (
+        <cartContext.Provider value={values}>
+            {children}
+        </cartContext.Provider>
+    );
+
 };
 
-export { CartContext, CartProvider };
+export default cartContext;
+export { CartProvider };

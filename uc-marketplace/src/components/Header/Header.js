@@ -1,14 +1,14 @@
-// import { useContext } from "react";
+import React, { useContext } from "react";
 // import Context from '../Context'
 import "./Header.css";
 import logo from "../../assets/uc-MP-logo.png";
-import cartLogo from "../../images/bag-icon.svg";
-// import cartContext from "../ShoppingCart/Context/CartContext";
+// import cartLogo from "../../images/bag-icon.svg";
+import cartContext from "../ShoppingCart/Context/cartContext";
 
-export default function Header() {
+const Header = () => {
   // const userData = useContext(Context)
-//   const { cartItems } = useContext(cartContext);
-//   const cartQuantity = cartItems.length;
+  const { cartItems, toggleCart } = useContext(cartContext);
+  const cartQuantity = cartItems.length;
 
   return (
     <nav className="nav-bar">
@@ -40,9 +40,12 @@ export default function Header() {
           <a href="/login">Login</a>
         </li>
       </ul>
-      <div title="Cart" className="cart_icon">
-        <img src={cartLogo} alt="bag-icon"></img>
+      <div title="Cart" className="cart_icon" onClick={() => toggleCart(true)}>
+        <button className="shopping-cart"></button>
+        {cartQuantity >= 1 && <span className="badge">{cartQuantity}</span>}
       </div>
     </nav>
   );
-}
+};
+
+export default Header;
