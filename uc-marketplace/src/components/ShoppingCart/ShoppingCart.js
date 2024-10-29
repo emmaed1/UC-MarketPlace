@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import cartContext from "./Context/cartContext";
+import './ShoppingCart.css'
 
 const Cart = () => {
   const {
@@ -44,7 +45,7 @@ const Cart = () => {
   return (
     <>
       {isCartOpen && (
-        <div id="cart">
+        <div className="cart">
           <div className="cart_content">
             <div className="cart_head">
               <h2>
@@ -102,7 +103,7 @@ const Cart = () => {
             <div className="cart_foot">
               <h3>
                 <small>Total:</small>
-                <b>₹ {cartTotal.toLocaleString()}</b>
+                <b>$ {cartTotal.toLocaleString()}</b>
               </h3>
 
               <button

@@ -1,4 +1,5 @@
-#cart {
+
+.cart {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,7 +10,7 @@
 }
 
 .cart_content {
-    background-color: #111319;
+    background-color: #ffffff;
     position: absolute;
     top: 0;
     right: 0;
@@ -27,7 +28,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        background-color: #111319;
+        background-color: #ffffff;
         padding: 0.4rem 0.6rem;
         cursor: pointer;
         opacity: 0.8;
@@ -42,7 +43,6 @@
             line-height: 0.8;
         }
     }
-
 }
 
 .cart_body {
@@ -118,7 +118,8 @@
     }
 
     .checkout_btn {
-        background-color: #6c757d;
+        border-radius: 6px;
+        background-color: #ea2e2e;
         color: #000;
         font-size: 1rem;
         padding: 0.4rem 0.8rem;
