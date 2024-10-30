@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import cartContext from "./Context/cartContext";
+import cartContext from "./Context/CartContext";
 import './ShoppingCart.css'
 import logo from '../../assets/uc-MP-logo.png'
 

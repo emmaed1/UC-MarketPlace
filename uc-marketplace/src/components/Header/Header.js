@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import "./Header.css";
 import logo from "../../assets/uc-MP-logo.png";
 // import cartLogo from "../../images/bag-icon.svg";
-import cartContext from "../ShoppingCart/Context/cartContext";
+import cartContext from "../ShoppingCart/Context/CartContext";
 
 const Header = () => {
   // const userData = useContext(Context)

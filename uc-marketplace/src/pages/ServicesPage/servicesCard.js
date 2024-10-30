@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import logo from "../../assets/uc-MP-logo.png";
-import cartContext from "../../components/ShoppingCart/Context/cartContext";
+import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import "./Services.css";
 
 const ServicesCard = (props) => {

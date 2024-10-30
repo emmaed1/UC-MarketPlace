@@ -1,7 +1,7 @@
 import Router from "./components/Router";
 import Context from "./components/Context";
 import "./App.css";
-import { CartProvider } from './components/ShoppingCart/Context/cartContext'
+import { CartProvider } from './components/ShoppingCart/Context/CartContext'
 import Cart from './components/ShoppingCart/ShoppingCart'
 
 function App() {
