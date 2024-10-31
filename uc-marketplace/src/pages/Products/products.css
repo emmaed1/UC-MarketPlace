@@ -1,35 +1,27 @@
 .content {
-  padding: 1rem 5rem;
+  padding: 1rem 2rem;
   background-color: #ffffff;
 }
 
-.welcome-content {
+.products-content {
   background-color: #f5f5f5;
-  display: flex;
   align-items: center;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.banner-logo {
-  margin-right: 1.5rem;
-  height: auto;
-  max-height: 200px;
-  width: auto;
-}
-
-.welcome-text {
+.products-text {
   flex-grow: 1;
 }
 
-.welcome-text h1{
+.products-text h1{
   font-size: 2.4rem;
     color: #333;
     margin: 0;
     font-weight: 700;
 }
-.welcome-text p{
+.products-text p{
   font-size: 1.2rem;
     color: #666;
     margin-top: 0.5rem;

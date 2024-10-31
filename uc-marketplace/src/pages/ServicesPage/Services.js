@@ -5,9 +5,8 @@ import servicesData from "./servicesData";
 
 export default function ServicesView() {
   return (
-    <div className="s-content">
+    <div className="content">
       <div className="banner">
-        <img src={logo} alt='uc-marketplace-logo' className="banner-logo" />
         <div className="banner-text">
           <h1>Explore Our Services</h1>
           <p>Find the services tailored to your academic needs and beyond.</p>
