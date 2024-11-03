@@ -19,7 +19,7 @@ export default function AccountView() {
               <div className="imgresize">
                 <img src={logo} alt={'Listing ${id} Image'} />
               </div>
-              <a href={'/listing/${id}'}>Listing {id}</a>
+              <a href="#" onClick={() => openModal(id)}>Listing {id}</a>
            </li>
           ))}
         </ul>
