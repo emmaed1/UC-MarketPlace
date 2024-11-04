@@ -15,6 +15,7 @@ import ContactUs from "../pages/ContactUsPage/ContactUs";
 export default function Router() {
     const Layout = () => {
         return ( 
+            <>
             <Header />
             <div className="content"><Outlet /></div>
             <Footer />
