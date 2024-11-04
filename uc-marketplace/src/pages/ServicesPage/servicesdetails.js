@@ -6,7 +6,6 @@ import servicesData from './servicesData';
 const ServiceDetails = () => {
     const { id } = useParams();
 
-    // Sample data; replace with actual data fetching logic if available
     const serviceData = servicesData;
 
     const service = serviceData[id];

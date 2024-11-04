@@ -1,10 +1,11 @@
 import React, { useContext, useState } from "react";
+import { Link } from 'react-router-dom';
 import logo from "../../assets/uc-MP-logo.png";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import './products.css'
 
 const ProductsCard = (props) => {
-  const { rating, title, price } = props;
+  const { id, rating, title, price } = props;
   const { addItem } = useContext(cartContext);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
@@ -33,7 +34,7 @@ const ProductsCard = (props) => {
       >
         {isAdded ? "Added" : "Add to cart"}
       </button>
-      <a className="details" href="/product-details">Listing Details</a>
+      <Link className='details' to={`/products/${id}`}>View More</Link>
     </div>
   );
 };
