@@ -1,4 +1,6 @@
-import Header from './Header/Header';
+
+import Header from './Header/Header'
+import Footer from './Footer/Footer'
 import Home from '../pages/HomePage/Home';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import AccountView from '../pages/AccountViewPage/AccountView';
@@ -12,10 +14,10 @@ import ContactUs from "../pages/ContactUsPage/ContactUs";
 
 export default function Router() {
     const Layout = () => {
-        return (
-            <>
-                <Header />
-                <div className="content"><Outlet /></div>
+        return ( 
+            <Header />
+            <div className="content"><Outlet /></div>
+            <Footer />
             </>
         );
     };
