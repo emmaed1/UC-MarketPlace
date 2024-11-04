@@ -1,6 +1,6 @@
 const servicesData = [
     {
-        id: 1,
+        id: 0,
         // img: "",
         description: "description for test 1",
         rating: "★★★★",
@@ -9,7 +9,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 2,
+        id: 1,
         // img: "",
         description: "description: ",
         rating: "★★★★★",
@@ -18,7 +18,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 3,
+        id: 2,
         // img: "",
         description: "description: ",
         rating: "★★★★",
@@ -27,7 +27,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 4,
+        id: 3,
         // img: "",
         description: "description: ",
         rating: "★★★★★",
@@ -36,7 +36,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 5,
+        id: 4,
         // img: "",
         description: "description: ",
         rating: "★★★★",
@@ -45,7 +45,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 6,
+        id: 5,
         // img: "",
         description: "description: ",
         rating: "★★★★★",
@@ -54,7 +54,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 7,
+        id: 6,
         // img: "",
         description: "description: ",
         rating: "★★★★",
@@ -63,7 +63,7 @@ const servicesData = [
         quantity: 1,
     },
     {
-        id: 8,
+        id: 7,
         // img: "",
         description: "description: ",
         rating: "★★★★",
