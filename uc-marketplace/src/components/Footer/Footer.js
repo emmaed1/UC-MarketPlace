@@ -13,12 +13,9 @@ const Footer = () => {
     <footer className="footer-content">
       <div className="footer-about">
         <p class="about">
-          <span> About the company</span> Ut congue augue non tellus bibendum,
-          in varius tellus condimentum. In scelerisque nibh tortor, sed rhoncus
-          odio condimentum in. Sed sed est ut sapien ultrices eleifend. Integer
-          tellus est, vehicula eu lectus tincidunt, ultricies feugiat leo.
-          Suspendisse tellus elit, pharetra in hendrerit ut, aliquam quis augue.
-          Nam ut nibh mollis, tristique ante sed, viverra massa.
+          <span> About the company</span> Welcome to The University of Cincinnati Marketplace, your go-to online platform designed 
+          exclusively for university students to buy and sell products and services in a safe and convenient 
+          environment. Browse our website for affordable textbooks and furniture to offering tutoring services and handmade crafts.
         </p>
         <div className="icons">
           <a href="https://www.facebook.com/">
