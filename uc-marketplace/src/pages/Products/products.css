@@ -34,6 +34,19 @@
   box-sizing: border-box;
 }
 
+.search-bar {
+  text-align: center;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+.search-bar {
+  text-align: center;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
 .search-bar input {
   width: 100%; /* Expands the input across the available width */
   padding: 10px;

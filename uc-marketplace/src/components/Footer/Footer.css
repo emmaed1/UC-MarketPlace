@@ -1,0 +1,159 @@
+.footer-content {
+  background-color: #ffffff;
+  width: 100%;
+  text-align: left;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 50px;
+  margin-top: 50px;
+}
+
+.footer-content .footer-about,
+.footer-content .footer-info,
+.footer-content .footer-logo {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.footer-content .footer-about {
+  width: 33%;
+  padding-right: 15px;
+}
+
+.footer-content .about {
+  line-height: 20px;
+  color: #000000;
+  font-size: 13px;
+  font-weight: normal;
+  margin: 0;
+}
+
+.footer-content .about span {
+  display: block;
+  color: #000000;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.footer-content .icons {
+  margin-top: 25px;
+}
+
+.footer-content .icons a {
+  display: inline-block;
+  width: 50px;
+  height: 35px;
+  cursor: pointer;
+  background-color: #ababab;
+  border-radius: 4px;
+  font-size: 20px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 35px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+}
+
+.footer-content .icons img {
+  width: auto;
+  height: 35px;
+  align-items: center;
+  margin-right: 3px;
+  margin-bottom: 5px;
+}
+
+.footer-content .footer-info {
+  width: 30%;
+}
+.footer-content .footer-info img {
+  background-color: #ffffff;
+  color: #ffffff;
+  font-size: 25px;
+  width: 40px;
+  height: 20%;
+  text-align: center;
+  line-height: 42px;
+  margin: 10px 15px;
+  vertical-align: middle;
+}
+
+.footer-content .footer-info img.mail {
+  font-size: 17px;
+  line-height: 38px;
+}
+
+.footer-content .footer-info p {
+  display: inline-block;
+  color: #000000;
+  vertical-align: middle;
+  margin: 0;
+}
+
+.footer-content .footer-info p span {
+  display: block;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 2;
+}
+
+.footer-content .footer-logo {
+  width: 35%;
+}
+
+.footer-content .footer-logo img {
+  height: 100px;
+}
+
+.footer-content h2 {
+  color: #000000;
+  font-size: 36px;
+  font-weight: normal;
+  margin: 0;
+}
+
+.footer-content h2 span {
+  color: #0099ff;
+}
+
+.footer-content .menu {
+  color: #000000;
+  margin: 20px 0 12px;
+  padding: 0;
+}
+
+.footer-content .menu a {
+  display: inline-block;
+  line-height: 1.8;
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer-content .menu a:hover {
+  color: #0099ff;
+}
+
+.footer-content .name {
+  color: #0099ff;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .footer {
+    font-size: 14px;
+  }
+  .footer-content .footer-about,
+  .footer-content .footer-info,
+  .footer-content .footer-logo {
+    display: block;
+    width: 100%;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .footer-content .footer-info img {
+    margin-left: 0;
+  }
+}

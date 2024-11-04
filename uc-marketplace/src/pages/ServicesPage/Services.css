@@ -179,18 +179,120 @@
     margin: 2rem auto;
     text-align: center;
 }
-
-.search-bar input {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.2rem;
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    width: 50%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.2s ease-in-out;
+.service-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #e00122;
+  color: #ffffff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  border: none;
 }
 
-.search-bar input:focus {
-    border-color: #e00122;
-    outline: none;
+.service-button:hover {
+  background-color: #e00122;
+  color: #ffffff;
+}
+
+.request-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; 
+}
+
+.request-button:hover {
+  background-color: #e00122; 
+  color: #ffffff; 
+}
+
+
+.provider-info {
+  display: flex;
+  gap: 1rem; 
+  margin-top: 1rem; 
+}
+
+.provider-profile-img {
+  width: 70px; 
+  height: 70px;
+  border-radius: 50%; 
+}
+
+.provider-details {
+  flex: 0.8; 
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.provider-name {
+  font-weight: bold;
+  color: #333; 
+  text-decoration: none;
+}
+
+.provider-name:hover {
+  text-decoration: underline; 
+}
+
+.provider-description {
+  color: #555; 
+}
+
+.reviews {
+  background-color: #e00122;
+  padding: 2rem 10rem;
+  margin-top: 2rem;
+  border-radius: 8px;
+}
+
+.review-cards {
+  font-size: 24px;
+  overflow-x: auto;
+}
+
+.review-cards table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.review-cards th {
+  border: 5px solid rgb(255, 255, 255);
+  background-color: #e00122;
+  color: #ffffff;
+  padding: 10px;
+}
+
+.review-content td {
+  font-size: 16pt;
+  height: 50px;
+  padding: 8px;
+}
+
+.message-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #e00122;
+  color: #ffffff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  border: none;
+}
+
+.message-button:hover {
+  background-color: #c3001d;
+  color: #ffffff;
 }
