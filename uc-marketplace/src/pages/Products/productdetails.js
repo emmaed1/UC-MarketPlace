@@ -45,10 +45,13 @@ const ProductDetails = () => {
               </div>
                 <Link to="/message-seller" className="message-button">Message the Seller</Link>
                             
-                <Link to="/services" className="service-button">Back to Services</Link>
+                <Link to="/services" className="service-button">Back to Products</Link>
             </> /*Link to seller will link to the buyer's view of the account page where the edit/add productbutons are unavailble. It should just show the seller's profile */
           ) : (
-            <p>Product not found</p>
+            <div>
+                <Link to="/services" className="service-button">Back to Products</Link>
+                <p>Product not found</p>
+            </div>
           )}
         </div>
       </div>

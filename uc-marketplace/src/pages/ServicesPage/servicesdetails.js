@@ -5,10 +5,7 @@ import servicesData from './servicesData';
 
 const ServiceDetails = () => {
     const { id } = useParams();
-
-    const serviceData = servicesData;
-
-    const service = serviceData[id];
+    const service = servicesData[id];
 
     return (
         <div>
@@ -41,7 +38,10 @@ const ServiceDetails = () => {
                             <Link to="/services" className="service-button">Back to Services</Link>
                         </>
                     ) : (
-                        <p>Service not found</p>
+                        <div>
+                            <Link to="/services" className="service-button">Back to Services</Link>
+                            <p>Service not found</p>
+                        </div>
                     )}
                 </div>   
             </div>
