@@ -43,15 +43,23 @@
 
 .footer-content .icons a {
   display: inline-block;
-  width: 35px;
+  width: 50px;
   height: 35px;
   cursor: pointer;
-  background-color: #33383b;
-  border-radius: 2px;
+  background-color: #ababab;
+  border-radius: 4px;
   font-size: 20px;
   color: #ffffff;
   text-align: center;
   line-height: 35px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+}
+
+.footer-content .icons img {
+  width: auto;
+  height: 35px;
+  align-items: center;
   margin-right: 3px;
   margin-bottom: 5px;
 }

@@ -3,6 +3,10 @@ import logo from "../../assets/uc-MP-logo.png";
 import mapIcon from "../../assets/location-icon.png";
 import phoneIcon from "../../assets/phone-icon.png";
 import mailIcon from "../../assets/mail-icon.png";
+import facebook from '../../assets/facebook.png'
+import twitter from '../../assets/twitter.png'
+import linkedin from '../../assets/linkedin.png'
+import insta from '../../assets/insta.png'
 
 const Footer = () => {
   return (
@@ -17,20 +21,17 @@ const Footer = () => {
           Nam ut nibh mollis, tristique ante sed, viverra massa.
         </p>
         <div className="icons">
-          <a href="#">
-            <i class="fa fa-facebook"></i>
+          <a href="https://www.facebook.com/">
+            <img src={facebook} class="facebook"></img>
           </a>
-          <a href="#">
-            <i class="fa fa-twitter"></i>
+          <a href="https://www.twitter.com/">
+          <img src={twitter} class="twitter"></img>
           </a>
-          <a href="#">
-            <i class="fa fa-linkedin"></i>
+          <a href="https://www.linkedin.com/">
+          <img src={linkedin} class="linkedin"></img>
           </a>
-          <a href="#">
-            <i class="fa fa-google-plus"></i>
-          </a>
-          <a href="#">
-            <i class="fa fa-instagram"></i>
+          <a href="https://www.instagram.com/">
+          <img src={insta} class="insta"></img>
           </a>
         </div>
       </div>
