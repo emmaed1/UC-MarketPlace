@@ -24,7 +24,7 @@ const ProductDetails = () => {
               <h2 className="product-title">{product.title}</h2>
               <p>{product.description}</p>
               <p className="product-price">Price: {product.price}</p>
-              {/* <Link to= "/cart" className='cart-button'>Add to Cart</Link> */}
+              <Link to= "/cart" className='cart-button'>Add to Cart</Link>
               <div>
                 <div class="seller-info">
                   <img
