@@ -26,12 +26,16 @@ model Product {
   productId Int    @id @default(autoincrement())
   name      String @db.VarChar(255)
   desc      String
+  rating    String
   price     Float
+  quantity  Int
 }
 
 model Service {
   serviceId Int    @id @default(autoincrement())
   name      String
   desc      String
+  rating    String
   price     Float
+  quantity  Int
 }
