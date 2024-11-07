@@ -131,3 +131,122 @@
   }
 }
 
+.product-details-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: row;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.product-image {
+  flex: 1.2;
+  max-width: 450px;
+}
+
+.product-image img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.product-description {
+  flex: 2;
+  padding-left: 2rem;
+  text-align: left;
+}
+
+.product-description h2 {
+  font-size: 2rem;
+  color: #000000;
+}
+
+.product-description p {
+  font-size: 1.2rem;
+  color: #000000;
+  margin-top: 0.5rem;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.product-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.product-button:hover {
+  background-color: #e00122;
+  color: #ffffff;
+}
+
+.cart-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Add transition for text color */
+}
+
+.cart-button:hover {
+  background-color: #e00122; /* Change background on hover */
+  color: #ffffff; /* Change text color on hover */
+}
+
+/* Seller Info Styles */
+.seller-info {
+  display: flex;
+  align-items: center; /* Centers content vertically within the section */
+  gap: 1rem; /* Adds space between the image and seller details */
+  margin-top: 1rem; /* Adds space between the product details and seller info */
+}
+
+.seller-profile-img {
+  width: 70px; /* Slightly smaller */
+  height: 70px;
+  border-radius: 50%; /* Makes the image circular */
+}
+
+.seller-details {
+  flex: 0.8; /* Reduces the width of seller details */
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.seller-name {
+  font-weight: bold;
+  color: #333; /* Adjust color as needed */
+  text-decoration: none;
+}
+
+.seller-name:hover {
+  text-decoration: underline; /* Optional: underline on hover */
+}
+
+.seller-description {
+  color: #555; /* Adjust color for readability */
+}
