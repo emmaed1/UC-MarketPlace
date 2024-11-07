@@ -17,6 +17,7 @@ const ServicesCard = (props) => {
       {/* TODO: MAKE THIS BUTTON GO TO CALENDAR BOOKING */}
       <button
         type="button"
+        className="service-button"
         >Book Service</button>
       <Link className='details' to={`/services/${id}`}>View More</Link>
     </div>
