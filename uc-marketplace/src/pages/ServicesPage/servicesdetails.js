@@ -1,19 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
 import "./Services.css"; // Make sure to create a CSS file for styling
 import logo from '../../assets/uc-MP-logo.png';
+import servicesData from './servicesData';
 
-export default function ServiceDetails() {
+const ServiceDetails = () => {
     const { id } = useParams();
-
-    // Sample data; replace with actual data fetching logic if available
-    const serviceData = {
-        1: { name: "Service 1", description: "Description for Service 1", price: "$100" },
-        2: { name: "Service 2", description: "Description for Service 2", price: "$200" },
-        3: { name: "Service 3", description: "Description for Service 3", price: "$300" },
-        // Add other service details as needed
-    };
-
-    const service = serviceData[id];
+    const service = servicesData[id];
 
     return (
         <div>
@@ -21,13 +13,13 @@ export default function ServiceDetails() {
                 <div className="service-image">
                     <img 
                         src={logo} 
-                        alt={service ? `${service.name} Image` : "Service Image Not Available"} 
+                        alt={service ? `${service.title} Image` : "Service Image Not Available"} 
                     />
                 </div>
                 <div className="service-description">
                     {service ? (
                         <>
-                            <h2 className="service-title">{service.name}</h2>
+                            <h2 className="service-title">{service.title}</h2>
                             <p>{service.description}</p>
                             <p className="service-price">Price: {service.price}</p>
                             <Link to="/request-service" className='request-button'>Book Service</Link>
@@ -46,7 +38,10 @@ export default function ServiceDetails() {
                             <Link to="/services" className="service-button">Back to Services</Link>
                         </>
                     ) : (
-                        <p>Service not found</p>
+                        <div>
+                            <Link to="/services" className="service-button">Back to Services</Link>
+                            <p>Service not found</p>
+                        </div>
                     )}
                 </div>   
             </div>
@@ -76,3 +71,5 @@ export default function ServiceDetails() {
         </div>
     );
 }
+
+export default ServiceDetails;
