@@ -1,11 +1,13 @@
-import "./Services.css";
+import { Link } from 'react-router-dom';
+import "./Services.css"; // Make sure to create a CSS file for services
 import logo from '../../assets/uc-MP-logo.png';
+import ServicesCard from './servicesCard'
+import servicesData from "./servicesData";
 
 export default function ServicesView() {
   return (
-    <div className="services-content">
+    <div className="content">
       <div className="banner">
-        <img src={logo} alt='uc-marketplace-logo' className="banner-logo" />
         <div className="banner-text">
           <h1>Explore Our Services</h1>
           <p>Find the services tailored to your academic needs and beyond.</p>
@@ -19,21 +21,11 @@ export default function ServicesView() {
           placeholder="Search services..."
         />
       </div>
-
-      <div className="services-listings">
-        <h3 className="list-title">Popular Services</h3>
-        <ul className="service-items">
-          {[1, 2, 3].map(id => (
-            <li key={id}>
-              <div className="img-resize">
-                <img src={logo} alt={`Service ${id} Image`} />
-              </div>
-              <a href={`/service/${id}`}>Service {id}</a>
-            </li>
-          ))}
-        </ul>
+      <div className="services-content">
+        {servicesData.map((item) => (
+          <ServicesCard key={item.id} {...item} />
+        ))}
       </div>
-
       <div className="features-container">
         <div className="featured-section">
           <h3 className="featured-title">Special Offers</h3>

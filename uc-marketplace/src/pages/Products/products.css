@@ -1,88 +1,120 @@
-.welcome-content {
-    background-color: #f5f5f5;
-    display: flex;  
-    align-items: center;
-    padding: 1rem 2rem;
-    border-radius: .5px;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
-  }
-
-  .welcome-content img {
-    margin-right: 1rem;
-    height: auto;
-    max-height: 100px;
-    width: auto;
-  }
-  
-  .welcome-text {
-    flex-grow: 1;
-    width: auto;
-  }
-  
-  .welcome-text h1 {
-    font-size: 2.5rem;
-    color: #ffffff;
-    background-color: #c3001d;
-    margin: 0;
-    padding: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-    border-radius: 10px;
+.content {
+  padding: 1rem 2rem;
+  background-color: #ffffff;
 }
 
-  .search-bar {
-    text-align: center;
-    width: 100%;
-    padding: 0 1rem;
-    box-sizing: border-box;
+.products-content {
+  background-color: #f5f5f5;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.products-text {
+  flex-grow: 1;
+}
+
+.products-text h1{
+  font-size: 2.4rem;
+    color: #333;
+    margin: 0;
+    font-weight: 700;
+}
+.products-text p{
+  font-size: 1.2rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.search-bar {
+  text-align: center;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+.search-bar {
+  text-align: center;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+.search-bar {
+  text-align: center;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .search-bar input {
-    width: 100%; /* Expands the input across the available width */
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    max-width: 800px; /* Optional: set a max-width to limit how wide it can get */
+  width: 100%; /* Expands the input across the available width */
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  max-width: 900px; /* Optional: set a max-width to limit how wide it can get */
 }
+.products-content {
+  padding: 2rem 1rem 4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1rem;
+  text-align: center;
 
-  .products {
-    padding: 1.5rem 6rem; /* Increased padding */
-    background-color: #ffffff;
-    color: #000000;
-    font-size: 18px; /* Keep base font size the same */
-    list-style: none; /* Removes bullet points */
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
-    margin-top: 2rem;
+  @media (max-width: 400px) {
+    grid-template-columns: 1fr;
   }
-  
-  .products ul {
-    display: flex;
-    justify-content: center; /* Centers the product list */
-    padding: 0;
-    gap: 1rem; /* Adds space between the list items */
-    flex-wrap: wrap; /* Allows items to wrap onto the next line if necessary */
 }
 
-.products li {
-    flex: 1 1 calc(25% - 2rem); /* Each product takes up 25% of the container width, minus gap */
-    max-width: calc(25% - 2rem); /* Ensures the max width is also 25% */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgb(231, 227, 227);
-    padding: 1rem; /* Reduces padding for smaller product cards */
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-}
+.products {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.9),
+    inset 5px 5px 20px rgba(0, 0, 0, 0.3),
+    inset -5px -5px 20px rgba(0, 0, 0, 0.3);
 
-.products li:hover {
-    transform: translateY(-5px); /* Adds hover effect */
-}
+  img {
+    width: 50%;
+    max-width: 200px;
+  }
 
-.products a {
+  .rating {
+    color: sandybrown;
+    font-size: 0.8rem;
+    letter-spacing: 1.2px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+    margin: 0.6rem 0;
+  }
+
+  .price {
+    font-weight: bold;
+  }
+
+  .btn {
+    color: #fff;
+    background-color: #e00122;
+    margin-top: 0.5rem;
+    text-align: center;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #eee;
+    }
+
+    &.added {
+      background-color: green;
+    }
+  }
+
+  .details {
     margin-top: 0.5rem;
     text-align: center;
     text-decoration: none;
@@ -90,58 +122,131 @@
     border-radius: 15px;
     background-color: #e00122;
     color: #ffffff;
-    font-size: 0.9rem;
+    font-size: 1rem;
     transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  .details:hover {
+    background-color: #c3001d;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  }
 }
 
-.products a:hover {
-    background-color: #c3001d;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+.product-details-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
 }
-  
-.products a {
-    margin-top: 0.5rem;
-    text-align: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
-    background-color: #e00122;
-    color: #ffffff;
-    font-size: 0.9rem; /* Decreased font size */
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
- }
-  
-  .products a:hover {
-    background-color: #c3001d;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  }
-  
-  .newlisting:hover {
-    transform: translateY(-5px);
-  }
-  
-  .newlist-title {
-    background-color: #e00122;
-    color: #ffffff;
-    padding: 0.75rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-size: 1rem; /* Decreased font size */
-  }
-  
-  .newlisting a {
-    display: inline-block;
-    margin-top: 1rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #e00122, #d5001e);
-    color: #ffffff;
-    border-radius: 20px;
-    text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  }
-  
-  .newlisting a:hover {
-    background-color: #c3001d;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
+
+.product-details {
+  display: flex;
+  flex-direction: row;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.product-image {
+  flex: 1.2;
+  max-width: 450px;
+}
+
+.product-image img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.product-description {
+  flex: 2;
+  padding-left: 2rem;
+  text-align: left;
+}
+
+.product-description h2 {
+  font-size: 2rem;
+  color: #000000;
+}
+
+.product-description p {
+  font-size: 1.2rem;
+  color: #000000;
+  margin-top: 0.5rem;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.product-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.product-button:hover {
+  background-color: #e00122;
+  color: #ffffff;
+}
+
+.cart-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Add transition for text color */
+}
+
+.cart-button:hover {
+  background-color: #e00122; /* Change background on hover */
+  color: #ffffff; /* Change text color on hover */
+}
+
+/* Seller Info Styles */
+.seller-info {
+  display: flex;
+  align-items: center; /* Centers content vertically within the section */
+  gap: 1rem; /* Adds space between the image and seller details */
+  margin-top: 1rem; /* Adds space between the product details and seller info */
+}
+
+.seller-profile-img {
+  width: 70px; /* Slightly smaller */
+  height: 70px;
+  border-radius: 50%; /* Makes the image circular */
+}
+
+.seller-details {
+  flex: 0.8; /* Reduces the width of seller details */
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.seller-name {
+  font-weight: bold;
+  color: #333; /* Adjust color as needed */
+  text-decoration: none;
+}
+
+.seller-name:hover {
+  text-decoration: underline; /* Optional: underline on hover */
+}
+
+.seller-description {
+  color: #555; /* Adjust color for readability */
+}
