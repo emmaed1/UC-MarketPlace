@@ -1,9 +1,13 @@
 import "./new-listing.css";
 import logo from '../../assets/uc-MP-logo.png'
+import { PrismaClient } from '@prisma/client';
 import { useState } from 'react'
 
-export default function NewListing() {
-  const [name, description, price] = useState();
+const prisma = new PrismaClient();
+
+const NewListing = () => {
+  const data = useState({ name: '', desc: '', price: 0, quantity: 0});
+
   return (
     <div className="content">
       <div className="welcome-content">
@@ -26,17 +30,22 @@ export default function NewListing() {
 
           <div className="form-group">
             <label htmlFor="name">Name:</label>
-            <input type="text" id="name" name="name" value={name} placeholder="Enter Product or Service Name:" required />
+            <input type="text" id="name" name="name" value={data.name} placeholder="Enter Product or Service Name:" required />
           </div>
 
           <div className="form-group">
             <label htmlFor="description">Description:</label>
-            <textarea id="description" name="description" value={description} placeholder="Enter Product or Service Description:" rows="5" required></textarea>
+            <textarea id="description" name="description" value={data.description} placeholder="Enter Product or Service Description:" rows="5" required></textarea>
           </div>
 
           <div className="form-group">
             <label htmlFor="price">Price:</label>
-            <input type="number" id="price" name="price" value={price} placeholder="Enter Price:" required />
+            <input type="number" id="price" name="price" value={data.price} placeholder="Enter Price:" required />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value={data.quantity} placeholder="Enter Quantity:" required />
           </div>
 
           <div className="form-group">
@@ -44,9 +53,10 @@ export default function NewListing() {
             <input type="file" id="photos" name="photos" accept="image/*" multiple />
           </div>
 
-          <button type="Post" className="post-button">Post Listing</button>
+          <button type="submit" className="post-button">Post Listing</button>
         </form>
       </div>
     </div>
   );
 }
+export default NewListing;
