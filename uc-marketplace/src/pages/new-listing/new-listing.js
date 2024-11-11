@@ -1,7 +1,9 @@
 import "./new-listing.css";
 import logo from '../../assets/uc-MP-logo.png'
+import { useState } from 'react'
 
 export default function NewListing() {
+  const [name, description, price] = useState();
   return (
     <div className="content">
       <div className="welcome-content">
@@ -24,17 +26,17 @@ export default function NewListing() {
 
           <div className="form-group">
             <label htmlFor="name">Name:</label>
-            <input type="text" id="name" name="name" placeholder="Enter Product or Service Name:" required />
+            <input type="text" id="name" name="name" value={name} placeholder="Enter Product or Service Name:" required />
           </div>
 
           <div className="form-group">
             <label htmlFor="description">Description:</label>
-            <textarea id="description" name="description" placeholder="Enter Product or Service Description:" rows="5" required></textarea>
+            <textarea id="description" name="description" value={description} placeholder="Enter Product or Service Description:" rows="5" required></textarea>
           </div>
 
           <div className="form-group">
             <label htmlFor="price">Price:</label>
-            <input type="number" id="price" name="price" placeholder="Enter Price:" required />
+            <input type="number" id="price" name="price" value={price} placeholder="Enter Price:" required />
           </div>
 
           <div className="form-group">
