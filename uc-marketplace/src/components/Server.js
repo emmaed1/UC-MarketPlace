@@ -8,6 +8,7 @@ const port = 3001;
 
 app.use(bodyParser.json());
 
+// api for product listings
 app.post("/products", async (req, res) => {
     const { name, desc, rating, price, quantity } = req.body;
 
@@ -24,7 +25,7 @@ app.post("/products", async (req, res) => {
         res.json(product)
     }
     catch (error) {
-        res.status(500).json({error: 'Error creating user'});
+        res.status(500).json({error: 'Error creating product'});
     }
 });
 
@@ -33,7 +34,7 @@ app.get('/products', async(req, res) => {
         const products = await prisma.product.findMany();
         res.json(products);
     } catch (error) {
-        res.status(500).json({error: 'Error getting users'});
+        res.status(500).json({error: 'Error getting products'});
     }
 });
 
@@ -46,6 +47,49 @@ app.delete('/products/:productId', async (req, res) => {
         res.json(deletedProduct);
     } catch (error) {
         res.status(500).json({error: "Errors deleting product"});
+    }   
+});
+
+
+// api for services listing
+app.post("/services", async (req, res) => {
+    const { title, desc, rating, price, quantity } = req.body;
+
+    try {
+        const service = await prisma.service.create({
+            data: {
+                title,
+                desc,
+                rating,
+                price,
+                quantity
+            },
+        });
+        res.json(service)
+    }
+    catch (error) {
+        res.status(500).json({error: 'Error creating service'});
+    }
+});
+
+app.get('/services', async(req, res) => {
+    try{
+        const services = await prisma.service.findMany();
+        res.json(services);
+    } catch (error) {
+        res.status(500).json({error: 'Error getting services'});
+    }
+});
+
+app.delete('/services/:serviceId', async (req, res) => {
+    const serviceId = parseInt(req.params.serviceId);
+    try{
+        const deletedService = await prisma.service.delete({
+            where: {serviceId: serviceId}
+        });
+        res.json(deletedService);
+    } catch (error) {
+        res.status(500).json({error: "Errors deleting service"});
     }   
 });
 
