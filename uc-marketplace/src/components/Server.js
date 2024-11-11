@@ -29,11 +29,17 @@ app.post("/products", async (req, res) => {
     }
 });
 
+// export default async function handler(req, res) {
+//     const products = await prisma.product.findMany()
+//     res.status(200).json(products)
+// }
 app.get('/products', async(req, res) => {
     try{
+        const prisma = new PrismaClient();
         const products = await prisma.product.findMany();
-        res.json(products);
+        res.status(200).json(products);
     } catch (error) {
+        console.log("Error!")
         res.status(500).json({error: 'Error getting products'});
     }
 });
