@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'; // To navigate to the confirmation page
 import cartContext from "./Context/CartContext";
 import './ShoppingCart.css'
 import logo from '../../assets/uc-MP-logo.png'
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const {
@@ -13,8 +13,6 @@ const Cart = () => {
     incrementItem,
     decrementItem,
   } = useContext(cartContext);
-
-  const Navigate = useNavigate(); // To navigate to the Checkout page
 
   // disable the body-scroll when the Cart is open
   useEffect(() => {
@@ -45,11 +43,6 @@ const Cart = () => {
   const cartTotal = cartItems
     .map((item) => item.price * item.quantity)
     .reduce((prevValue, currValue) => prevValue + currValue, 0);
-
-  const handleCheckout = () => {
-    // Will navigate to the Checkout Page and Pass Cart Data
-    Navigate("/Checkout", { state: { cartItems, cartTotal } });
-  };
 
   return (
     <>
@@ -116,14 +109,14 @@ const Cart = () => {
                 <b>$ {cartTotal.toLocaleString()}</b>
               </h3>
 
-              <button
+              <Link
                 type="button"
                 className="checkout_btn"
-                onClick={handleCheckout} //Navigate on Click
+                to={`/checkout`}
                 disabled={cartQuantity === 0}
-              >
-                Checkout
-              </button>
+                >Checkout
+              </Link>
+              
             </div>
           </div>
         </div>
