@@ -1,15 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
-import "./Services.css"; // Make sure to create a CSS file for styling
+import "./Services.css"; 
 import logo from '../../assets/uc-MP-logo.png';
 import servicesData from './servicesData';
-import BookingCalendar from './BookingCalender'; // Make sure this is imported correctly
+import BookingCalendar from './BookingCalender'; 
 
 const ServiceDetails = () => {
     const { id } = useParams();
     const service = servicesData[id];
     
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false); // To control the calendar modal visibility
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
 
     const handleCloseCalendar = () => {
         setIsCalendarOpen(false);

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import "./Services.css"; // Make sure to create a CSS file for services
+import "./Services.css"; 
 import logo from '../../assets/uc-MP-logo.png';
 import ServicesCard from './servicesCard'
 import servicesData from "./servicesData";
