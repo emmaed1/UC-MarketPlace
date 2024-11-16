@@ -8,7 +8,7 @@ const ServicesCard = (props) => {
   const { id, rating, title, price } = props;
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  
+  // Handler to close the calendar
   const handleCloseCalendar = () => {
     setIsCalendarOpen(false);
   };
@@ -34,6 +34,7 @@ const ServicesCard = (props) => {
 
       {isCalendarOpen && (
         <div className="calendar-modal">
+          {/* Pass handleCloseCalendar as onClose prop */}
           <BookingCalendar onClose={handleCloseCalendar} />
         </div>
       )}

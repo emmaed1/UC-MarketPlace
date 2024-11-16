@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import Swal from "sweetalert2";
 import "./Services.css";
 
+// Function to send booking email
 const sendBookingEmail = async (bookingDetails) => {
   const { date, time } = bookingDetails;
 
@@ -25,7 +26,8 @@ const sendBookingEmail = async (bookingDetails) => {
   }
 };
 
-const BookingCalendar = ({ onBookingConfirm }) => {
+// Main BookingCalendar component
+const BookingCalendar = ({ onBookingConfirm, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -52,15 +54,19 @@ const BookingCalendar = ({ onBookingConfirm }) => {
     if (selectedDate && selectedTime) {
       const formattedDate = selectedDate.toLocaleDateString();
 
+      // Send booking email
       sendBookingEmail({ date: formattedDate, time: selectedTime });
 
+      // Show confirmation alert
       Swal.fire({
         title: "Booking Confirmed!",
         text: `You have booked ${formattedDate} at ${selectedTime}. An email confirmation has been sent.`,
         icon: "success",
       });
 
+      // Notify parent component and close calendar
       onBookingConfirm?.({ date: formattedDate, time: selectedTime });
+      onClose();  // Close the calendar modal after booking is confirmed
     } else {
       Swal.fire({
         title: "Error",
