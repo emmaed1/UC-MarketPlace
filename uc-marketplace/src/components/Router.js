@@ -11,6 +11,8 @@ import ProductDetails from '../pages/Products/productdetails';
 import Services from '../pages/ServicesPage/Services';
 import ServiceDetails from '../pages/ServicesPage/servicesdetails';
 import ContactUs from "../pages/ContactUsPage/ContactUs";
+import Checkout from "../pages/Checkout/Checkout"; // Import Checkout page
+import Confirmation from "../pages/Confirmation/Confirmation"; // Import Confirmation page
 
 export default function Router() {
     const Layout = () => {
@@ -37,6 +39,8 @@ export default function Router() {
                         <Route path="/services" element={<Services />} /> 
                         <Route path="/services/:id" element={<ServiceDetails />} /> {/* Route for service details */}
                         <Route path="/contact-us" element={<ContactUs />} />
+                        <Route path="/checkout" element={<Checkout />} /> {/* Route for Checkout */}
+                        <Route path="/confirmation" element={<Confirmation />} /> {/* Route for Confirmation */}
                     </Route>
                 </Routes>
             </BrowserRouter>
