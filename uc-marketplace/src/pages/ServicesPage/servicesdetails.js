@@ -1,11 +1,19 @@
 import { useParams, Link } from 'react-router-dom';
-import "./Services.css"; // Make sure to create a CSS file for styling
+import { useState } from 'react';
+import "./Services.css"; 
 import logo from '../../assets/uc-MP-logo.png';
 import servicesData from './servicesData';
+import BookingCalendar from './BookingCalender'; 
 
 const ServiceDetails = () => {
     const { id } = useParams();
     const service = servicesData[id];
+    
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
+
+    const handleCloseCalendar = () => {
+        setIsCalendarOpen(false);
+    };
 
     return (
         <div>
@@ -22,8 +30,15 @@ const ServiceDetails = () => {
                             <h2 className="service-title">{service.title}</h2>
                             <p>{service.description}</p>
                             <p className="service-price">Price: {service.price}</p>
-                            <Link to="/request-service" className='request-button'>Book Service</Link>
                             
+                            {/* Book Service button */}
+                            <button 
+                                className="service-button" 
+                                onClick={() => setIsCalendarOpen(true)}
+                            >
+                                Book Service
+                            </button>
+
                             <div className="provider-info">
                                 <img src="path_to_provider_profile_image.jpg" alt="Provider Profile Image" className="provider-profile-img" />
                                 <div className="provider-details">
@@ -68,8 +83,15 @@ const ServiceDetails = () => {
                     </table>
                 </div>
             </div>
+
+            {/* Booking Calendar Modal */}
+            {isCalendarOpen && (
+                <div className="calendar-modal">
+                    <BookingCalendar onClose={handleCloseCalendar} />
+                </div>
+            )}
         </div>
     );
-}
+};
 
 export default ServiceDetails;
