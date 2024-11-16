@@ -4,18 +4,19 @@ import ProductsCard from "./productsCard";
 import { useEffect, useState } from "react";
 
 const Products = () => {
+  useEffect(() => {
+    // getProducts();
+  }, []);
+
   const [products, setProducts] = useState([]);
 
-  // useEffect(() => {
-  //   async function getProducts() {
-  //     const res = await fetch("/products");
-  //     console.log(res);
-  //     const data = await res.json();
-
-  //     setProducts(data);
+  // const getProducts= async () => {
+  //   try {
+  //     const postsData = await prisma.post.findMany();
+  //   } catch (error){
+  //       console.error('Error fetching products:', error);
   //   }
-  //   getProducts();
-  // }, []);
+  //   };
 
   return (
     <>
@@ -32,7 +33,7 @@ const Products = () => {
           <input type="text" id="search" placeholder="Search for products..." />
         </div>
         <div className="products-content">
-          {productsData.map((item) => (
+          {products.map((item) => (
             <ProductsCard key={item.id}{...item} />
           ))}
         </div>

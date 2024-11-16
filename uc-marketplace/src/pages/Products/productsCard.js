@@ -19,6 +19,7 @@ const ProductsCard = (props) => {
     }, 3000);
   };
 
+
   return (
     <div className="products">
       <figure>
