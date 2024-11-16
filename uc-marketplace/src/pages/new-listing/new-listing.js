@@ -1,9 +1,6 @@
 import "./new-listing.css";
 import logo from '../../assets/uc-MP-logo.png'
-import { PrismaClient } from '@prisma/client';
 import { useState } from 'react'
-
-const prisma = new PrismaClient();
 
 const NewListing = () => {
   const data = useState({ name: '', desc: '', price: 0, quantity: 0});

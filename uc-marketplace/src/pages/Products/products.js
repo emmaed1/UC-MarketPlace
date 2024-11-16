@@ -4,11 +4,12 @@ import ProductsCard from "./productsCard";
 import { useEffect, useState } from "react";
 
 const Products = () => {
+  const products = productsData
   useEffect(() => {
     // getProducts();
   }, []);
 
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
   // const getProducts= async () => {
   //   try {
