@@ -11,8 +11,8 @@ import ProductDetails from '../pages/Products/productdetails';
 import Services from '../pages/ServicesPage/Services';
 import ServiceDetails from '../pages/ServicesPage/servicesdetails';
 import ContactUs from "../pages/ContactUsPage/ContactUs";
-import Checkout from "../pages/Checkout/Checkout"; // Import Checkout page
-import Confirmation from "../pages/Confirmation/Confirmation"; // Import Confirmation page
+import Checkout from "../pages/CheckoutPage/Checkout"; // Import Checkout page
+import Confirmation from "../pages/ConfirmationPage/Confirmation"; // Import Confirmation page
 
 export default function Router() {
     const Layout = () => {
