@@ -1,37 +1,31 @@
-import "./Services.css";
+import { Link } from 'react-router-dom';
+import "./Services.css"; 
 import logo from '../../assets/uc-MP-logo.png';
+import ServicesCard from './servicesCard'
+import servicesData from "./servicesData";
 
 export default function ServicesView() {
   return (
-    <div>
-      {/* Content Section */}
-      <div className="content">
-        <div className="welcome-content">
-          <div className="welcome-text">
-            <h1>Services</h1>
-          </div>
-        </div>
-      </div>
-      
-      {/* Service Listing Section */}
-      <div className="container">
-        <div className="search-bar">
-          <input type="text" id="search" placeholder="Search for services..." /> 
-        </div>
-        <div className="products">
-          <ul className="product-items">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map(id => (
-              <li key={id}>
-                <div className="imgresize">
-                  <img src={logo} alt={`Service ${id} Image`} />
-                </div>
-                <a href={`/service/${id}`}>Service {id}</a>
-              </li>
-            ))}
-          </ul>
+    <div className="content">
+      <div className="banner">
+        <div className="banner-text">
+          <h1>Explore Our Services</h1>
+          <p>Find the services tailored to your academic needs and beyond.</p>
         </div>
       </div>
 
+      {/* Search Bar */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search services..."
+        />
+      </div>
+      <div className="services-content">
+        {servicesData.map((item) => (
+          <ServicesCard key={item.id} {...item} />
+        ))}
+      </div>
       <div className="features-container">
         <div className="featured-section">
           <h3 className="featured-title">Special Offers</h3>

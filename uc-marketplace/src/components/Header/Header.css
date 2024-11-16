@@ -34,3 +34,14 @@
 .app-logo {
   height: 100px;
 }
+
+.shopping-cart {
+  background: url(../../images/bag-icon.svg);
+  background-size: 90%;
+  background-repeat: no-repeat;
+  height: 40px;
+  width: 35px;
+  border-radius: 3px;
+  border-style: none;
+  cursor: pointer;
+}

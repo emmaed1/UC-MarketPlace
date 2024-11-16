@@ -1,6 +1,8 @@
 import Router from "./components/Router";
 import Context from "./components/Context";
 import "./App.css";
+import { CartProvider } from './components/ShoppingCart/Context/CartContext'
+import Cart from './components/ShoppingCart/ShoppingCart'
 
 function App() {
   const userInfo = {
@@ -12,9 +14,12 @@ function App() {
 
   return (
     <div className="App">
+      <CartProvider>
       <Context.Provider value={userInfo}>
         <Router />
+        <Cart/>
       </Context.Provider>
+      </CartProvider>
     </div>
   );
 }
