@@ -35,7 +35,7 @@ const Confirmation = () => {
       {/* Total Price */}
       <h3>Total Price: ${cartTotal}</h3>
 
-      <p>If you have any questions, feel free to contact us at support@example.com.</p>
+      <p>If you have any questions, feel free to contact us at UCMarketPlace@example.com</p>
 
       {/* Return to Shop Button */}
       <button onClick={handleReturnToShop} className="return-button">
