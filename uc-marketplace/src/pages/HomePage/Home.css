@@ -71,7 +71,7 @@
 
 .reviews {
   background-color: #e00122;
-  padding: 10rem 10rem;
+  padding: 2rem 5rem;
 }
 
 .review-cards {
@@ -93,7 +93,7 @@
 
 .review-content td {
   font-size: 16pt;
-  height: 200px;
+  height: 100px;
 }
 
 .faq {
