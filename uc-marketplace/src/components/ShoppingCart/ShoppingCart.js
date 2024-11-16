@@ -109,13 +109,12 @@ const Cart = () => {
                 <b>$ {cartTotal.toLocaleString()}</b>
               </h3>
 
-              <Link
-                type="button"
-                className="checkout_btn"
-                to={`/checkout`}
-                disabled={cartQuantity === 0}
-                >Checkout
-              </Link>
+              <button
+              type="button"
+              className="checkout_btn"
+              disabled={cartQuantity === 0}>
+                <a href="/checkout">Checkout</a>
+              </button>
               
             </div>
           </div>
