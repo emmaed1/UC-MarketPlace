@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import cartContext from "./Context/CartContext";
-import './ShoppingCart.css'
-import logo from '../../assets/uc-MP-logo.png'
+import "./ShoppingCart.css";
+import logo from "../../assets/uc-MP-logo.png";
 
 const Cart = () => {
   const {
@@ -67,7 +67,7 @@ const Cart = () => {
               ) : (
                 cartItems.map((item) => {
                   //TODO add img back when we get images
-                  const { id, title, price, quantity } = item;
+                  const { id, name, price, quantity } = item;
                   const itemTotal = price * quantity;
 
                   return (
@@ -77,7 +77,7 @@ const Cart = () => {
                       </figure>
 
                       <div className="cart_items_info">
-                        <h4>{title}</h4>
+                        <h4>{name}</h4>
                         <h3 className="price">
                           $ {itemTotal.toLocaleString()}
                         </h3>

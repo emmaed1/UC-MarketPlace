@@ -5,7 +5,7 @@ import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import './products.css'
 
 const ProductsCard = (props) => {
-  const { id, rating, name, price } = props;
+  const { productId, rating, name, price } = props;
   const { addItem } = useContext(cartContext);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
@@ -35,7 +35,7 @@ const ProductsCard = (props) => {
       >
         {isAdded ? "Added" : "Add to cart"}
       </button>
-      <Link className='details' to={`/products/${id}`}>View More</Link>
+      <Link className='details' to={`/products/${productId}`}>View More</Link>
     </div>
   );
 };
