@@ -54,13 +54,13 @@ const Checkout = () => {
             </div>
           ))
         ) : (
-          <p className="empty-cart">Your cart is empty.</p>
+          <p className="empty-cart">Lightly Used Chair</p>
         )}
       </div>
 
       <div className="total-section">
         <h3>Total Price:</h3>
-        <p className="cart-total">${cartTotal.toFixed(2)}</p>
+        <p className="cart-total">$100.00</p>
       </div>
 
       <div className="delivery-section">

@@ -250,3 +250,16 @@
 .seller-description {
   color: #555; /* Adjust color for readability */
 }
+
+.products figure {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 10px 0;
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

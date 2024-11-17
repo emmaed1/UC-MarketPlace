@@ -1,7 +1,9 @@
+import chairImg from "../../assets/Chair.jpg";
+
 const productsData = [
     {
         id: 0,
-        // img: "",
+        img: chairImg,
         description: "description: ",
         rating: "★★★★",
         title: "Lightly Used Chair",
