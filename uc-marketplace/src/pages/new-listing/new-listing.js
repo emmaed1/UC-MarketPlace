@@ -1,13 +1,9 @@
 import "./new-listing.css";
 import logo from "../../assets/uc-MP-logo.png";
-import { useDeferredValue, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { useState } from "react";
 
 const NewListing = () => {
-  // const data = useState({ name: '', desc: '', price: 0, quantity: 0});
-
-  // useEffect (() => {
-
-  // })
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
@@ -31,6 +27,14 @@ const NewListing = () => {
       })
         .then((res) => res.json())
         .then((data) => console.log(data));
+      if (data) {
+        console.log("Success", data);
+        Swal.fire({
+          title: "Success!",
+          text: "Your listing was successfully posted!",
+          icon: "success",
+        });
+      }
     } catch (error) {
       console.log("Error: ", error);
     }
