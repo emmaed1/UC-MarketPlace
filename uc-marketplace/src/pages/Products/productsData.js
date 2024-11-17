@@ -1,4 +1,7 @@
 import chairImg from "../../assets/Chair.jpg";
+import potterImg from "../../assets/HarryPotter.jpg";
+import rugImg from "../../assets/Rug.jpg";
+import cabinetImg from "../../assets/Cabinet.jpg";
 
 const productsData = [
     {
@@ -12,7 +15,7 @@ const productsData = [
     },
     {
         id: 1,
-        // img: "",
+        img: potterImg,
         description: "description: ",
         rating: "★★★★★",
         title: "Set of Harry Potter Books",
@@ -21,7 +24,7 @@ const productsData = [
     },
     {
         id: 2,
-        // img: "",
+        img: rugImg,
         description: "description: ",
         rating: "★★★★",
         title: "Brand New Rug!",
@@ -30,7 +33,7 @@ const productsData = [
     },
     {
         id: 3,
-        // img: "",
+        img: cabinetImg,
         description: "description: ",
         rating: "★★★★★",
         title: "test4",
