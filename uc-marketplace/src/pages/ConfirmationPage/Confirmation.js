@@ -33,7 +33,7 @@ const Confirmation = () => {
       </div>
 
       {/* Total Price */}
-      <h3>Total Price: ${cartTotal}</h3>
+      <h3>Total Price: $100.00</h3>
 
       <p>If you have any questions, feel free to contact us at UCMarketPlace@example.com</p>
 

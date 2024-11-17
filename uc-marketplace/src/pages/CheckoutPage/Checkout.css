@@ -173,3 +173,15 @@ input[type="email"]:focus {
   box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
   outline: none;
 }
+
+.checkout_items_img {
+  text-align: center;
+  margin: 10px 0; /* Add minimal spacing around the image section */
+}
+
+.checkout_items_img img {
+  width: 150px; /* Reduce the width for a smaller image */
+  height: auto; /* Maintain the aspect ratio */
+  border-radius: 8px; /* Add subtle rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}

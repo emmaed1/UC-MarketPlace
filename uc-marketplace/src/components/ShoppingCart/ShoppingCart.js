@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import cartContext from "./Context/CartContext";
 import './ShoppingCart.css'
-import logo from '../../assets/uc-MP-logo.png'
+import chairImg from '../../assets/Chair.jpg'
 import { Link } from "react-router-dom";
 
 const Cart = () => {
@@ -74,7 +74,7 @@ const Cart = () => {
                   return (
                     <div className="cart_items" key={id}>
                       <figure className="cart_items_img">
-                        <img src={logo} alt="product-img" />
+                        <img src={chairImg} alt="product-img" />
                       </figure>
 
                       <div className="cart_items_info">

@@ -36,8 +36,8 @@ const productsData = [
         img: cabinetImg,
         description: "description: ",
         rating: "★★★★★",
-        title: "test4",
-        price: 53570,
+        title: "Rustic Cabinet",
+        price: 125,
         quantity: 1,
     },
     {

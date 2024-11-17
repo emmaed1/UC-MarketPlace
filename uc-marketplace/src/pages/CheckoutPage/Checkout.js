@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Checkout.css";
+import chairImg from "../../assets/Chair.jpg";
 
 const Checkout = () => {
   const location = useLocation(); // Access passed state
@@ -57,6 +58,10 @@ const Checkout = () => {
           <p className="empty-cart">Lightly Used Chair</p>
         )}
       </div>
+
+      <figure className="checkout_items_img">
+        <img src={chairImg} alt="product-img" />
+      </figure>
 
       <div className="total-section">
         <h3>Total Price:</h3>
