@@ -5,8 +5,11 @@ const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
+const cors = require('cors');
 
 app.use(bodyParser.json());
+
+app.use(cors());
 
 // api for product listings
 app.post("/products", async (req, res) => {

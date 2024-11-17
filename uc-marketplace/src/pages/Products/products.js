@@ -4,20 +4,15 @@ import ProductsCard from "./productsCard";
 import { useEffect, useState } from "react";
 
 const Products = () => {
-  const products = productsData
+  // const products = productsData
   useEffect(() => {
-    // getProducts();
+      fetch('http://localhost:3001/products', {method: "GET"})
+        .then(res => res.json())
+        .then(data => getProducts(data))
+        .catch(err => {console.log("Error getting products", err)});
   }, []);
 
-  // const [products, setProducts] = useState([]);
-
-  // const getProducts= async () => {
-  //   try {
-  //     const postsData = await prisma.post.findMany();
-  //   } catch (error){
-  //       console.error('Error fetching products:', error);
-  //   }
-  //   };
+  const [products, getProducts] = useState([]);
 
   return (
     <>
