@@ -4,8 +4,8 @@ const productsData = [
         // img: "",
         description: "description: ",
         rating: "★★★★",
-        title: "This is a test",
-        price: 54500,
+        title: "Lightly Used Chair",
+        price: 100,
         quantity: 1,
     },
     {
@@ -13,8 +13,8 @@ const productsData = [
         // img: "",
         description: "description: ",
         rating: "★★★★★",
-        title: "test2",
-        price: 31000,
+        title: "Set of Harry Potter Books",
+        price: 80,
         quantity: 1,
     },
     {
@@ -22,8 +22,8 @@ const productsData = [
         // img: "",
         description: "description: ",
         rating: "★★★★",
-        title: "test3",
-        price: 84007,
+        title: "Brand New Rug!",
+        price: 50,
         quantity: 1,
     },
     {
