@@ -2,6 +2,10 @@ import chairImg from "../../assets/Chair.jpg";
 import potterImg from "../../assets/HarryPotter.jpg";
 import rugImg from "../../assets/Rug.jpg";
 import cabinetImg from "../../assets/Cabinet.jpg";
+import oldcabinetImg from "../../assets/oldcabinet.jpg";
+import woodchairImg from "../../assets/woodchair.jpg";
+import hobbitImg from "../../assets/hobbit.jpg";
+import outdoorrugImg from "../../assets/outdoorrug.jpg";
 
 const productsData = [
     {
@@ -42,38 +46,38 @@ const productsData = [
     },
     {
         id: 4,
-        // img: "",
+        img: oldcabinetImg,
         description: "description: ",
         rating: "★★★★",
-        title: "test5",
-        price: 147990,
+        title: "Older Cabinet",
+        price: 50,
         quantity: 1,
     },
     {
         id: 5,
-        // img: "",
+        img: hobbitImg,
         description: "description: ",
         rating: "★★★★★",
-        title: "test6",
-        price: 54500,
+        title: "Hobbit & Lord of the Rings Books",
+        price: 40,
         quantity: 1,
     },
     {
         id: 6,
-        // img: "",
+        img: outdoorrugImg,
         description: "description: ",
         rating: "★★★★",
-        title: "test7",
-        price: 24990,
+        title: "Outdoor Rug",
+        price: 35,
         quantity: 1,
     },
     {
         id: 7,
-        // img: "",
+        img: woodchairImg,
         description: "description: ",
         rating: "★★★★",
-        title: "test8",
-        price: 54500,
+        title: "Teak Wood Chair",
+        price: 15,
         quantity: 1,
     }
 ];
