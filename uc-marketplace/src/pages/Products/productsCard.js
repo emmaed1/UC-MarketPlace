@@ -5,7 +5,7 @@ import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import './products.css'
 
 const ProductsCard = (props) => {
-  const { id, rating, title, price } = props;
+  const { id, rating, name, price } = props;
   const { addItem } = useContext(cartContext);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
@@ -26,7 +26,7 @@ const ProductsCard = (props) => {
         <img src={logo} alt="item-img" />
       </figure>
       <strong className="rating">{rating}</strong>
-      <h4 className="title">{title}</h4>
+      <h4 className="title">{name}</h4>
       <h3 className="price">$ {price.toLocaleString()}</h3>
       <button
         type="button"

@@ -15,27 +15,27 @@ model Profile {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  email   String   @unique @db.VarChar(255)
-  profile Profile?
+  id       Int      @id @default(autoincrement())
+  name     String?  @db.VarChar(255)
+  email    String   @unique @db.VarChar(255)
   password String
+  profile  Profile?
 }
 
 model Product {
   productId Int    @id @default(autoincrement())
   name      String @db.VarChar(255)
   desc      String
-  rating    String
   price     Float
   quantity  Int
+  rating    Float?
 }
 
 model Service {
   serviceId Int    @id @default(autoincrement())
   name      String
   desc      String
-  rating    String
   price     Float
   quantity  Int
+  rating    Float?
 }

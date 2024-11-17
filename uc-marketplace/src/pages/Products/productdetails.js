@@ -14,15 +14,15 @@ const ProductDetails = () => {
           <img
             src={logo}
             alt={
-              product ? `${product.title} Image` : "Product Image Not Available"
+              product ? `${product.name} Image` : "Product Image Not Available"
             }
           />
         </div>
         <div className="product-description">
           {product ? (
             <>
-              <h2 className="product-title">{product.title}</h2>
-              <p>{product.description}</p>
+              <h2 className="product-title">{product.name}</h2>
+              <p>{product.desc}</p>
               <p className="product-price">Price: {product.price}</p>
               <Link to= "/cart" className='cart-button'>Add to Cart</Link>
               <div>
