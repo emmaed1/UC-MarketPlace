@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import "./products.css";
-import logo from "../../assets/uc-MP-logo.png";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
 const ProductDetails = (props) => {
@@ -34,7 +33,7 @@ const ProductDetails = (props) => {
       <div className="product-details">
         <div className="product-image">
           <img
-            src={logo}
+            src={'/'+product.img} key={id}
             alt={
               product ? `${product.name} Image` : "Product Image Not Available"
             }

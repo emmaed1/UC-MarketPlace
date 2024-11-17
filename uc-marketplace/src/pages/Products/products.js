@@ -1,5 +1,4 @@
 import "./products.css";
-import productsData from "./productsData";
 import ProductsCard from "./productsCard";
 import { useEffect, useState } from "react";
 

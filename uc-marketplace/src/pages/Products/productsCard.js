@@ -1,11 +1,10 @@
 import React, { useContext, useState } from "react";
 import { Link } from 'react-router-dom';
-import logo from "../../assets/uc-MP-logo.png";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import './products.css'
 
 const ProductsCard = (props) => {
-  const { productId, rating, name, price } = props;
+  const { productId, rating, name, price, img } = props;
   const { addItem } = useContext(cartContext);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
@@ -23,7 +22,7 @@ const ProductsCard = (props) => {
   return (
     <div className="products">
       <figure>
-        <img src={logo} alt="item-img" />
+        <img src={img} key={props.img} alt="item-img" ></img>
       </figure>
       <strong className="rating">{rating}</strong>
       <h4 className="title">{name}</h4>

@@ -23,19 +23,21 @@ model User {
 }
 
 model Product {
-  productId Int    @id @default(autoincrement())
-  name      String @db.VarChar(255)
+  productId Int     @id @default(autoincrement())
+  name      String  @db.VarChar(255)
   desc      String
   price     Float
   quantity  Int
   rating    Float?
+  img       String?
 }
 
 model Service {
-  serviceId Int    @id @default(autoincrement())
+  serviceId Int     @id @default(autoincrement())
   name      String
   desc      String
   price     Float
   quantity  Int
   rating    Float?
+  img       String?
 }

@@ -8,10 +8,11 @@ const NewListing = () => {
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
+  const [img, setImage] = useState("")
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { name, desc, price, quantity };
+    const data = { name, desc, price, quantity, img };
     try {
       fetch("http://localhost:3001/products", {
         method: "POST",
@@ -23,6 +24,8 @@ const NewListing = () => {
           desc: data.desc,
           price: parseFloat(data.price),
           quantity: parseInt(data.quantity),
+          rating: 5,
+          img: data.img
         }),
       })
         .then((res) => res.json())
@@ -113,7 +116,8 @@ const NewListing = () => {
             <input
               type="file"
               id="photos"
-              name="photos"
+              value={img}
+              onChange={(e) => setImage(e.target.value)}
               accept="image/*"
               multiple
             />
