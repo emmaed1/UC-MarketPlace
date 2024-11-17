@@ -14,22 +14,22 @@ export default function Home() {
         <h3 className="cat-title">Browse Categories</h3>
         <ul>
           <li>
-            <a href="/products/1">Category 1</a>
+            <a href="/products/1">Home Goods</a>
           </li>
           <li>
-            <a href="/products/2">Category 2</a>
+            <a href="/products/2">Technology</a>
           </li>
           <li>
-            <a href="/products/3">Category 3</a>
+            <a href="/products/3">Books</a>
           </li>
           <li>
-            <a href="/products/4">Category 4</a>
+            <a href="/products/4">UC Merch</a>
           </li>
           <li>
-            <a href="/products/5">Category 5</a>
+            <a href="/products/5">Dorm Supplies</a>
           </li>
           <li>
-            <a href="/products/6">Category 6</a>
+            <a href="/products/6">Shoes</a>
           </li>
         </ul>
       </div>
@@ -44,9 +44,9 @@ export default function Home() {
               <th>Student 3</th>
             </tr>
             <tr className="review-content">
-              <td>great!</td>
-              <td>awesome!</td>
-              <td>cool!</td>
+              <td>UC MarketPlace gave me a central location to buy, sell, and promote my goods and services.</td>
+              <td>I cannot thank UC MarketPlace enough for giving me a safe place to promote my goods.</td>
+              <td>UC MarketPlace rocks!</td>
             </tr>
           </table>
         </div>
