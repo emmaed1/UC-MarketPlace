@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import logo from "../../assets/uc-MP-logo.png";
 import { Link } from "react-router-dom";
 import BookingCalendar from "./BookingCalender";
 import "./Services.css";
 
 const ServicesCard = (props) => {
-  const { id, rating, title, price } = props;
+  const { id, img, rating, title, price } = props; // Add `img` to the props destructuring
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Handler to close the calendar
@@ -16,7 +15,8 @@ const ServicesCard = (props) => {
   return (
     <div className="services">
       <figure>
-        <img src={logo} alt="item-img" />
+        {/* Use dynamic img property */}
+        <img src={img} alt={title} className="service-image" />
       </figure>
       <strong className="rating">{rating}</strong>
       <h4 className="title">{title}</h4>

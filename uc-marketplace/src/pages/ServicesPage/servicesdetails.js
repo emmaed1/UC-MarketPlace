@@ -1,15 +1,13 @@
-import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
 import "./Services.css"; 
-import logo from '../../assets/uc-MP-logo.png';
-import servicesData from './servicesData';
-import BookingCalendar from './BookingCalender'; 
+import servicesData from "./servicesData";
+import BookingCalendar from "./BookingCalender"; 
 
 const ServiceDetails = () => {
     const { id } = useParams();
-    const service = servicesData[id];
-    
-    const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
+    const service = servicesData.find((item) => item.id === parseInt(id));
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
     const handleCloseCalendar = () => {
         setIsCalendarOpen(false);
@@ -20,8 +18,9 @@ const ServiceDetails = () => {
             <div className="service-details">
                 <div className="service-image">
                     <img 
-                        src={logo} 
+                        src={service?.img || "https://via.placeholder.com/300"} 
                         alt={service ? `${service.title} Image` : "Service Image Not Available"} 
+                        className="service-img"
                     />
                 </div>
                 <div className="service-description">
@@ -29,27 +28,25 @@ const ServiceDetails = () => {
                         <>
                             <h2 className="service-title">{service.title}</h2>
                             <p>{service.description}</p>
-                            <p className="service-price">Price: {service.price}</p>
-                            
-                            {/* Book Service button */}
+                            <p className="service-price">Price: ${service.price.toLocaleString()}</p>
                             <button 
                                 className="service-button" 
                                 onClick={() => setIsCalendarOpen(true)}
                             >
                                 Book Service
                             </button>
-
                             <div className="provider-info">
-                                <img src="path_to_provider_profile_image.jpg" alt="Provider Profile Image" className="provider-profile-img" />
+                                <img 
+                                    src="https://via.placeholder.com/100" 
+                                    alt="Provider Profile Image" 
+                                    className="provider-profile-img" 
+                                />
                                 <div className="provider-details">
                                     <a href="/account-view" className="provider-name">Provider Name</a> 
                                     <p className="provider-description">Specializing in [service type or category the provider specializes in]</p>
                                 </div>
                             </div>
-
-                            {/* Message the Seller Button */}
                             <Link to="/message-seller" className="message-button">Message the Seller</Link>
-                            
                             <Link to="/services" className="service-button">Back to Services</Link>
                         </>
                     ) : (
@@ -60,7 +57,6 @@ const ServiceDetails = () => {
                     )}
                 </div>   
             </div>
-        
             <div className="reviews">
                 <h2>Provider Reviews</h2>
                 <p>See what other students say about this provider:</p>
@@ -83,8 +79,6 @@ const ServiceDetails = () => {
                     </table>
                 </div>
             </div>
-
-            {/* Booking Calendar Modal */}
             {isCalendarOpen && (
                 <div className="calendar-modal">
                     <BookingCalendar onClose={handleCloseCalendar} />
