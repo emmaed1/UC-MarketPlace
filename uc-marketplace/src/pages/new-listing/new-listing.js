@@ -25,7 +25,7 @@ const NewListing = () => {
           price: parseFloat(data.price),
           quantity: parseInt(data.quantity),
           rating: 5,
-          img: data.img
+          img: ("images/"+data.img)
         }),
       })
         .then((res) => res.json())
