@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../assets/uc-MP-logo.png";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import BookingCalendar from "./BookingCalender";
 import "./Services.css";
 
 const ServicesCard = (props) => {
   const { id, rating, title, price } = props;
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  // Handler to close the calendar
+  const handleCloseCalendar = () => {
+    setIsCalendarOpen(false);
+  };
+
   return (
     <div className="services">
       <figure>
@@ -14,12 +21,23 @@ const ServicesCard = (props) => {
       <strong className="rating">{rating}</strong>
       <h4 className="title">{title}</h4>
       <h3 className="price">$ {price.toLocaleString()}</h3>
-      {/* TODO: MAKE THIS BUTTON GO TO CALENDAR BOOKING */}
       <button
         type="button"
         className="service-button"
-        >Book Service</button>
-      <Link className='details' to={`/services/${id}`}>View More</Link>
+        onClick={() => setIsCalendarOpen(true)}
+      >
+        Book Service
+      </button>
+      <Link className="details" to={`/services/${id}`}>
+        View More
+      </Link>
+
+      {isCalendarOpen && (
+        <div className="calendar-modal">
+          {/* Pass handleCloseCalendar as onClose prop */}
+          <BookingCalendar onClose={handleCloseCalendar} />
+        </div>
+      )}
     </div>
   );
 };

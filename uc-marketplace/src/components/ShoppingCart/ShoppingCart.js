@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import cartContext from "./Context/CartContext";
-import "./ShoppingCart.css";
-import logo from "../../assets/uc-MP-logo.png";
+import './ShoppingCart.css'
+import logo from '../../assets/uc-MP-logo.png'
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const {
@@ -109,12 +110,12 @@ const Cart = () => {
               </h3>
 
               <button
-                type="button"
-                className="checkout_btn"
-                disabled={cartQuantity === 0}
-              >
-                Checkout
+              type="button"
+              className="checkout_btn"
+              disabled={cartQuantity === 0}>
+                <a href="/checkout">Checkout</a>
               </button>
+              
             </div>
           </div>
         </div>

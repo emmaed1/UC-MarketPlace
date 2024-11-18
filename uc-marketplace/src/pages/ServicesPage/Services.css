@@ -317,3 +317,68 @@
   background-color: #c3001d;
   color: #ffffff;
 }
+.calendar-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+}
+
+.booking-calendar {
+  text-align: center;
+  padding: 1rem;
+}
+
+.calendar-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.time-slot {
+  padding: 10px 15px;
+  border: 1px solid #e00122;
+  background-color: #fff;
+  color: #e00122;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.time-slot:hover {
+  background-color: #e00122;
+  color: #fff;
+}
+
+.time-slot.selected {
+  background-color: #e00122;
+  color: #fff;
+}
+
+.confirm-button {
+  margin-top: 1rem;
+  padding: 10px 20px;
+  background-color: #e00122;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirm-button:hover {
+  background-color: #c3001d;
+}
