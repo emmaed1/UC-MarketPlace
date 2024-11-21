@@ -33,7 +33,7 @@ export default function ContactUs() {
 
   return (
     <section className="contact">
-      <form onSubmit={onSubmit}>
+      <form className="contact-form" onSubmit={onSubmit}>
         <h1>Contact Us</h1>
         <div className="input-box">
           <label>Name</label>

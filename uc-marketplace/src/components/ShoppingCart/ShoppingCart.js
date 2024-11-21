@@ -68,17 +68,17 @@ const Cart = () => {
               ) : (
                 cartItems.map((item) => {
                   //TODO add img back when we get images
-                  const { id, title, price, quantity } = item;
+                  const { id, name, price, quantity, img } = item;
                   const itemTotal = price * quantity;
 
                   return (
                     <div className="cart_items" key={id}>
                       <figure className="cart_items_img">
-                        <img src={logo} alt="product-img" />
+                        <img src={img} alt="product-img" />
                       </figure>
 
                       <div className="cart_items_info">
-                        <h4>{title}</h4>
+                        <h4>{name}</h4>
                         <h3 className="price">
                           $ {itemTotal.toLocaleString()}
                         </h3>

@@ -1,30 +1,57 @@
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
 import "./products.css";
-import logo from "../../assets/uc-MP-logo.png";
-import productsData from "./productsData";
+import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
-const ProductDetails = () => {
+const ProductDetails = (props) => {
   const { id } = useParams();
-  const product = productsData[id];
+  const { addItem } = useContext(cartContext);
+  const [product, getProduct] = useState([]);
+  const [isAdded, setIsAdded] = useState(false);
+  const handleAddToCart = () => {
+    const item = { ...props };
+    addItem(item);
+
+    setIsAdded(true);
+
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 3000);
+  };
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/products/${id}`, { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => getProduct(data))
+      .catch((err) => {
+        console.log("Error getting products", err);
+      });
+  }, [id]);
 
   return (
     <div>
       <div className="product-details">
         <div className="product-image">
           <img
-            src={logo}
+            src={'/'+product.img} key={id}
             alt={
-              product ? `${product.title} Image` : "Product Image Not Available"
+              product ? `${product.name} Image` : "Product Image Not Available"
             }
           />
         </div>
         <div className="product-description">
           {product ? (
             <>
-              <h2 className="product-title">{product.title}</h2>
-              <p>{product.description}</p>
-              <p className="product-price">Price: {product.price}</p>
-              <Link to= "/cart" className='cart-button'>Add to Cart</Link>
+              <h2 className="product-title">{product.name}</h2>
+              <p>{product.desc}</p>
+              <p className="product-price">Price: ${product.price}</p>
+              <button
+                type="button"
+                className={`cart-button ${isAdded ? "added" : ""}`}
+                onClick={handleAddToCart}
+              >
+                {isAdded ? "Added" : "Add to cart"}
+              </button>
               <div>
                 <div class="seller-info">
                   <img
