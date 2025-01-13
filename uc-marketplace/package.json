@@ -3,25 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@prisma/adapter-pg": "^5.21.1",
-    "@prisma/client": "^5.21.1",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@prisma/adapter-pg": "^6.2.1",
+    "@prisma/client": "^6.2.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "express": "^4.21.1",
-    "package.json": "^0.0.0",
-    "pg": "^8.13.0",
-    "react": "^18.3.1",
+    "express": "^4.21.2",
+    "package.json": "^2.0.1",
+    "pg": "^8.13.1",
+    "react": "^19.0.0",
     "react-calendar": "^5.1.0",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
-    "sass": "^1.80.4",
-    "sweetalert2": "^11.14.5",
+    "sass": "^1.83.1",
+    "sweetalert2": "^11.15.10",
     "uc-marketplace": "file:",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^4.2.4"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
@@ -52,9 +52,9 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^22.9.0",
-    "prisma": "^5.22.0",
+    "@types/node": "^22.10.6",
+    "prisma": "^6.2.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.3"
   }
 }
