@@ -13,7 +13,7 @@ app.use(cors());
 
 // api for product listings
 app.post("/products", async (req, res) => {
-  const { name, desc, rating, price, quantity } = req.body;
+  const { name, desc, rating, price, quantity, img } = req.body;
 
   try {
     const product = await prisma.product.create({
@@ -23,6 +23,7 @@ app.post("/products", async (req, res) => {
         rating,
         price,
         quantity,
+        img
       },
     });
     res.json(product);
@@ -73,7 +74,7 @@ app.delete("/products/:productId", async (req, res) => {
 
 // api for services listing
 app.post("/services", async (req, res) => {
-  const { title, desc, rating, price, quantity } = req.body;
+  const { title, desc, rating, price, quantity, img } = req.body;
 
   try {
     const service = await prisma.service.create({
@@ -83,6 +84,7 @@ app.post("/services", async (req, res) => {
         rating,
         price,
         quantity,
+        img
       },
     });
     res.json(service);
@@ -96,6 +98,19 @@ app.get("/services", async (req, res) => {
     const services = await prisma.service.findMany();
     res.json(services);
   } catch (error) {
+    res.status(500).json({ error: "Error getting services" });
+  }
+});
+
+app.get("/services/:serviceId", async (req, res) => {
+  const serviceId = parseInt(req.params.serviceId);
+  try {
+    const services = await prisma.service.findUnique({
+      where: { serviceId: serviceId },
+    });
+    res.json(services);
+  } catch (error) {
+    console.log("Error!");
     res.status(500).json({ error: "Error getting services" });
   }
 });

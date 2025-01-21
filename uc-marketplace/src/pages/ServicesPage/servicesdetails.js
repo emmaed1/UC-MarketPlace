@@ -1,13 +1,13 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import "./Services.css"; 
 import logo from '../../assets/uc-MP-logo.png';
-import servicesData from './servicesData';
 import BookingCalendar from './BookingCalender'; 
 
-const ServiceDetails = () => {
-    const { id } = useParams();
-    const service = servicesData[id];
+const ServiceDetails = (props) => {
+    const { id} = useParams();
+    const [service, getServices] = useState([]);
+    // const service = servicesData[id];
     
     const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
 
@@ -15,21 +15,30 @@ const ServiceDetails = () => {
         setIsCalendarOpen(false);
     };
 
+    useEffect(() => {
+        fetch(`http://localhost:3001/services/${id}`, { method: "GET" })
+          .then((res) => res.json())
+          .then((data) => getServices(data))
+          .catch((err) => {
+            console.log("Error getting services", err);
+          });
+      }, [id]);
+
     return (
         <div>
             <div className="service-details">
                 <div className="service-image">
                     <img 
-                        src={logo} 
-                        alt={service ? `${service.title} Image` : "Service Image Not Available"} 
+                        src={'/'+service.img} key={id}
+                        alt={service ? `${service.name} Image` : "Service Image Not Available"} 
                     />
                 </div>
                 <div className="service-description">
                     {service ? (
                         <>
-                            <h2 className="service-title">{service.title}</h2>
+                            <h2 className="service-title">{service.name}</h2>
                             <p>{service.description}</p>
-                            <p className="service-price">Price: {service.price}</p>
+                            <p className="service-price">Price: ${service.price}</p>
                             
                             {/* Book Service button */}
                             <button 
