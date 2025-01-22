@@ -13,6 +13,7 @@ import ServiceDetails from '../pages/ServicesPage/servicesdetails';
 import ContactUs from "../pages/ContactUsPage/ContactUs";
 import Checkout from "../pages/CheckoutPage/Checkout"; // Import Checkout page
 import Confirmation from "../pages/ConfirmationPage/Confirmation"; // Import Confirmation page
+import Login from '../pages/LoginPage/login';
 
 export default function Router() {
     const Layout = () => {
@@ -31,6 +32,7 @@ export default function Router() {
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Home />} /> {/* Default route for "/" */}
+                        <Route path="/login" element={<Login />} />
                         <Route path="/account-view" element={<AccountView />} />
                         <Route path="/new-listing" element={<NewListing />} />
                         <Route path="/new-service" element={<NewService />} />
