@@ -1,10 +1,19 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import "./Services.css"; 
 import logo from '../../assets/uc-MP-logo.png';
 import ServicesCard from './servicesCard'
 import servicesData from "./servicesData";
 
-export default function ServicesView() {
+const ServicesView = () => {
+  useEffect(() => {
+    fetch('http://localhost:3001/services', {method: "GET"})
+      .then(res => res.json())
+      .then(data => getServices(data))
+      .catch(err => {console.log("Error getting services", err)});
+  }, []);
+
+  const [services, getServices] = useState([]);
+
   return (
     <div className="content">
       <div className="banner">
@@ -22,10 +31,10 @@ export default function ServicesView() {
         />
       </div>
       <div className="services-content">
-        {servicesData.map((item) => (
-          <ServicesCard key={item.id} {...item} />
-        ))}
-      </div>
+          {services.map((item) => (
+            <ServicesCard key={item.servicesId}{...item} />
+          ))}
+        </div>
       <div className="features-container">
         <div className="featured-section">
           <h3 className="featured-title">Special Offers</h3>
@@ -49,4 +58,6 @@ export default function ServicesView() {
       </div>
     </div>
   );
-}
+};
+
+export default ServicesView;
