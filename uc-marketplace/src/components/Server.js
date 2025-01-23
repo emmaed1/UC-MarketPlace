@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 // Existing API for product listings
 app.post("/products", async (req, res) => {
-  const { name, desc, rating, price, quantity, img } = req.body;
+  const { name, desc, rating, price, quantity, img, sellerId } = req.body;
 
   try {
     const product = await prisma.product.create({
@@ -22,11 +22,15 @@ app.post("/products", async (req, res) => {
         rating,
         price,
         quantity,
-        img
+        img,
+        seller: {
+          connect: { id: sellerId }
+        }
       },
     });
     res.json(product);
   } catch (error) {
+    console.error("Error creating product:", error); // Log the error details
     res.status(500).json({ error: "Error creating product" });
   }
 });

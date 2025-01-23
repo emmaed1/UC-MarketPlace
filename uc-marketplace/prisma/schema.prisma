@@ -1,10 +1,10 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -15,7 +15,7 @@ model User {
   profile          Profile?
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
-  Product          Product[]
+  products         Product[] @relation("UserProducts")
 }
 
 model Profile {
@@ -26,28 +26,28 @@ model Profile {
 }
 
 model Product {
-  productId Int       @id @default(autoincrement())
-  name      String    @db.VarChar(255)
+  productId Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
   desc      String
   price     Float
   quantity  Int
   rating    Float?
   img       String?
   sellerId  Int
-  seller    User      @relation(fields: [sellerId], references: [id])
-  Message   Message[]
+  seller    User     @relation(fields: [sellerId], references: [id], name: "UserProducts")
+  messages  Message[]
 }
 
 model Message {
-  id         Int      @id @default(autoincrement())
-  senderId   Int
-  receiverId Int
-  productId  Int
-  content    String
-  timestamp  DateTime @default(now())
-  isRead     Boolean  @default(false)
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  productId   Int
+  content     String
+  timestamp   DateTime @default(now())
+  isRead      Boolean  @default(false)
 
-  sender   User    @relation("SentMessages", fields: [senderId], references: [id])
-  receiver User    @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  product  Product @relation(fields: [productId], references: [productId])
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  product     Product  @relation(fields: [productId], references: [productId])
 }
