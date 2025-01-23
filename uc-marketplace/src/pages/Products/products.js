@@ -35,8 +35,7 @@ const Products = ({ userId }) => {
         <div className="products-content">
           {products.map((product) => (
             <div key={product.productId}>
-              <ProductsCard {...product} />
-              <button onClick={() => handleChatClick(product)}>Chat with Seller</button>
+              <ProductsCard {...product} onChatClick={handleChatClick} />
             </div>
           ))}
         </div>
