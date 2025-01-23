@@ -11,8 +11,9 @@ import ProductDetails from '../pages/Products/productdetails';
 import Services from '../pages/ServicesPage/Services';
 import ServiceDetails from '../pages/ServicesPage/servicesdetails';
 import ContactUs from "../pages/ContactUsPage/ContactUs";
-import Checkout from "../pages/CheckoutPage/Checkout"; // Import Checkout page
-import Confirmation from "../pages/ConfirmationPage/Confirmation"; // Import Confirmation page
+import Checkout from "../pages/CheckoutPage/Checkout";
+import Confirmation from "../pages/ConfirmationPage/Confirmation";
+import MessagingScreen from './MessagingScreen';
 
 export default function Router() {
     const Layout = () => {
@@ -41,6 +42,7 @@ export default function Router() {
                         <Route path="/contact-us" element={<ContactUs />} />
                         <Route path="/checkout" element={<Checkout />} /> {/* Route for Checkout */}
                         <Route path="/confirmation" element={<Confirmation />} /> {/* Route for Confirmation */}
+                        <Route path="/messaging" element={<MessagingScreen />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
