@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import "./MessageForm.css"; // Import CSS file for styling
 
 const MessageForm = ({ senderId, receiverId, productId }) => {
   const [content, setContent] = useState("");
+  const [confirmation, setConfirmation] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,17 +16,23 @@ const MessageForm = ({ senderId, receiverId, productId }) => {
     });
     const data = await response.json();
     console.log(data);
+    setConfirmation("Message sent successfully!");
+    setContent(""); // Clear the text area after sending the message
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Type your message here"
-      />
-      <button type="submit">Send Message</button>
-    </form>
+    <div className="message-form-container">
+      <form onSubmit={handleSubmit} className="message-form">
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Type your message here"
+          className="message-textarea"
+        />
+        <button type="submit" className="message-button">Send Message</button>
+      </form>
+      {confirmation && <p className="confirmation-message">{confirmation}</p>}
+    </div>
   );
 };
 

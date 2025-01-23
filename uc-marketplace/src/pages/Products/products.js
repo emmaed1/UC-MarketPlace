@@ -1,22 +1,33 @@
 import "./products.css";
 import ProductsCard from "./productsCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import MessageForm from "../../components/MessageForm"; // Import MessageForm component
+import Context from "../../components/Context"; // Import Context
 
-const Products = ({ userId }) => {
-  useEffect(() => {
-    fetch('http://localhost:3001/products', { method: "GET" })
-      .then(res => res.json())
-      .then(data => getProducts(data))
-      .catch(err => { console.log("Error getting products", err) });
-  }, []);
+const Products = () => {
+  const userInfo = useContext(Context); // Use context to get userInfo
+  const userId = userInfo?.userId; // Get userId from userInfo
 
   const [products, getProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  useEffect(() => {
+    fetch('http://localhost:3001/products', { method: "GET" })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then(data => getProducts(data))
+      .catch(err => { console.log("Error getting products", err) });
+  }, []);
+
   const handleChatClick = (product) => {
     setSelectedProduct(product);
   };
+
+  console.log("userId:", userId); // Add this line to log the userId
 
   return (
     <>
