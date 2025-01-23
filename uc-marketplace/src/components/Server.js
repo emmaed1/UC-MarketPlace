@@ -23,7 +23,7 @@ app.post("/products", async (req, res) => {
         rating,
         price,
         quantity,
-        img
+        img,
       },
     });
     res.json(product);
@@ -84,7 +84,7 @@ app.post("/services", async (req, res) => {
         rating,
         price,
         quantity,
-        img
+        img,
       },
     });
     res.json(service);
@@ -124,6 +124,34 @@ app.delete("/services/:serviceId", async (req, res) => {
     res.json(deletedService);
   } catch (error) {
     res.status(500).json({ error: "Errors deleting service" });
+  }
+});
+
+// api calls for users
+app.get("/user", async (req, res) => {
+  try {
+    const user = await prisma.service.findMany();
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Error getting users" });
+  }
+});
+
+app.post("/user", async (req, res) => {
+  const { name, email, password, profile } = req.body;
+
+  try {
+    const service = await prisma.service.create({
+      data: {
+        name,
+        email,
+        password,
+        profile,
+      },
+    });
+    res.json(service);
+  } catch (error) {
+    res.status(500).json({ error: "Error creating user" });
   }
 });
 
