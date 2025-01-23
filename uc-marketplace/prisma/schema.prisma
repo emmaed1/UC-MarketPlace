@@ -7,37 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  userId Int     @unique
-  user   User    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String?  @db.VarChar(255)
-  email    String   @unique @db.VarChar(255)
-  password String
-  profile  Profile?
+  id               Int       @id @default(autoincrement())
+  name             String?   @db.VarChar(255)
+  email            String    @unique @db.VarChar(255)
+  password         String
+  profile          Profile?
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 model Product {
-  productId Int     @id @default(autoincrement())
-  name      String  @db.VarChar(255)
+  productId Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
   desc      String
   price     Float
   quantity  Int
   rating    Float?
   img       String?
+  sellerId  Int
+  seller    User     @relation(fields: [sellerId], references: [id])
 }
 
-model Service {
-  serviceId Int     @id @default(autoincrement())
-  name      String
-  desc      String
-  price     Float
-  quantity  Int
-  rating    Float?
-  img       String?
+model Message {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  productId   Int
+  content     String
+  timestamp   DateTime @default(now())
+  isRead      Boolean  @default(false)
+
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  product     Product  @relation(fields: [productId], references: [productId])
 }
