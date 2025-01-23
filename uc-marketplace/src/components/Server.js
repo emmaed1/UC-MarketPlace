@@ -1,17 +1,15 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const { PrismaClient } = require("@prisma/client");
+const express = require('express');
+const bodyParser = require('body-parser');
+const { PrismaClient } = require('@prisma/client');
+const cors = require('cors');
 
-const prisma = new PrismaClient();
 const app = express();
+const prisma = new PrismaClient();
 const port = 3001;
-const cors = require("cors");
-
-app.use(bodyParser.json());
 
 app.use(cors());
+app.use(bodyParser.json());
 
-// api for product listings
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -30,6 +28,53 @@ app.post("/products", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Error creating product" });
   }
+});
+
+app.post("/messages", async (req, res) => {
+  const { senderId, receiverId, productId, content } = req.body;
+
+  try {
+    const message = await prisma.message.create({
+      data: {
+        senderId,
+        receiverId,
+        productId,
+        content,
+      },
+    });
+    res.json(message);
+  } catch (error) {
+    console.error("Error creating message:", error);
+    res.status(500).json({ error: "Error creating message" });
+  }
+});
+
+app.get("/messages/:userId", async (req, res) => {
+  const userId = parseInt(req.params.userId);
+
+  try {
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [
+          { senderId: userId },
+          { receiverId: userId },
+        ],
+      },
+      include: {
+        sender: true,
+        receiver: true,
+        product: true,
+      },
+    });
+    res.json(messages);
+  } catch (error) {
+    console.error("Error getting messages:", error);
+    res.status(500).json({ error: "Error getting messages" });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });
 
 // export default async function handler(req, res) {

@@ -15,30 +15,39 @@ model User {
   profile          Profile?
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
+  Product          Product[]
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  userId Int     @unique
+  user   User    @relation(fields: [userId], references: [id])
 }
 
 model Product {
-  productId Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
+  productId Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
   desc      String
   price     Float
   quantity  Int
   rating    Float?
   img       String?
   sellerId  Int
-  seller    User     @relation(fields: [sellerId], references: [id])
+  seller    User      @relation(fields: [sellerId], references: [id])
+  Message   Message[]
 }
 
 model Message {
-  id          Int      @id @default(autoincrement())
-  senderId    Int
-  receiverId  Int
-  productId   Int
-  content     String
-  timestamp   DateTime @default(now())
-  isRead      Boolean  @default(false)
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  productId  Int
+  content    String
+  timestamp  DateTime @default(now())
+  isRead     Boolean  @default(false)
 
-  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
-  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  product     Product  @relation(fields: [productId], references: [productId])
+  sender   User    @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User    @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  product  Product @relation(fields: [productId], references: [productId])
 }
