@@ -5,11 +5,12 @@ const cors = require('cors');
 
 const app = express();
 const prisma = new PrismaClient();
-const port = 3001;
+const port = process.env.PORT || 3001; // Change the port number
 
 app.use(cors());
 app.use(bodyParser.json());
 
+// Existing API for product listings
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -30,6 +31,26 @@ app.post("/products", async (req, res) => {
   }
 });
 
+// Create a User
+app.post("/users", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password,
+      },
+    });
+    res.json(user);
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Error creating user" });
+  }
+});
+
+// Create a Message
 app.post("/messages", async (req, res) => {
   const { senderId, receiverId, productId, content } = req.body;
 
@@ -44,11 +65,12 @@ app.post("/messages", async (req, res) => {
     });
     res.json(message);
   } catch (error) {
-    console.error("Error creating message:", error);
+    console.error("Error creating message:", error); // Log the error details
     res.status(500).json({ error: "Error creating message" });
   }
 });
 
+// Get Messages for a User
 app.get("/messages/:userId", async (req, res) => {
   const userId = parseInt(req.params.userId);
 
@@ -68,107 +90,8 @@ app.get("/messages/:userId", async (req, res) => {
     });
     res.json(messages);
   } catch (error) {
-    console.error("Error getting messages:", error);
+    console.error("Error getting messages:", error); // Log the error details
     res.status(500).json({ error: "Error getting messages" });
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
-
-// export default async function handler(req, res) {
-//     const products = await prisma.product.findMany()
-//     res.status(200).json(products)
-// }
-app.get("/products", async (req, res) => {
-  try {
-    const prisma = new PrismaClient();
-    const products = await prisma.product.findMany();
-    res.status(200).json(products);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
-  }
-});
-
-app.get("/products/:productId", async (req, res) => {
-  const productId = parseInt(req.params.productId);
-  try {
-    const product = await prisma.product.findUnique({
-      where: { productId: productId },
-    });
-    res.json(product);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
-  }
-});
-
-app.delete("/products/:productId", async (req, res) => {
-  const productId = parseInt(req.params.productId);
-  try {
-    const deletedProduct = await prisma.product.delete({
-      where: { productId: productId },
-    });
-    res.json(deletedProduct);
-  } catch (error) {
-    res.status(500).json({ error: "Errors deleting product" });
-  }
-});
-
-// api for services listing
-app.post("/services", async (req, res) => {
-  const { title, desc, rating, price, quantity, img } = req.body;
-
-  try {
-    const service = await prisma.service.create({
-      data: {
-        title,
-        desc,
-        rating,
-        price,
-        quantity,
-        img
-      },
-    });
-    res.json(service);
-  } catch (error) {
-    res.status(500).json({ error: "Error creating service" });
-  }
-});
-
-app.get("/services", async (req, res) => {
-  try {
-    const services = await prisma.service.findMany();
-    res.json(services);
-  } catch (error) {
-    res.status(500).json({ error: "Error getting services" });
-  }
-});
-
-app.get("/services/:serviceId", async (req, res) => {
-  const serviceId = parseInt(req.params.serviceId);
-  try {
-    const services = await prisma.service.findUnique({
-      where: { serviceId: serviceId },
-    });
-    res.json(services);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting services" });
-  }
-});
-
-app.delete("/services/:serviceId", async (req, res) => {
-  const serviceId = parseInt(req.params.serviceId);
-  try {
-    const deletedService = await prisma.service.delete({
-      where: { serviceId: serviceId },
-    });
-    res.json(deletedService);
-  } catch (error) {
-    res.status(500).json({ error: "Errors deleting service" });
   }
 });
 
