@@ -130,7 +130,7 @@ app.delete("/services/:serviceId", async (req, res) => {
 // api calls for users
 app.get("/user", async (req, res) => {
   try {
-    const user = await prisma.service.findMany();
+    const user = await prisma.user.findMany();
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Error getting users" });
@@ -138,15 +138,14 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/user", async (req, res) => {
-  const { name, email, password, profile } = req.body;
+  const { name, email, password } = req.body;
 
   try {
-    const service = await prisma.service.create({
+    const service = await prisma.user.create({
       data: {
         name,
         email,
         password,
-        profile,
       },
     });
     res.json(service);
