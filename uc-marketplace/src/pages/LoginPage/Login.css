@@ -69,11 +69,15 @@
   cursor: pointer;
 }
 
-.submit-container {
-  display: flex;
-  gap: 30px;
-  margin: 60px auto;
-  justify-content: center;
+.sign-up {
+  margin-top: 25px;
+  color: #5d5b5b;
+  font-size: 18px;
+}
+
+.sign-up a {
+  color: #e00122;
+  cursor: pointer;
 }
 
 .submit {
@@ -88,11 +92,6 @@
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-}
-
-.gray {
-  background: #eaeaea;
-  color: #676767;
 }
 
 .submit-btn {

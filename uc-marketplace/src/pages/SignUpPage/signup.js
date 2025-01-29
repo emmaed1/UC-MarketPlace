@@ -1,9 +1,11 @@
-import "./Login.css";
+import "./signup.css";
+import user_icon from "../../assets/user.png";
 import email_icon from "../../assets/email.png";
 import password_icon from "../../assets/padlock.png";
 import React, { useState, useRef } from "react";
 
-const Login = () => {
+const SignUp = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const fname = useRef("");
@@ -12,7 +14,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { email, password };
+    const data = { name, email, password };
     console.log(data);
     try {
       fetch("http://localhost:3001/user", {
@@ -39,10 +41,26 @@ const Login = () => {
   return (
     <div className="container">
       <div className="header">
-        <div className="text">Login</div>
+        <div className="text">Sign Up</div>
         <div className="underline"></div>
       </div>
       <form className="form" onSubmit={handleSubmit}>
+
+        <div className="inputs">
+          <div className="input">
+            <img src={user_icon} alt=""></img>
+            <input
+              type="text"
+              name="name"
+              ref={fname}
+              value={name}
+              placeholder="Name"
+              onChange={(e) => setName(e.target.value)}
+              required
+            ></input>
+          </div>
+        </div>
+
         <div className="inputs">
           <div className="input">
             <img src={email_icon} alt=""></img>
@@ -73,16 +91,14 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="forgot-password">
-          Lost Password? <span>Click Here!</span>
+        <div className="login">
+          Already have an account? <a href="/login">Login!</a>
         </div>
-        <div className="sign-up">
-          Need an account? <a href="/signup">Sign Up!</a>
-        </div>
+
         <button className="submit-btn">Submit</button>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;
