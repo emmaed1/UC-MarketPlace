@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 
 const Products = () => {
   const [products, setProducts] = useState([]); // Store the products
-  const [searchQuery, setSearchQuery] = useState(""); // Store the search query
+  const [searchQuery, setSearchQuery] = useState(""); // Store the search input
+  const [searchTerm, setSearchTerm] = useState(""); // Store the confirmed search term
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false); // Track if search should be applied
 
   useEffect(() => {
     fetchProducts();
@@ -12,22 +14,34 @@ const Products = () => {
 
   // Function to fetch all products
   const fetchProducts = () => {
-    fetch('http://localhost:3001/products', { method: "GET" })
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.log("Error getting products", err));
+    fetch("http://localhost:3001/products", { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((err) => console.log("Error getting products", err));
   };
 
   // Handle search input change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    setIsSearchTriggered(false); // Reset search trigger
   };
 
-  // Filter products based on search query
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.desc.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Handle search execution on Enter key
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      setSearchTerm(searchQuery);
+      setIsSearchTriggered(true);
+    }
+  };
+
+  // Apply filtering only when search is triggered
+  const filteredProducts = isSearchTriggered
+    ? products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.desc.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : products;
 
   return (
     <>
@@ -40,12 +54,13 @@ const Products = () => {
         </div>
 
         <div className="search-bar">
-          <input 
-            type="text" 
-            id="search" 
-            placeholder="Search for products..." 
+          <input
+            type="text"
+            id="search"
+            placeholder="Search for products..."
             value={searchQuery}
             onChange={handleSearchChange} // Update search query
+            onKeyDown={handleKeyPress} // Trigger search on Enter key press
           />
         </div>
 
@@ -55,7 +70,7 @@ const Products = () => {
               <ProductsCard key={item.productId} {...item} />
             ))
           ) : (
-            <p>No products found.</p>
+            <p>No products found. Try using filters to refine your search.</p>
           )}
         </div>
       </div>

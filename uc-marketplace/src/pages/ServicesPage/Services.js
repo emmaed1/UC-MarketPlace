@@ -3,32 +3,39 @@ import ServicesCard from './servicesCard'
 import { useEffect, useState } from "react";
 
 const Services = () => {
-  const [services, setServices] = useState([]); // Store the products
-  const [searchQuery, setSearchQuery] = useState(""); // Store the search query
+  const [services, setServices] = useState([]); // Store the services
+  const [searchQuery, setSearchQuery] = useState(""); // Store the search input
+  const [searchTerm, setSearchTerm] = useState(""); // Store the confirmed search term
 
+  useEffect(() => {
+    fetchServices();
+  }, []);
 
-useEffect(() => {
-  fetchServices();
-}, []);
+  // Function to fetch all services
+  const fetchServices = () => {
+    fetch('http://localhost:3001/services', { method: "GET" })
+      .then(res => res.json())
+      .then(data => setServices(data))
+      .catch(err => console.log("Error getting services", err));
+  };
 
-// Function to fetch all services
-const fetchServices = () => {
-  fetch('http://localhost:3001/services', { method: "GET" })
-    .then(res => res.json())
-    .then(data => setServices(data))
-    .catch(err => console.log("Error getting products", err));
-};
+  // Handle search input change
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
-// Handle search input change
-const handleSearchChange = (event) => {
-  setSearchQuery(event.target.value);
-};
+  // Handle search execution on Enter key
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      setSearchTerm(searchQuery);
+    }
+  };
 
-// Filter products based on search query
-const filteredServices = services.filter(service => 
-  service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  service.desc.toLowerCase().includes(searchQuery.toLowerCase())
-);
+  // Filter services based on confirmed search term
+  const filteredServices = services.filter(service => 
+    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    service.desc.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="content">
@@ -40,23 +47,24 @@ const filteredServices = services.filter(service =>
       </div>
 
       <div className="search-bar">
-          <input 
-            type="text" 
-            id="search" 
-            placeholder="Search for services..." 
-            value={searchQuery}
-            onChange={handleSearchChange} // Update search query
-          />
-        </div>
-        <div className="products-content">
-          {filteredServices.length > 0 ? (
-            filteredServices.map((item) => (
-              <ServicesCard key={item.serviceId} {...item} />
-            ))
-          ) : (
-            <p>No products found.</p>
-          )}
-        </div>
+        <input 
+          type="text" 
+          id="search" 
+          placeholder="Search for services..." 
+          value={searchQuery}
+          onChange={handleSearchChange} // Update search query
+          onKeyDown={handleKeyPress} // Trigger search on Enter key press
+        />
+      </div>
+      <div className="products-content">
+        {filteredServices.length > 0 ? (
+          filteredServices.map((item) => (
+            <ServicesCard key={item.serviceId} {...item} />
+          ))
+        ) : (
+          <p>No services found.</p>
+        )}
+      </div>
       <div className="features-container">
         <div className="featured-section">
           <h3 className="featured-title">Special Offers</h3>
