@@ -2,38 +2,32 @@ import "./Login.css";
 import email_icon from "../../assets/email.png";
 import password_icon from "../../assets/padlock.png";
 import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
 
-const Login = () => {
+async function loginUser(credentials) {
+  return fetch("http://localhost:3001/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credentials),
+  }).then((data) => data.json());
+}
+
+export default function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const fname = useRef("");
   const femail = useRef("");
   const fpassword = useRef("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { email, password };
-    console.log(data);
-    try {
-      fetch("http://localhost:3001/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-    fname.current.value = "";
-    femail.current.value = "";
-    fpassword.current.value = "";
+    const token = await loginUser({
+      email: email,
+      password: password,
+    });
+    setToken(token);
+    window.location.reload();
   };
 
   return (
@@ -76,13 +70,14 @@ const Login = () => {
         <div className="forgot-password">
           Lost Password? <span>Click Here!</span>
         </div>
-        <div className="sign-up">
-          Need an account? <a href="/signup">Sign Up!</a>
+        <div className="submit-btn">
+          <button>Submit</button>
         </div>
-        <button className="submit-btn">Submit</button>
       </form>
     </div>
   );
-};
+}
 
-export default Login;
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired,
+};

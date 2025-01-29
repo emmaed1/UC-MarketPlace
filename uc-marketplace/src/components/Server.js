@@ -141,17 +141,36 @@ app.post("/user", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const service = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         name,
         email,
         password,
       },
     });
-    res.json(service);
+    res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Error creating user" });
   }
+});
+
+app.get("/user/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: id },
+    });
+    res.json(user);
+  } catch (error) {
+    console.log("Error!");
+    res.status(500).json({ error: "Error getting user" });
+  }
+});
+
+app.use('/login', (req, res) => {
+  res.send({
+    token: 'test123'
+  });
 });
 
 app.listen(port, () => {

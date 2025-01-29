@@ -8,6 +8,7 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isValid, setIsValid] = useState(false);
   const fname = useRef("");
   const femail = useRef("");
   const fpassword = useRef("");
@@ -38,6 +39,11 @@ const SignUp = () => {
     fpassword.current.value = "";
   };
 
+  const validateEmail = (v) => {
+    const email = /^[a-zA-Z0-9]{8,}\@(mail\.uc\.edu|uc\.edu)$/;
+    setIsValid(email.test(v));
+  };
+
   return (
     <div className="container">
       <div className="header">
@@ -45,7 +51,6 @@ const SignUp = () => {
         <div className="underline"></div>
       </div>
       <form className="form" onSubmit={handleSubmit}>
-
         <div className="inputs">
           <div className="input">
             <img src={user_icon} alt=""></img>
@@ -70,9 +75,13 @@ const SignUp = () => {
               ref={femail}
               value={email}
               placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                validateEmail(e.target.value);
+              }}
               required
             ></input>
+            {!isValid && <p>Enter a UC email</p>}
           </div>
         </div>
 
@@ -90,12 +99,9 @@ const SignUp = () => {
             ></input>
           </div>
         </div>
-
-        <div className="login">
-          Already have an account? <a href="/login">Login!</a>
+        <div className="submit-btn">
+          <button disabled={!isValid}>Submit</button>
         </div>
-
-        <button className="submit-btn">Submit</button>
       </form>
     </div>
   );
