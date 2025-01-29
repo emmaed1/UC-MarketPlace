@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 
 const NewListing = () => {
+  const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
@@ -13,8 +14,10 @@ const NewListing = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = { name, desc, price, quantity, img };
+    const postType = document.getElementById("listing-type").value;
+    console.log(document.getElementById("listing-type").value)
     try {
-      fetch("http://localhost:3001/products", {
+      fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +27,7 @@ const NewListing = () => {
           desc: data.desc,
           price: parseFloat(data.price),
           quantity: parseInt(data.quantity),
-          rating: 5,
+          rating: 0,
           img: ("images/"+data.img)
         }),
       })

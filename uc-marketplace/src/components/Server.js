@@ -74,12 +74,12 @@ app.delete("/products/:productId", async (req, res) => {
 
 // api for services listing
 app.post("/services", async (req, res) => {
-  const { title, desc, rating, price, quantity, img } = req.body;
+  const { name, desc, rating, price, quantity, img } = req.body;
 
   try {
     const service = await prisma.service.create({
       data: {
-        title,
+        name,
         desc,
         rating,
         price,
