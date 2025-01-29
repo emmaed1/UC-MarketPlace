@@ -1,18 +1,34 @@
-import { useEffect, useState } from "react";
 import "./Services.css"; 
-import logo from '../../assets/uc-MP-logo.png';
 import ServicesCard from './servicesCard'
-import servicesData from "./servicesData";
+import { useEffect, useState } from "react";
 
-const ServicesView = () => {
-  useEffect(() => {
-    fetch('http://localhost:3001/services', {method: "GET"})
-      .then(res => res.json())
-      .then(data => getServices(data))
-      .catch(err => {console.log("Error getting services", err)});
-  }, []);
+const Services = () => {
+  const [services, setServices] = useState([]); // Store the products
+  const [searchQuery, setSearchQuery] = useState(""); // Store the search query
 
-  const [services, getServices] = useState([]);
+
+useEffect(() => {
+  fetchServices();
+}, []);
+
+// Function to fetch all services
+const fetchServices = () => {
+  fetch('http://localhost:3001/services', { method: "GET" })
+    .then(res => res.json())
+    .then(data => setServices(data))
+    .catch(err => console.log("Error getting products", err));
+};
+
+// Handle search input change
+const handleSearchChange = (event) => {
+  setSearchQuery(event.target.value);
+};
+
+// Filter products based on search query
+const filteredServices = services.filter(service => 
+  service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  service.desc.toLowerCase().includes(searchQuery.toLowerCase())
+);
 
   return (
     <div className="content">
@@ -23,17 +39,23 @@ const ServicesView = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search services..."
-        />
-      </div>
-      <div className="services-content">
-          {services.map((item) => (
-            <ServicesCard key={item.servicesId}{...item} />
-          ))}
+          <input 
+            type="text" 
+            id="search" 
+            placeholder="Search for services..." 
+            value={searchQuery}
+            onChange={handleSearchChange} // Update search query
+          />
+        </div>
+        <div className="products-content">
+          {filteredServices.length > 0 ? (
+            filteredServices.map((item) => (
+              <ServicesCard key={item.serviceId} {...item} />
+            ))
+          ) : (
+            <p>No products found.</p>
+          )}
         </div>
       <div className="features-container">
         <div className="featured-section">
@@ -60,4 +82,4 @@ const ServicesView = () => {
   );
 };
 
-export default ServicesView;
+export default Services;
