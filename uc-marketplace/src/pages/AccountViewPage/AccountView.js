@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AccountView.css';
 import logo from '../../assets/uc-MP-logo.png';
 import ListingDetailsModal from './ListingDetailsModal';
@@ -6,6 +6,15 @@ import ListingDetailsModal from './ListingDetailsModal';
 export default function AccountView() {
   const [showModal, setShowModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState(null);
+  const [accountName, setAccountName] = useState();
+
+  useEffect(() => {
+    const accountInfo = sessionStorage.getItem("token");
+    if(JSON.parse(accountInfo).name){
+      console.log(JSON.parse(accountInfo).name);
+      setAccountName(JSON.parse(accountInfo).name)
+    }
+  }, [])
 
   const openModal = (id) => {
     setSelectedListingId(id);
@@ -22,7 +31,7 @@ export default function AccountView() {
       <div className="welcome-content">
         <img src={logo} alt="uc marketplace-logo" />
         <div className="welcome-text">
-          <h1>Welcome to Your Account</h1>
+          <h1>Welcome to your account, {accountName}</h1>
         </div>
       </div>
 
