@@ -100,7 +100,7 @@ const SignUp = () => {
           </div>
         </div>
         <div className="submit-btn">
-          <button disabled={!isValid}>Submit</button>
+          <button>Submit</button>
         </div>
       </form>
     </div>

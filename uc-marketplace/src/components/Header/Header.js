@@ -15,6 +15,7 @@ const Header = () => {
   }
 
   return (
+    <div className="navbar">
     <nav className="nav-bar">
       <img src={logo} alt="uc marketplace-logo" className="app-logo"></img>
       <ul>
@@ -51,6 +52,7 @@ const Header = () => {
         {cartQuantity >= 1 && <span className="badge">{cartQuantity}</span>}
       </div>
     </nav>
+    </div>
   );
 };
 

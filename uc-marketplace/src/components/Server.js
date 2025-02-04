@@ -1,5 +1,6 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -7,7 +8,11 @@ const app = express();
 const port = 3001;
 const cors = require("cors");
 
-app.use(bodyParser.json());
+const generateJwt = (user) => {
+  return jwt.sign({ email: user.email }, "JWT_SECRET");
+};
+
+app.use(express.json());
 
 app.use(cors());
 
@@ -138,17 +143,15 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/user", async (req, res) => {
-  const { name, email, password } = req.body;
-
   try {
+    const hash = await bcrypt.hash(req.body.password, 10);
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
-        password,
+        ...req.body, password: hash
       },
     });
-    res.json(user);
+    const { password: _password, ...userWithoutPassword } = user;
+    res.json({ ...userWithoutPassword, token: generateJwt(user) });
   } catch (error) {
     res.status(500).json({ error: "Error creating user" });
   }
@@ -167,10 +170,66 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
-app.use('/login', (req, res) => {
-  res.send({
-    token: 'test123'
-  });
+app.post("/user/login", async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: req.body.email,
+      },
+    });
+    if (!user) {
+      res.json("User not found");
+    }
+    const passwordMatch = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!passwordMatch) {
+      res.json("Incorrect Password")
+    }
+    const { password: _password, ...userWithoutPassword } = user;
+    res.json({ ...userWithoutPassword, token: generateJwt(user) });
+  } catch (error) {
+    res.json({ error: "Error logging in." });
+  }
+});
+
+const authenticate = async (req=app.ExpressRequest, res = app.response, next=app.next) => {
+  if (!req.headers.authorization) {
+    res.json("Unauthorized");
+  }
+
+  const token = req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    res.json("Token not found");
+  }
+
+  try {
+    const decode = jwt.verify(token, "JWT_SECRET");
+    const user = await prisma.user.findUnique({
+      where: {
+        email: decode.email,
+      },
+    });
+    req.user = user ?? undefined;
+    next();
+  } catch (err) {
+    req.user = undefined;
+    next();
+  }
+};
+
+app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { password: _password, ...userWithoutPassword } = req.user;
+    res.json(userWithoutPassword);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.listen(port, () => {
