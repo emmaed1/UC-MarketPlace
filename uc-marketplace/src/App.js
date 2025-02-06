@@ -27,7 +27,7 @@ function App() {
   if (!token) {
     return (
       <div className="welcome-screen">
-        <h1 className="welcome">Welcome to UC MarketPlace</h1>
+        <h1 className="title">Welcome to UC MarketPlace</h1>
         {isLogin ? <Login setToken={setToken} /> : <SignUp />}
         <div className="toggle">
           <button onClick={handleToggle}>
