@@ -21,7 +21,9 @@
     "sass": "^1.83.1",
     "sweetalert2": "^11.15.10",
     "uc-marketplace": "file:",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "ws": "^8.18.0",
+    "wscat": "^6.0.1"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
