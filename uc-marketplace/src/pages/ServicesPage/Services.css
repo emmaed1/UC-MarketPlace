@@ -40,6 +40,7 @@
     color: #fff;
     background-color: #e00122;  /* Same red color as your other buttons */
     margin-top: 1rem;
+    margin-left: 10px;
     text-align: center;
     text-decoration: none;
     padding: 0.5rem 1rem;
@@ -87,6 +88,7 @@
     .title {
       font-size: 1.1rem;
       margin: 0.6rem 0;
+      color: red;
     }
   
     .price {

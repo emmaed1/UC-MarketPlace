@@ -60,6 +60,7 @@
   color: #fff;
   background-color: #e00122;  /* Same red color as your other buttons */
   margin-top: 1rem;
+  margin-left: 10px;
   text-align: center;
   text-decoration: none;
   padding: 0.5rem 1rem;
@@ -73,7 +74,6 @@
   color: #eee;
   background-color: #c3001d;  /* Darker shade for hover effect */
 }
-
 
 .products-content {
   padding: 2rem 1rem 4rem;
@@ -108,6 +108,7 @@
   .product-title {
     font-size: 1.1rem;
     margin: 0.6rem 0;
+    color: red;
   }
 
   .price {

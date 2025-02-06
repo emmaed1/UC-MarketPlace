@@ -49,6 +49,15 @@ const Products = () => {
     setIsSearchTriggered(true); // Ensures search is triggered even if search bar is empty
   };
 
+  const clearFilters = () => {
+    setAppliedFilters({ minPrice: "", maxPrice: "" });
+    setFilterCriteria({ minPrice: "", maxPrice: "" });
+    setSearchQuery("");   // Clears search input field
+    setSearchTerm("");    // Clears applied search filter
+    setIsSearchTriggered(true); 
+  };
+  
+
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       !isSearchTriggered ||
@@ -103,7 +112,8 @@ const Products = () => {
               value={filterCriteria.maxPrice}
               onChange={handleFilterChange}
             />
-            <button onClick={applyFilters}>Apply</button>
+            <button onClick={applyFilters}style={{ marginLeft: "10px" }}>Apply</button>
+            <button onClick={clearFilters} style={{ marginLeft: "10px"}}>Clear Filters</button>
           </div>
         )}
 
