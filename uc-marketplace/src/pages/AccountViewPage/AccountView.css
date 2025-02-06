@@ -1,9 +1,15 @@
+.account-content {
+  min-width: 950px;
+  height: 100%;
+  margin: 0px auto;
+  overflow: auto;
+}
+
 .welcome-content {
   background-color: #f5f5f5;
-  display: flex;  
   align-items: center;
   padding: 1rem 2rem;
-  border-radius: .5px;
+  border-radius: 0.5px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -103,7 +109,7 @@
 
 .newlisting-reviews-container {
   display: flex;
-  gap: 2rem; 
+  gap: 2rem;
   margin-top: 2rem;
   max-width: 100%; /* Ensures that the container doesn't exceed the screen width */
   box-sizing: border-box; /* Includes padding and borders in the element's width */
@@ -222,4 +228,39 @@
 
 .faq-cards div {
   height: 100px;
+}
+
+.nav {
+  justify-content: space-between;
+  color: #000000;
+  font-size: 22px;
+  height: 100%;
+  width: 250px;
+  float: left;
+  text-align: left;
+}
+
+.options {
+  padding: 0px;
+  margin: 0px;
+  width: 250px;
+  overflow: hidden;
+  list-style: none;
+  box-shadow: none 0% 0% #2b3136;
+  box-sizing: border-box;
+}
+
+.menu-item {
+  padding: 1.5rem 1.5rem;
+  text-decoration: none;
+  display: block;
+  font-size: 1.2em;
+  color: #000000;
+  -webkit-transition-duration: 0.15s; /* Safari */
+  transition-duration: 0.15s;
+}
+.menu-item:hover {
+  background: #edecec;
+  color: #000000;
+  border-left: 5px solid #e00122;
 }

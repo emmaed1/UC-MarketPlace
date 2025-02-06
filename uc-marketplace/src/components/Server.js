@@ -1,5 +1,6 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -7,7 +8,11 @@ const app = express();
 const port = 3001;
 const cors = require("cors");
 
-app.use(bodyParser.json());
+const generateJwt = (user) => {
+  return jwt.sign({ email: user.email }, "JWT_SECRET");
+};
+
+app.use(express.json());
 
 app.use(cors());
 
@@ -23,7 +28,7 @@ app.post("/products", async (req, res) => {
         rating,
         price,
         quantity,
-        img
+        img,
       },
     });
     res.json(product);
@@ -74,17 +79,17 @@ app.delete("/products/:productId", async (req, res) => {
 
 // api for services listing
 app.post("/services", async (req, res) => {
-  const { title, desc, rating, price, quantity, img } = req.body;
+  const { name, desc, rating, price, quantity, img } = req.body;
 
   try {
     const service = await prisma.service.create({
       data: {
-        title,
+        name,
         desc,
         rating,
         price,
         quantity,
-        img
+        img,
       },
     });
     res.json(service);
@@ -124,6 +129,106 @@ app.delete("/services/:serviceId", async (req, res) => {
     res.json(deletedService);
   } catch (error) {
     res.status(500).json({ error: "Errors deleting service" });
+  }
+});
+
+// api calls for users
+app.get("/user", async (req, res) => {
+  try {
+    const user = await prisma.user.findMany();
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Error getting users" });
+  }
+});
+
+app.post("/user", async (req, res) => {
+  try {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const user = await prisma.user.create({
+      data: {
+        ...req.body, password: hash
+      },
+    });
+    const { password: _password, ...userWithoutPassword } = user;
+    res.json({ ...userWithoutPassword, token: generateJwt(user) });
+  } catch (error) {
+    res.status(500).json({ error: "Error creating user" });
+  }
+});
+
+app.get("/user/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: id },
+    });
+    res.json(user);
+  } catch (error) {
+    console.log("Error!");
+    res.status(500).json({ error: "Error getting user" });
+  }
+});
+
+app.post("/user/login", async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: req.body.email,
+      },
+    });
+    if (!user) {
+      res.json("User not found");
+    }
+    const passwordMatch = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!passwordMatch) {
+      res.json("Incorrect Password")
+    }
+    const { password: _password, ...userWithoutPassword } = user;
+    res.json({ ...userWithoutPassword, token: generateJwt(user) });
+  } catch (error) {
+    res.json({ error: "Error logging in." });
+  }
+});
+
+const authenticate = async (req=app.ExpressRequest, res = app.response, next=app.next) => {
+  if (!req.headers.authorization) {
+    res.json("Unauthorized");
+  }
+
+  const token = req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    res.json("Token not found");
+  }
+
+  try {
+    const decode = jwt.verify(token, "JWT_SECRET");
+    const user = await prisma.user.findUnique({
+      where: {
+        email: decode.email,
+      },
+    });
+    req.user = user ?? undefined;
+    next();
+  } catch (err) {
+    req.user = undefined;
+    next();
+  }
+};
+
+app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const { password: _password, ...userWithoutPassword } = req.user;
+    res.json(userWithoutPassword);
+  } catch (err) {
+    next(err);
   }
 });
 
