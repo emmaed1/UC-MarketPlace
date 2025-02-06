@@ -63,7 +63,7 @@
   text-align: center;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: 15px;
+  border-radius: 5px;  /* Make it less rounded to match the search bar */
   font-size: 1rem;
   transition: color 0.3s ease, background-color 0.3s ease;  /* Smooth color transition */
   display: inline-block;  /* Ensures it's a block element, but inline with other items */

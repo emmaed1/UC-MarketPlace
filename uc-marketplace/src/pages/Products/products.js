@@ -3,16 +3,18 @@ import ProductsCard from "./productsCard";
 import { useEffect, useState } from "react";
 
 const Products = () => {
-  const [products, setProducts] = useState([]); // Store the products
-  const [searchQuery, setSearchQuery] = useState(""); // Store the search input
-  const [searchTerm, setSearchTerm] = useState(""); // Store the confirmed search term
-  const [isSearchTriggered, setIsSearchTriggered] = useState(false); // Track if search should be applied
+  const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState({ minPrice: "", maxPrice: "" });
+  const [filterCriteria, setFilterCriteria] = useState({ minPrice: "", maxPrice: "" });
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  // Function to fetch all products
   const fetchProducts = () => {
     fetch("http://localhost:3001/products", { method: "GET" })
       .then((res) => res.json())
@@ -20,13 +22,11 @@ const Products = () => {
       .catch((err) => console.log("Error getting products", err));
   };
 
-  // Handle search input change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setIsSearchTriggered(false); // Reset search trigger
+    setIsSearchTriggered(false);
   };
 
-  // Handle search execution on Enter key
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       setSearchTerm(searchQuery);
@@ -34,14 +34,33 @@ const Products = () => {
     }
   };
 
-  // Apply filtering only when search is triggered
-  const filteredProducts = isSearchTriggered
-    ? products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.desc.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : products;
+  const toggleFilterPopup = () => {
+    setIsFilterOpen(!isFilterOpen);
+  };
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilterCriteria((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(filterCriteria);
+    setIsFilterOpen(false);
+    setIsSearchTriggered(true); // Ensures search is triggered even if search bar is empty
+  };
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      !isSearchTriggered ||
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.desc.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesPrice =
+      (!appliedFilters.minPrice || product.price >= parseFloat(appliedFilters.minPrice)) &&
+      (!appliedFilters.maxPrice || product.price <= parseFloat(appliedFilters.maxPrice));
+
+    return matchesSearch && matchesPrice;
+  });
 
   return (
     <>
@@ -59,10 +78,34 @@ const Products = () => {
             id="search"
             placeholder="Search for products..."
             value={searchQuery}
-            onChange={handleSearchChange} // Update search query
-            onKeyDown={handleKeyPress} // Trigger search on Enter key press
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyPress}
           />
+          <button className="filter-button" onClick={toggleFilterPopup}>
+            Filter
+          </button>
         </div>
+
+        {isFilterOpen && (
+          <div className="filter-popup">
+            <h3>Filter Options</h3>
+            <label>Min Price:</label>
+            <input
+              type="number"
+              name="minPrice"
+              value={filterCriteria.minPrice}
+              onChange={handleFilterChange}
+            />
+            <label>Max Price:</label>
+            <input
+              type="number"
+              name="maxPrice"
+              value={filterCriteria.maxPrice}
+              onChange={handleFilterChange}
+            />
+            <button onClick={applyFilters}>Apply</button>
+          </div>
+        )}
 
         <div className="products-content">
           {filteredProducts.length > 0 ? (

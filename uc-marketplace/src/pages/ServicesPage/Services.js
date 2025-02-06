@@ -6,6 +6,10 @@ const Services = () => {
   const [services, setServices] = useState([]); // Store the services
   const [searchQuery, setSearchQuery] = useState(""); // Store the search input
   const [searchTerm, setSearchTerm] = useState(""); // Store the confirmed search term
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState({ minPrice: "", maxPrice: "" });
+  const [filterCriteria, setFilterCriteria] = useState({ minPrice: "", maxPrice: "" });
 
   useEffect(() => {
     fetchServices();
@@ -19,23 +23,45 @@ const Services = () => {
       .catch(err => console.log("Error getting services", err));
   };
 
-  // Handle search input change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    setIsSearchTriggered(false);
   };
 
-  // Handle search execution on Enter key
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       setSearchTerm(searchQuery);
+      setIsSearchTriggered(true);
     }
   };
 
-  // Filter services based on confirmed search term
-  const filteredServices = services.filter(service => 
-    service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.desc.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const toggleFilterPopup = () => {
+    setIsFilterOpen(!isFilterOpen);
+  };
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilterCriteria((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(filterCriteria);
+    setIsFilterOpen(false);
+    setIsSearchTriggered(true); // Ensures search is triggered even if search bar is empty
+  };
+
+  const filteredServices= services.filter((service) => {
+    const matchesSearch =
+      !isSearchTriggered ||
+      service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      service.desc.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesPrice =
+      (!appliedFilters.minPrice || service.price >= parseFloat(appliedFilters.minPrice)) &&
+      (!appliedFilters.maxPrice || service.price <= parseFloat(appliedFilters.maxPrice));
+
+    return matchesSearch && matchesPrice;
+  });
 
   return (
     <div className="content">
@@ -55,8 +81,33 @@ const Services = () => {
           onChange={handleSearchChange} // Update search query
           onKeyDown={handleKeyPress} // Trigger search on Enter key press
         />
+        <button className="filter-button" onClick={toggleFilterPopup}>
+            Filter
+          </button>
       </div>
-      <div className="products-content">
+
+      {isFilterOpen && (
+          <div className="filter-popup">
+            <h3>Filter Options</h3>
+            <label>Min Price:</label>
+            <input
+              type="number"
+              name="minPrice"
+              value={filterCriteria.minPrice}
+              onChange={handleFilterChange}
+            />
+            <label>Max Price:</label>
+            <input
+              type="number"
+              name="maxPrice"
+              value={filterCriteria.maxPrice}
+              onChange={handleFilterChange}
+            />
+            <button onClick={applyFilters}>Apply</button>
+          </div>
+        )}
+
+      <div className="services-content">
         {filteredServices.length > 0 ? (
           filteredServices.map((item) => (
             <ServicesCard key={item.serviceId} {...item} />
