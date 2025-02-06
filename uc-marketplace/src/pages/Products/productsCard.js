@@ -24,7 +24,7 @@ const ProductsCard = (props) => {
       <figure>
         <img src={img} key={props.img} alt="item-img" ></img>
       </figure>
-      <h4 className="title">{name}</h4>
+      <h4 className="product-title">{name}</h4>
       <p>{desc}</p>
       <h3 className="price">$ {price.toLocaleString()}</h3>
       <button
