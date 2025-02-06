@@ -6,11 +6,16 @@ import logo from "../../assets/uc-MP-logo.png";
 import cartContext from "../ShoppingCart/Context/CartContext";
 
 const Header = () => {
-  // const userData = useContext(Context)
   const { cartItems, toggleCart } = useContext(cartContext);
   const cartQuantity = cartItems.length;
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('token');
+    window.location.reload();
+  }
+
   return (
+    <div className="navbar">
     <nav className="nav-bar">
       <img src={logo} alt="uc marketplace-logo" className="app-logo"></img>
       <ul>
@@ -35,16 +40,19 @@ const Header = () => {
         {/* <li>Hello {userData.name}</li>
             <li>Cart: {userData.cartItems}</li> */}
       </ul>
-      <ul>
-        <li class="login-btn">
-          <a href="/login">Login</a>
-        </li>
-      </ul>
+      <div class="logout-btn">
+        <ul>
+          <li >
+            <button onClick={handleLogout}>Logout</button>
+          </li>
+        </ul>
+      </div>
       <div title="Cart" className="cart_icon" onClick={() => toggleCart(true)}>
         <button className="shopping-cart"></button>
         {cartQuantity >= 1 && <span className="badge">{cartQuantity}</span>}
       </div>
     </nav>
+    </div>
   );
 };
 
