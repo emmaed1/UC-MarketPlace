@@ -4,45 +4,86 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 
 const NewListing = () => {
-  const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const [img, setImage] = useState("")
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { name, desc, price, quantity, img };
-    const postType = document.getElementById("listing-type").value;
-    console.log(document.getElementById("listing-type").value)
+    setLoading(true);
+    
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('desc', desc);
+    formData.append('price', price);
+    formData.append('quantity', quantity);
+    formData.append('rating', 5);
+    if (image) {
+      formData.append('image', image);
+    }
+
     try {
-      fetch(`http://localhost:3001/${postType}s`, {
+      console.log("Submitting form data:", {
+        name,
+        desc,
+        price,
+        quantity,
+        image: image ? image.name : 'No image'
+      });
+
+      const response = await fetch("http://localhost:3001/products", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          desc: data.desc,
-          price: parseFloat(data.price),
-          quantity: parseInt(data.quantity),
-          rating: 0,
-          img: ("images/"+data.img)
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
-      if (data) {
-        console.log("Success", data);
-        Swal.fire({
-          title: "Success!",
-          text: "Your listing was successfully posted!",
-          icon: "success",
-        });
+        body: formData,
+      });
+
+      console.log("Response status:", response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server error response:", errorText);
+        throw new Error(errorText || 'Failed to create product');
       }
+
+      const data = await response.json();
+      console.log("Success response:", data);
+      
+      Swal.fire({
+        title: "Success!",
+        text: "Your listing was successfully posted!",
+        icon: "success",
+      });
+
+      // Clear form
+      setName("");
+      setDesc("");
+      setPrice(0);
+      setQuantity(0);
+      setImage(null);
+      
+      // Reset file input
+      const fileInput = document.getElementById('photos');
+      if (fileInput) fileInput.value = '';
+      
     } catch (error) {
-      console.log("Error: ", error);
+      console.error("Full error details:", error);
+      Swal.fire({
+        title: "Error!",
+        text: `Failed to create listing: ${error.message}`,
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      console.log("Selected file:", file.name, "Size:", file.size);
+      setImage(file);
     }
   };
 
@@ -57,7 +98,7 @@ const NewListing = () => {
 
       <div className="listing-form-container">
         <h2>Create a New Listing</h2>
-        <form className="listing-form" onSubmit={handleSubmit} method="POST">
+        <form className="listing-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="listing-title">Type:</label>
             <select id="listing-type" name="listingType">
@@ -99,6 +140,8 @@ const NewListing = () => {
               onChange={(e) => setPrice(e.target.value)}
               placeholder="Enter Price:"
               required
+              min="0"
+              step="0.01"
             />
           </div>
 
@@ -111,27 +154,27 @@ const NewListing = () => {
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="Enter Quantity:"
               required
+              min="0"
             />
           </div>
 
           <div className="form-group">
-            <label htmlfor="photos">Upload Photos:</label>
+            <label htmlFor="photos">Upload Photos:</label>
             <input
               type="file"
               id="photos"
-              value={img}
-              onChange={(e) => setImage(e.target.value)}
+              onChange={handleImageChange}
               accept="image/*"
-              multiple
             />
           </div>
 
-          <button type="submit" className="post-button">
-            Post Listing
+          <button type="submit" className="post-button" disabled={loading}>
+            {loading ? 'Posting...' : 'Post Listing'}
           </button>
         </form>
       </div>
     </div>
   );
 };
+
 export default NewListing;

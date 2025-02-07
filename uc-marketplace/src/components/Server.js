@@ -2,53 +2,129 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
+const multer = require("multer");
+const path = require("path");
+const cors = require("cors");
+const fs = require("fs");
 
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
-const cors = require("cors");
+
+// Ensure upload directory exists
+const uploadDir = "public/images";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image! Please upload an image."), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+});
 
 const generateJwt = (user) => {
   return jwt.sign({ email: user.email }, "JWT_SECRET");
 };
 
+// Middleware
 app.use(express.json());
-
 app.use(cors());
+app.use("/images", express.static(uploadDir));
 
-// api for product listings
-app.post("/products", async (req, res) => {
-  const { name, desc, rating, price, quantity, img } = req.body;
+// Error handling middleware
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res
+        .status(400)
+        .json({ error: "File is too large. Maximum size is 5MB." });
+    }
+    return res.status(400).json({ error: err.message });
+  }
+  next(err);
+});
+
+// Product Routes
+app.post("/products", upload.single("image"), async (req, res) => {
+  console.log("Received request body:", req.body);
+  console.log("Received file:", req.file);
 
   try {
+    const { name, desc, rating, price, quantity } = req.body;
+    const img = req.file ? `/images/${req.file.filename}` : null;
+
+    console.log("Attempting to create product with data:", {
+      name,
+      desc,
+      rating,
+      price,
+      quantity,
+      img,
+    });
+
     const product = await prisma.product.create({
       data: {
         name,
         desc,
-        rating,
-        price,
-        quantity,
+        rating: rating ? parseFloat(rating) : 5,
+        price: parseFloat(price),
+        quantity: parseInt(quantity),
         img,
       },
     });
+
+    console.log("Product created successfully:", product);
     res.json(product);
   } catch (error) {
-    res.status(500).json({ error: "Error creating product" });
+    console.error("Error creating product:", error);
+
+    // If there was an uploaded file but database creation failed, clean it up
+    if (req.file) {
+      fs.unlink(req.file.path, (unlinkError) => {
+        if (unlinkError) {
+          console.error("Error deleting uploaded file:", unlinkError);
+        }
+      });
+    }
+
+    res.status(500).json({
+      error: "Error creating product",
+      details: error.message,
+    });
   }
 });
 
-// export default async function handler(req, res) {
-//     const products = await prisma.product.findMany()
-//     res.status(200).json(products)
-// }
 app.get("/products", async (req, res) => {
   try {
-    const prisma = new PrismaClient();
     const products = await prisma.product.findMany();
     res.status(200).json(products);
   } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
+    console.error("Error fetching products:", error);
+    res
+      .status(500)
+      .json({ error: "Error getting products", details: error.message });
   }
 });
 
@@ -58,180 +134,49 @@ app.get("/products/:productId", async (req, res) => {
     const product = await prisma.product.findUnique({
       where: { productId: productId },
     });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
     res.json(product);
   } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
+    console.error("Error fetching product:", error);
+    res
+      .status(500)
+      .json({ error: "Error getting product", details: error.message });
   }
 });
 
 app.delete("/products/:productId", async (req, res) => {
   const productId = parseInt(req.params.productId);
   try {
+    // First get the product to find its image path
+    const product = await prisma.product.findUnique({
+      where: { productId: productId },
+    });
+
     const deletedProduct = await prisma.product.delete({
       where: { productId: productId },
     });
+
+    // If product had an image, delete it
+    if (product?.img) {
+      const imagePath = path.join(__dirname, product.img);
+      fs.unlink(imagePath, (err) => {
+        if (err) console.error("Error deleting image file:", err);
+      });
+    }
+
     res.json(deletedProduct);
   } catch (error) {
-    res.status(500).json({ error: "Errors deleting product" });
+    console.error("Error deleting product:", error);
+    res
+      .status(500)
+      .json({ error: "Error deleting product", details: error.message });
   }
 });
 
-// api for services listing
-app.post("/services", async (req, res) => {
-  const { name, desc, rating, price, quantity, img } = req.body;
-
-  try {
-    const service = await prisma.service.create({
-      data: {
-        name,
-        desc,
-        rating,
-        price,
-        quantity,
-        img,
-      },
-    });
-    res.json(service);
-  } catch (error) {
-    res.status(500).json({ error: "Error creating service" });
-  }
-});
-
-app.get("/services", async (req, res) => {
-  try {
-    const services = await prisma.service.findMany();
-    res.json(services);
-  } catch (error) {
-    res.status(500).json({ error: "Error getting services" });
-  }
-});
-
-app.get("/services/:serviceId", async (req, res) => {
-  const serviceId = parseInt(req.params.serviceId);
-  try {
-    const services = await prisma.service.findUnique({
-      where: { serviceId: serviceId },
-    });
-    res.json(services);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting services" });
-  }
-});
-
-app.delete("/services/:serviceId", async (req, res) => {
-  const serviceId = parseInt(req.params.serviceId);
-  try {
-    const deletedService = await prisma.service.delete({
-      where: { serviceId: serviceId },
-    });
-    res.json(deletedService);
-  } catch (error) {
-    res.status(500).json({ error: "Errors deleting service" });
-  }
-});
-
-// api calls for users
-app.get("/user", async (req, res) => {
-  try {
-    const user = await prisma.user.findMany();
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: "Error getting users" });
-  }
-});
-
-app.post("/user", async (req, res) => {
-  try {
-    const hash = await bcrypt.hash(req.body.password, 10);
-    const user = await prisma.user.create({
-      data: {
-        ...req.body, password: hash
-      },
-    });
-    const { password: _password, ...userWithoutPassword } = user;
-    res.json({ ...userWithoutPassword, token: generateJwt(user) });
-  } catch (error) {
-    res.status(500).json({ error: "Error creating user" });
-  }
-});
-
-app.get("/user/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: id },
-    });
-    res.json(user);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting user" });
-  }
-});
-
-app.post("/user/login", async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: req.body.email,
-      },
-    });
-    if (!user) {
-      res.json("User not found");
-    }
-    const passwordMatch = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
-    if (!passwordMatch) {
-      res.json("Incorrect Password")
-    }
-    const { password: _password, ...userWithoutPassword } = user;
-    res.json({ ...userWithoutPassword, token: generateJwt(user) });
-  } catch (error) {
-    res.json({ error: "Error logging in." });
-  }
-});
-
-const authenticate = async (req=app.ExpressRequest, res = app.response, next=app.next) => {
-  if (!req.headers.authorization) {
-    res.json("Unauthorized");
-  }
-
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (!token) {
-    res.json("Token not found");
-  }
-
-  try {
-    const decode = jwt.verify(token, "JWT_SECRET");
-    const user = await prisma.user.findUnique({
-      where: {
-        email: decode.email,
-      },
-    });
-    req.user = user ?? undefined;
-    next();
-  } catch (err) {
-    req.user = undefined;
-    next();
-  }
-};
-
-app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
-  try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-    const { password: _password, ...userWithoutPassword } = req.user;
-    res.json(userWithoutPassword);
-  } catch (err) {
-    next(err);
-  }
-});
-
+// Start server
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Upload directory is set to: ${path.resolve(uploadDir)}`);
 });
