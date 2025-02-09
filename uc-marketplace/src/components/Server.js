@@ -8,6 +8,13 @@ const app = express();
 const port = 3001;
 const cors = require("cors");
 
+let http = require('http');
+let server = http.createServer(function(request, response) {
+  console.log("Received request for " + request.url);
+  response.writeHead(404);
+  response.end();
+});
+
 var WebSocketServer = require('websocket').server;
 var wsServer = new WebSocketServer({
   httpServer: server

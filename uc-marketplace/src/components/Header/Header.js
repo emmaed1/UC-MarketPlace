@@ -34,6 +34,9 @@ const Header = () => {
         <li>
           <a href="/account-view">Account View</a>
         </li>
+        <li>
+          <a href="/Chat.html">Chat</a>
+        </li>
         {/* ACCOUNT VIEW link can be removed once there is a way to actually access it by
              logging in. I just have it here for testing purposes */}
 
