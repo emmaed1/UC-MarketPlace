@@ -8,6 +8,24 @@ const app = express();
 const port = 3001;
 const cors = require("cors");
 
+var WebSocketServer = require('websocket').server;
+var wsServer = new WebSocketServer({
+  httpServer: server
+});
+wsServer.on('request', function(request) {
+  var connection = request.accept(null, request.origin);
+  console.log('Connection accepted.');
+
+  connection.on('message', function(message) {
+    console.log('Received Message:', message.utf8Data);
+    connection.sendUTF('Received your message: ' + message.utf8Data);
+  });
+
+  connection.on('close', function(reasonCode, description) {
+    console.log('Peer disconnected.');
+  });
+});
+
 const generateJwt = (user) => {
   return jwt.sign({ email: user.email }, "JWT_SECRET");
 };
