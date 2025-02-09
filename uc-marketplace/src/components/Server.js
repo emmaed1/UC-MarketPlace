@@ -26,6 +26,25 @@ wsServer.on('request', function(request) {
   });
 });
 
+var clients = [];
+wsServer.on('request', function(request) {
+  var connection = request.accept(null, request.origin);
+  clients.push(connection);
+  console.log('Connection accepted.');
+
+  connection.on('message', function(message) {
+    console.log('Received Message:' + message.utf8Data);
+    clients.forEach(client => {
+      client.sendUTF(message.utf8Data);
+    });
+  });
+
+  connection.on('close', function(reasonCode, description) {
+  clients = clients.filter(client => client !== connection);
+  console.log('Peer disconnected.');
+  });
+});
+
 const generateJwt = (user) => {
   return jwt.sign({ email: user.email }, "JWT_SECRET");
 };
