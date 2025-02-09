@@ -4,19 +4,21 @@ const Chat = () => {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
+    const [username, setUsername] = useState('User'); // Default username, you can change this
 
     useEffect(() => {
-        const newSocket = new WebSocket('ws://localhost:8080');
+        const newSocket = new WebSocket('ws://localhost:3001');
         setSocket(newSocket);
 
         newSocket.onopen = (event) => {
             console.log('Connection established');
-            newSocket.send('Hello Server');
+            newSocket.send(JSON.stringify({ type: 'info', message: 'Hello Server', sender: username }));
         };
 
         newSocket.onmessage = (event) => {
-            console.log('Message from server:', event.data);
-            setMessages((prevMessages) => [...prevMessages, event.data]);
+            const data = JSON.parse(event.data);
+            console.log('Message from server:', data);
+            setMessages((prevMessages) => [...prevMessages, data]);
         };
 
         newSocket.onclose = (event) => {
@@ -28,11 +30,12 @@ const Chat = () => {
         };
 
         return () => newSocket.close();
-    }, []);
+    }, [username]);
 
     const sendMessage = () => {
         if (socket && message) {
-            socket.send(message);
+            const messageData = { type: 'message', message, sender: username };
+            socket.send(JSON.stringify(messageData));
             setMessage('');
         }
     };
@@ -42,7 +45,9 @@ const Chat = () => {
             <h1>UC MarketPlace Chat</h1>
             <div id="chat">
                 {messages.map((msg, index) => (
-                    <div key={index}>{msg}</div>
+                    <div key={index}>
+                        <strong>{msg.sender}:</strong> {msg.message}
+                    </div>
                 ))}
             </div>
             <input

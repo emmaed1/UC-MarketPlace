@@ -2,53 +2,41 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
+const cors = require("cors");
+const http = require('http');
+const WebSocketServer = require('websocket').server;
 
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
-const cors = require("cors");
 
-let http = require('http');
-let server = http.createServer(function(request, response) {
-  console.log("Received request for " + request.url);
-  response.writeHead(404);
-  response.end();
-});
+app.use(express.json());
+app.use(cors());
 
-var WebSocketServer = require('websocket').server;
-var wsServer = new WebSocketServer({
+const server = http.createServer(app);
+
+const wsServer = new WebSocketServer({
   httpServer: server
 });
+
+let clients = [];
+
 wsServer.on('request', function(request) {
-  var connection = request.accept(null, request.origin);
-  console.log('Connection accepted.');
-
-  connection.on('message', function(message) {
-    console.log('Received Message:', message.utf8Data);
-    connection.sendUTF('Received your message: ' + message.utf8Data);
-  });
-
-  connection.on('close', function(reasonCode, description) {
-    console.log('Peer disconnected.');
-  });
-});
-
-var clients = [];
-wsServer.on('request', function(request) {
-  var connection = request.accept(null, request.origin);
+  const connection = request.accept(null, request.origin);
   clients.push(connection);
   console.log('Connection accepted.');
 
   connection.on('message', function(message) {
-    console.log('Received Message:' + message.utf8Data);
+    const data = JSON.parse(message.utf8Data);
+    console.log('Received Message:', data);
     clients.forEach(client => {
-      client.sendUTF(message.utf8Data);
+      client.sendUTF(JSON.stringify(data));
     });
   });
 
   connection.on('close', function(reasonCode, description) {
-  clients = clients.filter(client => client !== connection);
-  console.log('Peer disconnected.');
+    clients = clients.filter(client => client !== connection);
+    console.log('Peer disconnected.');
   });
 });
 
@@ -56,11 +44,7 @@ const generateJwt = (user) => {
   return jwt.sign({ email: user.email }, "JWT_SECRET");
 };
 
-app.use(express.json());
-
-app.use(cors());
-
-// api for product listings
+// API for product listings
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -81,13 +65,8 @@ app.post("/products", async (req, res) => {
   }
 });
 
-// export default async function handler(req, res) {
-//     const products = await prisma.product.findMany()
-//     res.status(200).json(products)
-// }
 app.get("/products", async (req, res) => {
   try {
-    const prisma = new PrismaClient();
     const products = await prisma.product.findMany();
     res.status(200).json(products);
   } catch (error) {
@@ -121,7 +100,7 @@ app.delete("/products/:productId", async (req, res) => {
   }
 });
 
-// api for services listing
+// API for services listing
 app.post("/services", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -176,7 +155,7 @@ app.delete("/services/:serviceId", async (req, res) => {
   }
 });
 
-// api calls for users
+// API calls for users
 app.get("/user", async (req, res) => {
   try {
     const user = await prisma.user.findMany();
@@ -238,7 +217,7 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
-const authenticate = async (req=app.ExpressRequest, res = app.response, next=app.next) => {
+const authenticate = async (req, res, next) => {
   if (!req.headers.authorization) {
     res.json("Unauthorized");
   }
@@ -264,7 +243,7 @@ const authenticate = async (req=app.ExpressRequest, res = app.response, next=app
   }
 };
 
-app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
+app.get("/user", authenticate, async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -276,6 +255,6 @@ app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
   }
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

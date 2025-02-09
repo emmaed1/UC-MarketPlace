@@ -15,7 +15,7 @@ import Checkout from "../pages/CheckoutPage/Checkout"; // Import Checkout page
 import Confirmation from "../pages/ConfirmationPage/Confirmation"; // Import Confirmation page
 import Login from '../pages/LoginPage/login';
 import SignUp from '../pages/SignUpPage/signup';
-import Chat from '../pages/Chat/Chat';
+import Chat from '../pages/Chat/ChatPage';
 
 export default function Router() {
     const Layout = () => {
@@ -46,7 +46,7 @@ export default function Router() {
                         <Route path="/contact-us" element={<ContactUs />} />
                         <Route path="/checkout" element={<Checkout />} /> {/* Route for Checkout */}
                         <Route path="/confirmation" element={<Confirmation />} /> {/* Route for Confirmation */}
-                        <Route path="/chat" element={<Chat />} />
+                        <Route path="/chatpage" element={<Chat />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
