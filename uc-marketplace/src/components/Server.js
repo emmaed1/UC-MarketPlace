@@ -157,6 +157,24 @@ app.post("/user", async (req, res) => {
   }
 });
 
+//update user name
+app.put("/user/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const updateUser = await prisma.user.update({
+      data: {
+        name: req.body.name,
+      },
+      where: {
+        id: id
+      }
+    });
+    res.json(updateUser);
+  } catch (error) {
+    res.status(500).json({ error: "Error updating user" });
+  }
+});
+
 app.get("/user/:id", async (req, res) => {
   const id = parseInt(req.params.id);
   try {

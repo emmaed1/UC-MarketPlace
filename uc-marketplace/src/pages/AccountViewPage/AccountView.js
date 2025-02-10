@@ -8,6 +8,7 @@ export default function AccountView() {
   const [showModal, setShowModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState(null);
   const [accountName, setAccountName] = useState();
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -25,6 +26,18 @@ export default function AccountView() {
   const closeModal = () => {
     setShowModal(false);
     setSelectedListingId(null);
+  };
+
+  const handleInputChange = (event) => {
+    setAccountName(event.target.value);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    setIsEditing(false);
   };
 
   return (
@@ -84,12 +97,49 @@ export default function AccountView() {
           </li>
         </ul>
       </div>
+      <div className="account-content">
+        <div id="profile" className="content">
+          <h2 className="account-title">Profile</h2>
+          {isEditing ? (
+        <div className="profile-header">
+          <label>Name</label>
+          <input
+            type="text"
+            value={accountName}
+            onChange={handleInputChange}
+          />
+          <button onClick={handleSaveClick}>Save</button>
+        </div>
+      ) : (
+        <div className="profile-header">
+          <label>Name</label>
+          <p>{accountName}</p>
+          <button onClick={handleEditClick}>Edit</button>
+        </div>
+      )}
+        </div>
+        <div id="listings" className="content">
+          <h2 className="account-title">My Listings</h2>
+          <div className="newlisting-reviews-container">
+            <div className="newlisting">
+              <h3 className="newlist-title">
+                Have another product or service to sell?
+              </h3>
+              <a href="/new-listing">Create Listing</a>
+            </div>
+          </div>
+          <div id="messages" className="content">
+            <h2 className="account-title">Messages</h2>
+          </div>
+          <div id="security" className="content">
+            <h2 className="account-title">Security</h2>
+          </div>
+          <div id="friends" className="content">
+            <h2 className="account-title">Friends</h2>
+          </div>
+        </div>
 
-      <div id="friends" className="content">
-        <p>Test Message Here</p>
-      </div>
-
-      {/* <div className="listings">
+        {/* <div className="listings">
         <h3 className="list-title">View Your Current Listings</h3>
         <ul className="list-items">
           {[1, 2, 3].map(id => (
@@ -103,14 +153,6 @@ export default function AccountView() {
           ))}
         </ul>
       </div> */}
-
-      <div className="newlisting-reviews-container">
-        <div className="newlisting">
-          <h3 className="newlist-title">
-            Have another product or service to sell?
-          </h3>
-          <a href="/new-listing">Create Listing</a>
-        </div>
 
         {/* <div className="reviews">
           <h2>Seller Reviews</h2>
