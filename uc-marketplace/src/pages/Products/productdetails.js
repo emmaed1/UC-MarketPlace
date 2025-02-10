@@ -1,15 +1,15 @@
-import { Link, useParams } from "react-router-dom";
+import { data, Link, useParams } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import "./products.css";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
-const ProductDetails = (props) => {
+const ProductDetails = () => {
   const { id } = useParams();
   const { addItem } = useContext(cartContext);
   const [product, getProduct] = useState([]);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
-    const item = { ...props };
+    const item = {...product };
     addItem(item);
 
     setIsAdded(true);
