@@ -1,22 +1,25 @@
-import "./products.css";
-import ProductsCard from "./productsCard";
 import { useEffect, useState } from "react";
+import ProductsCard from "./productsCard";
+import "./products.css";
 
 const Products = () => {
+  const [filters, setFilters] = useState({
+    minPrice: "",
+    maxPrice: "",
+    categories: [],
+  });
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState({ minPrice: "", maxPrice: "" });
-  const [filterCriteria, setFilterCriteria] = useState({ minPrice: "", maxPrice: "" });
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = () => {
-    fetch("http://localhost:3001/products", { method: "GET" })
+    fetch("http://localhost:3001/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.log("Error getting products", err));
@@ -39,24 +42,30 @@ const Products = () => {
   };
 
   const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilterCriteria((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = event.target;
+    if (type === "checkbox") {
+      setFilters((prev) => ({
+        ...prev,
+        categories: checked
+          ? [...prev.categories, value]
+          : prev.categories.filter((cat) => cat !== value),
+      }));
+    } else {
+      setFilters((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const applyFilters = () => {
-    setAppliedFilters(filterCriteria);
     setIsFilterOpen(false);
-    setIsSearchTriggered(true); // Ensures search is triggered even if search bar is empty
+    setIsSearchTriggered(true);
   };
 
   const clearFilters = () => {
-    setAppliedFilters({ minPrice: "", maxPrice: "" });
-    setFilterCriteria({ minPrice: "", maxPrice: "" });
-    setSearchQuery("");   // Clears search input field
-    setSearchTerm("");    // Clears applied search filter
-    setIsSearchTriggered(true); 
+    setFilters({ minPrice: "", maxPrice: "", categories: [] });
+    setSearchQuery("");
+    setSearchTerm("");
+    setIsSearchTriggered(true);
   };
-  
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
@@ -65,10 +74,13 @@ const Products = () => {
       product.desc.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesPrice =
-      (!appliedFilters.minPrice || product.price >= parseFloat(appliedFilters.minPrice)) &&
-      (!appliedFilters.maxPrice || product.price <= parseFloat(appliedFilters.maxPrice));
+      (!filters.minPrice || product.price >= parseFloat(filters.minPrice)) &&
+      (!filters.maxPrice || product.price <= parseFloat(filters.maxPrice));
 
-    return matchesSearch && matchesPrice;
+    const matchesCategory =
+      filters.categories.length === 0 || filters.categories.includes(product.category);
+
+    return matchesSearch && matchesPrice && matchesCategory;
   });
 
   return (
@@ -84,36 +96,57 @@ const Products = () => {
         <div className="search-bar">
           <input
             type="text"
-            id="search"
             placeholder="Search for products..."
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyDown={handleKeyPress}
           />
-          <button className="filter-button" onClick={toggleFilterPopup}>
-            Filter
-          </button>
+          <button className="filter-button" onClick={toggleFilterPopup}>Filter</button>
         </div>
 
         {isFilterOpen && (
           <div className="filter-popup">
             <h3>Filter Options</h3>
-            <label>Min Price:</label>
-            <input
-              type="number"
-              name="minPrice"
-              value={filterCriteria.minPrice}
-              onChange={handleFilterChange}
-            />
-            <label>Max Price:</label>
-            <input
-              type="number"
-              name="maxPrice"
-              value={filterCriteria.maxPrice}
-              onChange={handleFilterChange}
-            />
-            <button onClick={applyFilters}style={{ marginLeft: "10px" }}>Apply</button>
-            <button onClick={clearFilters} style={{ marginLeft: "10px"}}>Clear Filters</button>
+            <label>Price </label>
+            <div className="filter-section">
+              <label>Min Price:</label>
+              <input
+                type="number"
+                name="minPrice"
+                value={filters.minPrice}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-section">
+              <label>Max Price:</label>
+              <input
+                type="number"
+                name="maxPrice"
+                value={filters.maxPrice}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-section">
+              <label>Category</label>
+              <div className="category-options">
+                {['Academic Materials', 'Clothing', 'Technology and Electronics', 'Entertainment', 'Home Essentials', 'Accesories', 'Food and Beverage', 'Collectibles', 'Miscellaneous'].map((cat) => (
+                  <label key={cat} className="category-checkbox">
+                    <input
+                      type="checkbox"
+                      name="categories"
+                      value={cat}
+                      checked={filters.categories.includes(cat)}
+                      onChange={handleFilterChange}
+                    />
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="filter-buttons">
+              <button onClick={applyFilters}>Apply</button>
+              <button onClick={clearFilters}>Clear Filters</button>
+            </div>
           </div>
         )}
 
