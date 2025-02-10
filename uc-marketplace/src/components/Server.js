@@ -21,7 +21,7 @@ const wsServer = new WebSocketServer({
 
 let clients = [];
 
-const JWT_SECRET = "JWT_SECRET";
+const JWT_SECRET = "your_jwt_secret"; // Replace with your actual secret
 
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
@@ -32,20 +32,8 @@ wsServer.on('request', function(request) {
     const data = JSON.parse(message.utf8Data);
     console.log('Received Message:', data);
 
-    // Extract user name from JWT token
-    const token = data.token;
-    let name = 'Unknown';
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, "JWT_SECRET");
-        const user = await prisma.user.findUnique({
-          where: { email: decoded.email },
-        });
-        name = user ? user.name : 'Unknown';
-      } catch (err) {
-        console.log('JWT verification failed:', err);
-      }
-    }
+    // Use the sender field from the received message data
+    const name = data.sender || 'Unknown';
 
     const messageData = { ...data, sender: name };
     clients.forEach(client => {
@@ -60,7 +48,7 @@ wsServer.on('request', function(request) {
 });
 
 const generateJwt = (user) => {
-  return jwt.sign({ email: user.email }, "JWT_SECRET");
+  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
 // API for product listings
@@ -145,7 +133,7 @@ app.get("/services", async (req, res) => {
     const services = await prisma.service.findMany();
     res.json(services);
   } catch (error) {
-    res.status(500).json({ error: "Error getting services" });
+    res.status500().json({ error: "Error getting services" });
   }
 });
 
@@ -248,7 +236,7 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const decode = jwt.verify(token, "JWT_SECRET");
+    const decode = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: {
         email: decode.email,
@@ -272,6 +260,14 @@ app.get("/user", authenticate, async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+app.post("/user/refresh-token", authenticate, (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const token = generateJwt(req.user);
+  res.json({ token });
 });
 
 server.listen(port, () => {

@@ -95,7 +95,7 @@ export default function AccountView() {
 
       {/* Chat Section */}
       <div id="chat" className="content">
-        <Chat />
+        <Chat accountName={accountName} />
       </div>
 
       <div className="newlisting-reviews-container">

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const Chat = () => {
+const Chat = ({ accountName }) => {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
-    const [name, setName] = useState(''); // Default name, you can change this
     const [token, setToken] = useState(localStorage.getItem('token') || ''); // Add token state
 
     useEffect(() => {
@@ -13,7 +13,7 @@ const Chat = () => {
 
         newSocket.onopen = (event) => {
             console.log('Connection established');
-            newSocket.send(JSON.stringify({ type: 'info', message: 'Hello Server', sender: name, token }));
+            newSocket.send(JSON.stringify({ type: 'info', message: 'Hello Server', sender: accountName, token }));
         };
 
         newSocket.onmessage = (event) => {
@@ -31,11 +31,28 @@ const Chat = () => {
         };
 
         return () => newSocket.close();
-    }, [name, token]);
+    }, [accountName, token]);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                const response = await axios.post('http://localhost:3001/user/refresh-token', {}, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const newToken = response.data.token;
+                setToken(newToken);
+                localStorage.setItem('token', newToken);
+            } catch (error) {
+                console.error('Failed to refresh token:', error);
+            }
+        }, 55 * 60 * 1000); // Refresh token every 55 minutes
+
+        return () => clearInterval(interval);
+    }, [token]);
 
     const sendMessage = () => {
         if (socket && message) {
-            const messageData = { type: 'message', message, sender: name, token };
+            const messageData = { type: 'message', message, sender: accountName, token };
             socket.send(JSON.stringify(messageData));
             setMessage('');
         }
