@@ -11,25 +11,65 @@ export default function Home() {
           </div>
       </div>
       <div className="categories">
-        <h3 className="cat-title">Browse Categories</h3>
-        <ul>
+        <h3 className="cat-title">Browse Product Categories</h3>
+        <ul className="category-list">
           <li>
-            <a href="/products/1">Category 1</a>
+            <a href="/products/1">Acadmic Materials</a>
           </li>
           <li>
-            <a href="/products/2">Category 2</a>
+            <a href="/products/2">Home Essentials</a>
           </li>
           <li>
-            <a href="/products/3">Category 3</a>
+            <a href="/products/3">Clothing</a>
           </li>
           <li>
-            <a href="/products/4">Category 4</a>
+            <a href="/products/4">Accesories</a>
           </li>
           <li>
-            <a href="/products/5">Category 5</a>
+            <a href="/products/5">Technology and Electronics</a>
           </li>
           <li>
-            <a href="/products/6">Category 6</a>
+            <a href="/products/6">Food and Beverage</a>
+          </li>
+          <li>
+            <a href="/products/6">Entertainment</a>
+          </li>
+          <li>
+            <a href="/products/6">Collectibles</a>
+          </li>
+          <li>
+            <a href="/products/6">Miscellaneous</a>
+          </li>
+        </ul>
+
+        <h3 className="cat-title">Browse Service Categories</h3>
+        <ul className="category-list">
+          <li>
+            <a href="/services/1">Academic Help</a>
+          </li>
+          <li>
+            <a href="/services/2">Technology Support</a>
+          </li>
+          <li>
+            <a href="/services/3">Photography/Videography</a>
+          </li>
+          <li>
+            <a href="/services/4">Beauty and Personal Care</a>
+          </li>
+          <li>
+            <a href="/services/5">Automotive Services</a>
+          </li>
+          <li>
+            <a href="/services/6">Creative Work</a>
+          </li>
+          <li>
+            <a href="/services/7">Pet Services</a>
+          </li>
+          <li>
+            <a href="/services/8">Entertainment and Event Planning</a>
+          </li>
+          <li>
+            <a href="/services/9">Miscellaneous</a>
           </li>
         </ul>
       </div>
