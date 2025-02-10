@@ -4,7 +4,8 @@ const Chat = () => {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
-    const [username, setUsername] = useState('User'); // Default username, you can change this
+    const [name, setName] = useState(''); // Default name, you can change this
+    const [token, setToken] = useState(localStorage.getItem('token') || ''); // Add token state
 
     useEffect(() => {
         const newSocket = new WebSocket('ws://localhost:3001');
@@ -12,7 +13,7 @@ const Chat = () => {
 
         newSocket.onopen = (event) => {
             console.log('Connection established');
-            newSocket.send(JSON.stringify({ type: 'info', message: 'Hello Server', sender: username }));
+            newSocket.send(JSON.stringify({ type: 'info', message: 'Hello Server', sender: name, token }));
         };
 
         newSocket.onmessage = (event) => {
@@ -30,20 +31,20 @@ const Chat = () => {
         };
 
         return () => newSocket.close();
-    }, [username]);
+    }, [name, token]);
 
     const sendMessage = () => {
         if (socket && message) {
-            const messageData = { type: 'message', message, sender: username };
+            const messageData = { type: 'message', message, sender: name, token };
             socket.send(JSON.stringify(messageData));
             setMessage('');
         }
     };
 
     return (
-        <div>
+        <div id="chat">
             <h1>UC MarketPlace Chat</h1>
-            <div id="chat">
+            <div id="chat-messages">
                 {messages.map((msg, index) => (
                     <div key={index}>
                         <strong>{msg.sender}:</strong> {msg.message}

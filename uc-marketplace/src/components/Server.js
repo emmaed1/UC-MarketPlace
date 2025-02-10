@@ -21,16 +21,35 @@ const wsServer = new WebSocketServer({
 
 let clients = [];
 
+const JWT_SECRET = "JWT_SECRET";
+
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
   clients.push(connection);
   console.log('Connection accepted.');
 
-  connection.on('message', function(message) {
+  connection.on('message', async function(message) {
     const data = JSON.parse(message.utf8Data);
     console.log('Received Message:', data);
+
+    // Extract user name from JWT token
+    const token = data.token;
+    let name = 'Unknown';
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, "JWT_SECRET");
+        const user = await prisma.user.findUnique({
+          where: { email: decoded.email },
+        });
+        name = user ? user.name : 'Unknown';
+      } catch (err) {
+        console.log('JWT verification failed:', err);
+      }
+    }
+
+    const messageData = { ...data, sender: name };
     clients.forEach(client => {
-      client.sendUTF(JSON.stringify(data));
+      client.sendUTF(JSON.stringify(messageData));
     });
   });
 
@@ -201,31 +220,31 @@ app.post("/user/login", async (req, res) => {
       },
     });
     if (!user) {
-      res.json("User not found");
+      return res.status(401).json({ error: "User not found" });
     }
     const passwordMatch = await bcrypt.compare(
       req.body.password,
       user.password
     );
     if (!passwordMatch) {
-      res.json("Incorrect Password")
+      return res.status(401).json({ error: "Incorrect Password" });
     }
     const { password: _password, ...userWithoutPassword } = user;
     res.json({ ...userWithoutPassword, token: generateJwt(user) });
   } catch (error) {
-    res.json({ error: "Error logging in." });
+    res.status(500).json({ error: "Error logging in." });
   }
 });
 
 const authenticate = async (req, res, next) => {
   if (!req.headers.authorization) {
-    res.json("Unauthorized");
+    return res.json("Unauthorized");
   }
 
   const token = req.headers.authorization.split(" ")[1];
 
   if (!token) {
-    res.json("Token not found");
+    return res.json("Token not found");
   }
 
   try {
