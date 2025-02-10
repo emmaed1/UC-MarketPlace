@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './ChatPage.css'; // Import the CSS file
 
 const Chat = ({ accountName }) => {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState('');
-    const [token, setToken] = useState(localStorage.getItem('token') || ''); // Add token state
+    const [recipient, setRecipient] = useState('');
+    const [token, setToken] = useState(localStorage.getItem('token') || '');
+    const [users, setUsers] = useState([]);
+    const [chats, setChats] = useState([]);
+    const [selectedChat, setSelectedChat] = useState(null);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/user');
+                setUsers(response.data);
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
     useEffect(() => {
         const newSocket = new WebSocket('ws://localhost:3001');
@@ -13,7 +31,7 @@ const Chat = ({ accountName }) => {
 
         newSocket.onopen = (event) => {
             console.log('Connection established');
-            newSocket.send(JSON.stringify({ type: 'info', message: 'Hello Server', sender: accountName, token }));
+            newSocket.send(JSON.stringify({ type: 'authenticate', token }));
         };
 
         newSocket.onmessage = (event) => {
@@ -31,7 +49,7 @@ const Chat = ({ accountName }) => {
         };
 
         return () => newSocket.close();
-    }, [accountName, token]);
+    }, [token]);
 
     useEffect(() => {
         const interval = setInterval(async () => {
@@ -51,31 +69,74 @@ const Chat = ({ accountName }) => {
     }, [token]);
 
     const sendMessage = () => {
-        if (socket && message) {
-            const messageData = { type: 'message', message, sender: accountName, token };
+        if (socket && message && recipient) {
+            const messageData = { type: 'message', message, sender: accountName, recipient, token };
             socket.send(JSON.stringify(messageData));
             setMessage('');
+        }
+    };
+
+    const selectChat = (chat) => {
+        setSelectedChat(chat);
+        setRecipient(chat.recipient);
+        setMessages(chat.messages);
+    };
+
+    const loadPastMessages = async () => {
+        if (recipient) {
+            try {
+                const response = await axios.get(`http://localhost:3001/messages/${recipient}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setMessages(response.data);
+            } catch (error) {
+                console.error('Failed to load past messages:', error);
+            }
         }
     };
 
     return (
         <div id="chat">
             <h1>UC MarketPlace Chat</h1>
-            <div id="chat-messages">
-                {messages.map((msg, index) => (
-                    <div key={index}>
-                        <strong>{msg.sender}:</strong> {msg.message}
-                    </div>
-                ))}
+            <div id="chat-container">
+                <div id="chat-list">
+                    {chats.map((chat, index) => (
+                        <div key={index} className="chat-item" onClick={() => selectChat(chat)}>
+                            <strong>Chat with {chat.recipientName}</strong>
+                        </div>
+                    ))}
+                </div>
+                <div id="chat-messages">
+                    <button onClick={loadPastMessages}>Load Past Messages</button>
+                    {messages.map((msg, index) => (
+                        <div key={index} className={`message ${msg.sender === accountName ? 'sent' : 'received'}`}>
+                            <strong>{msg.sender}:</strong> {msg.message}
+                        </div>
+                    ))}
+                </div>
             </div>
-            <input
-                id="messageInput"
-                type="text"
-                placeholder="Type your message here"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-            />
-            <button onClick={sendMessage}>Send</button>
+            <div id="chat-input">
+                <select
+                    id="recipientSelect"
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                >
+                    <option value="">Select a user</option>
+                    {users.map((user) => (
+                        <option key={user.id} value={user.id}>
+                            {user.name}
+                        </option>
+                    ))}
+                </select>
+                <input
+                    id="messageInput"
+                    type="text"
+                    placeholder="Type your message here"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                />
+                <button onClick={sendMessage}>Send</button>
+            </div>
         </div>
     );
 };

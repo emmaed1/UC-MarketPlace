@@ -89,14 +89,12 @@ export default function AccountView() {
         </ul>
       </div>
 
-      <div id="friends" className="content">
-        <p>Test Message Here</p>
-      </div>
-
       {/* Chat Section */}
-      <div id="chat" className="content">
-        <Chat accountName={accountName} />
-      </div>
+      {option === "Messages" && (
+        <div id="chat" className="content">
+          <Chat accountName={accountName} />
+        </div>
+      )}
 
       <div className="newlisting-reviews-container">
         <div className="newlisting">

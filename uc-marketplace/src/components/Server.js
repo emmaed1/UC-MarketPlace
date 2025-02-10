@@ -25,24 +25,83 @@ const JWT_SECRET = "your_jwt_secret"; // Replace with your actual secret
 
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
-  clients.push(connection);
+  let userId = null;
+  clients.push({ connection, userId });
   console.log('Connection accepted.');
 
   connection.on('message', async function(message) {
     const data = JSON.parse(message.utf8Data);
     console.log('Received Message:', data);
 
+    if (data.type === 'authenticate') {
+      const token = data.token;
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        userId = decoded.userId;
+        const client = clients.find(client => client.connection === connection);
+        if (client) {
+          client.userId = userId;
+        }
+        console.log('User authenticated:', userId);
+      } catch (err) {
+        console.log('Authentication failed:', err);
+      }
+      return;
+    }
+
     // Use the sender field from the received message data
     const name = data.sender || 'Unknown';
+    const recipientId = parseInt(data.recipient);
 
-    const messageData = { ...data, sender: name };
-    clients.forEach(client => {
-      client.sendUTF(JSON.stringify(messageData));
+    // Find the sender's user ID
+    const senderUser = await prisma.user.findFirst({
+      where: { name: name },
+    });
+
+    if (!senderUser) {
+      console.log('Sender not found');
+      return;
+    }
+
+    if (!recipientId) {
+      console.log('Recipient ID not specified or invalid');
+      return;
+    }
+
+    // Find the recipient's user ID
+    const recipientUser = await prisma.user.findUnique({
+      where: { id: recipientId },
+    });
+
+    if (!recipientUser) {
+      console.log('Recipient not found');
+      return;
+    }
+
+    // Find the recipient's connection
+    const recipientClient = clients.find(client => client.userId === recipientUser.id);
+
+    if (recipientClient) {
+      const messageData = { ...data, sender: name };
+      console.log('Sending message to recipient:', recipientUser.id);
+      recipientClient.connection.sendUTF(JSON.stringify(messageData));
+    } else {
+      console.log('Recipient client not found');
+    }
+
+    // Store the message in the database
+    await prisma.message.create({
+      data: {
+        sender: { connect: { id: senderUser.id } },
+        recipient: { connect: { id: recipientUser.id } },
+        message: data.message,
+        timestamp: new Date(),
+      },
     });
   });
 
   connection.on('close', function(reasonCode, description) {
-    clients = clients.filter(client => client !== connection);
+    clients = clients.filter(client => client.connection !== connection);
     console.log('Peer disconnected.');
   });
 });
