@@ -14,7 +14,7 @@ export default function Home() {
         <h3 className="cat-title">Browse Product Categories</h3>
         <ul className="category-list">
           <li>
-            <a href="/products/1">Acadmic Materials</a>
+            <a href="/products/1">Academic Materials</a>
           </li>
           <li>
             <a href="/products/2">Home Essentials</a>
@@ -26,10 +26,10 @@ export default function Home() {
             <a href="/products/4">Accesories</a>
           </li>
           <li>
-            <a href="/products/5">Technology and Electronics</a>
+            <a href="/products/5">Technology & Electronics</a>
           </li>
           <li>
-            <a href="/products/6">Food and Beverage</a>
+            <a href="/products/6">Food & Beverage</a>
           </li>
           <li>
             <a href="/products/6">Entertainment</a>
@@ -51,10 +51,10 @@ export default function Home() {
             <a href="/services/2">Technology Support</a>
           </li>
           <li>
-            <a href="/services/3">Photography/Videography</a>
+            <a href="/services/3">Photography & Videography</a>
           </li>
           <li>
-            <a href="/services/4">Beauty and Personal Care</a>
+            <a href="/services/4">Beauty & Personal Care</a>
           </li>
           <li>
             <a href="/services/5">Automotive Services</a>
@@ -66,7 +66,7 @@ export default function Home() {
             <a href="/services/7">Pet Services</a>
           </li>
           <li>
-            <a href="/services/8">Entertainment and Event Planning</a>
+            <a href="/services/8">Entertainment & Event Planning</a>
           </li>
           <li>
             <a href="/services/9">Miscellaneous</a>
