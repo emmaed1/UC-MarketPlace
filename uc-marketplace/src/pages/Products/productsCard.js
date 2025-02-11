@@ -28,6 +28,7 @@ const ProductsCard = (props) => {
       <p>{desc}</p>
       <h3 className="price">$ {price.toLocaleString()}</h3>
       <h4>Category: </h4>
+        
       <button
         type="button"
         className={`btn ${isAdded ? "added" : ""}`}

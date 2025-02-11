@@ -1,7 +1,7 @@
 import "./new-listing.css";
 import logo from "../../assets/uc-MP-logo.png";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const NewListing = () => {
   const [type, setType] = useState("");
@@ -9,7 +9,34 @@ const NewListing = () => {
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const [img, setImage] = useState("")
+  const [categories, setCategories] = useState([
+    {id: 1, name: "Academic Materials" },
+    {id: 2, name: "Home Essentials" },
+    {id: 3, name: "Clothing" },
+    {id: 4, name: "Accesories" },
+    {id: 5, name: "Technology & Electronics" },
+    {id: 6, name: "Food & Beverage" },
+    {id: 7, name: "Entertainment" },
+    {id: 8, name: "Collectibles" },
+    {id: 9, name: "Miscellaneous" },
+  ]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [img, setImage] = useState("");
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/categories?type=${type}`)
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.log("Error fetching categories:", error));
+  }, [type]); // Reload categories when type changes
+
+  const toggleCategory = (categoryId) => {
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(categoryId)
+        ? prevSelected.filter((id) => id !== categoryId)
+        : [...prevSelected, categoryId]
+    );
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,6 +55,7 @@ const NewListing = () => {
           price: parseFloat(data.price),
           quantity: parseInt(data.quantity),
           rating: 0,
+          category: data.category,
           img: ("images/"+data.img)
         }),
       })
@@ -112,6 +140,24 @@ const NewListing = () => {
               placeholder="Enter Quantity:"
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Category:</label>
+            <div className="category-dropdown">
+              {categories.map((cat) => (
+                <div key={cat.id} className="category-option">
+                  <input
+                    type="checkbox"
+                    id={`category-${cat.id}`}
+                    value={cat.id}
+                    checked={selectedCategories.includes(cat.id)}
+                    onChange={() => toggleCategory(cat.id)}
+                  />
+                  <label htmlFor={`category-${cat.id}`}>{cat.name}</label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="form-group">
