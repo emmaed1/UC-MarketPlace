@@ -11,67 +11,70 @@ export default function Home() {
           </div>
       </div>
       <div className="categories">
-        <h3 className="cat-title">Browse Product Categories</h3>
-        <ul className="category-list">
-          <li>
-            <a href="/products/1">Academic Materials</a>
-          </li>
-          <li>
-            <a href="/products/2">Home Essentials</a>
-          </li>
-          <li>
-            <a href="/products/3">Clothing</a>
-          </li>
-          <li>
-            <a href="/products/4">Accesories</a>
-          </li>
-          <li>
-            <a href="/products/5">Technology & Electronics</a>
-          </li>
-          <li>
-            <a href="/products/6">Food & Beverage</a>
-          </li>
-          <li>
-            <a href="/products/6">Entertainment</a>
-          </li>
-          <li>
-            <a href="/products/6">Collectibles</a>
-          </li>
-          <li>
-            <a href="/products/6">Miscellaneous</a>
-          </li>
-        </ul>
-
-        <h3 className="cat-title">Browse Service Categories</h3>
-        <ul className="category-list">
-          <li>
-            <a href="/services/1">Academic Help</a>
-          </li>
-          <li>
-            <a href="/services/2">Technology Support</a>
-          </li>
-          <li>
-            <a href="/services/3">Photography & Videography</a>
-          </li>
-          <li>
-            <a href="/services/4">Beauty & Personal Care</a>
-          </li>
-          <li>
-            <a href="/services/5">Automotive Services</a>
-          </li>
-          <li>
-            <a href="/services/6">Creative Work</a>
-          </li>
-          <li>
-            <a href="/services/7">Pet Services</a>
-          </li>
-          <li>
-            <a href="/services/8">Entertainment & Event Planning</a>
-          </li>
-          <li>
-            <a href="/services/9">Miscellaneous</a>
-          </li>
-        </ul>
+        <div className="category-section">
+          <h3 className="cat-title">Browse Product Categories</h3>
+          <ul className="category-list">
+            <li>
+              <a href="/products/1">Academic Materials</a>
+            </li>
+            <li>
+              <a href="/products/2">Home Essentials</a>
+            </li>
+            <li>
+              <a href="/products/3">Clothing</a>
+            </li>
+            <li>
+              <a href="/products/4">Accesories</a>
+            </li>
+            <li>
+              <a href="/products/5">Technology & Electronics</a>
+            </li>
+            <li>
+              <a href="/products/6">Food & Beverage</a>
+            </li>
+            <li>
+              <a href="/products/6">Entertainment</a>
+            </li>
+            <li>
+              <a href="/products/6">Collectibles</a>
+            </li>
+            <li>
+              <a href="/products/6">Miscellaneous</a>
+            </li>
+          </ul>
+        </div>
+        <div className="category-section">
+          <h3 className="cat-title">Browse Service Categories</h3>
+          <ul className="category-list">
+            <li>
+              <a href="/services/1">Academic Help</a>
+            </li>
+            <li>
+              <a href="/services/2">Technology Support</a>
+            </li>
+            <li>
+              <a href="/services/3">Photography & Videography</a>
+            </li>
+            <li>
+              <a href="/services/4">Beauty & Personal Care</a>
+            </li>
+            <li>
+              <a href="/services/5">Automotive Services</a>
+            </li>
+            <li>
+              <a href="/services/6">Creative Work</a>
+            </li>
+            <li>
+              <a href="/services/7">Pet Services</a>
+            </li>
+            <li>
+              <a href="/services/8">Entertainment & Event Planning</a>
+            </li>
+            <li>
+              <a href="/services/9">Miscellaneous</a>
+            </li>
+          </ul>
+        </div>
       </div>
       <div className="reviews">
         <h2>Student Testimonials</h2>

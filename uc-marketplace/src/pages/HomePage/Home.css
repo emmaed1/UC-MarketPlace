@@ -24,12 +24,21 @@
   margin: 0;
   font-weight: 600;
 }
+
 .categories {
   padding: 1rem 5rem;
   background-color: #ffffff;
   color: #000000;
   font-size: 18px;
-  list-style: none;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.category-section {
+  flex: 1; /* Each section takes up available space */
+  min-width: 45%; /* Ensures a minimum width, preventing collapse */
 }
 
 .cat-title {
@@ -38,41 +47,73 @@
   background-color: #e00122;
   opacity: 90%;
   color: #ffffff;
+  text-align: center;
 }
 
 .category-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allow items to wrap within the list */
   padding: 0;
-  justify-content: space-between;
+  justify-content: flex-start; /* Align items to the left */
+  gap: 10px; /* Space between the items */
 }
 
 .category-list li {
-  justify-content: center;
-  display: flex;
-  width: 30%;
-  padding: 20px;
-  margin: 10px 0;
-  background-color: rgb(231, 227, 227);
+  width: calc(33.33% - 10px); /* 3 items per row with spacing */
+  padding: 10px;
+  box-sizing: border-box; /* Include padding in width calculation */
+  font-size: 14px;
+  display: flex; /*Needed to center the button */
+  justify-content: center; /*Needed to center the button */
 }
 
-.category-list a {
+.category-list a, .category-list button { /* Target both <a> and <button> */
   text-align: center;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 15px;
-  transition: color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   font-weight: 500;
   color: #000;
-  font-size: 16px;
+  font-size: 14px;
+  display: block; /* Important: Make the link/button fill the li */
+  width: 100%;
+  box-sizing: border-box;
+  background-color: transparent; /*Needed to make button styles work */
+  border: none; /*Needed to make button styles work */
+  cursor: pointer; /*Indicate it's clickable */
 }
 
-.category-list a:hover {
-  border-radius: 20px;
-  box-shadow: inset 100px 0 0 0 #e00122;
-  opacity: 75%;
+.category-list a:hover, .category-list button:hover {
+  background-color: #e00122;
   color: #ffffff;
-  text-decoration: none;
+  box-shadow: none;
+  opacity: 1;
+}
+
+@media (max-width: 1200px) { /* Adjust breakpoint as needed */
+  .category-list li {
+    width: calc(50% - 10px); /* 2 items per row on medium screens */
+  }
+
+  .category-section {
+    min-width: 48%; /* Adjust min-width if needed */
+  }
+}
+
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+  .category-list li {
+    width: 100%; /* 1 item per row on small screens */
+  }
+
+  .category-section {
+    min-width: 100%; /* Full width on small screens */
+  }
+
+  .categories {
+    padding: 1rem 2rem; /* Reduce padding on small screens */
+    flex-direction: column; /*Stack category sections */
+  }
 }
 
 .category-list a {
