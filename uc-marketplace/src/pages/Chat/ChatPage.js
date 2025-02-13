@@ -105,12 +105,21 @@ const Chat = ({ accountName }) => {
                         className="search-input"
                     />
                     {filteredUsers.map((user) => (
-                        <div key={user.id} className="chat-item" onClick={() => selectChat(user)}>
+                        <div
+                            key={user.id}
+                            className={`chat-item ${selectedChat && selectedChat.id === user.id ? 'selected' : ''}`}
+                            onClick={() => selectChat(user)}
+                        >
                             <strong>{user.name}</strong>
                         </div>
                     ))}
                 </div>
                 <div id="chat-messages">
+                    {selectedChat && (
+                        <div className="chat-header">
+                            <strong>Chatting with {selectedChat.name}</strong>
+                        </div>
+                    )}
                     {messages.map((msg, index) => (
                         <div key={index} className={`message ${msg.sender === accountName ? 'sent' : 'received'}`}>
                             <strong>{msg.sender}:</strong> {msg.message}
