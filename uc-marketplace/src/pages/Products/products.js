@@ -9,10 +9,14 @@ const Products = () => {
     categories: [],
   });
   const [products, setProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState({
+    minPrice: "",
+    maxPrice: "",
+    categories: [],
+  });
 
   useEffect(() => {
     fetchProducts();
@@ -26,14 +30,12 @@ const Products = () => {
   };
 
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-    setIsSearchTriggered(false);
+    setSearchTerm(event.target.value);
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      setSearchTerm(searchQuery);
-      setIsSearchTriggered(true);
+      setAppliedSearchTerm(searchTerm);
     }
   };
 
@@ -56,29 +58,30 @@ const Products = () => {
   };
 
   const applyFilters = () => {
+    setAppliedFilters(filters);
+    setAppliedSearchTerm(searchTerm);
     setIsFilterOpen(false);
-    setIsSearchTriggered(true);
   };
 
   const clearFilters = () => {
     setFilters({ minPrice: "", maxPrice: "", categories: [] });
-    setSearchQuery("");
+    setAppliedFilters({ minPrice: "", maxPrice: "", categories: [] });
     setSearchTerm("");
-    setIsSearchTriggered(true);
+    setAppliedSearchTerm("");
   };
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
-      !isSearchTriggered ||
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.desc.toLowerCase().includes(searchTerm.toLowerCase());
+      !appliedSearchTerm ||
+      product.name.toLowerCase().includes(appliedSearchTerm.toLowerCase()) ||
+      product.desc.toLowerCase().includes(appliedSearchTerm.toLowerCase());
 
     const matchesPrice =
-      (!filters.minPrice || product.price >= parseFloat(filters.minPrice)) &&
-      (!filters.maxPrice || product.price <= parseFloat(filters.maxPrice));
+      (!appliedFilters.minPrice || product.price >= parseFloat(appliedFilters.minPrice)) &&
+      (!appliedFilters.maxPrice || product.price <= parseFloat(appliedFilters.maxPrice));
 
-      const matchesCategory =
-      filters.categories.length === 0 || filters.categories.some(cat => product.categories.some(prodCat => prodCat.name === cat));
+    const matchesCategory =
+      appliedFilters.categories.length === 0 || appliedFilters.categories.some(cat => product.categories.some(prodCat => prodCat.name === cat));
 
     return matchesSearch && matchesPrice && matchesCategory;
   });
@@ -97,11 +100,13 @@ const Products = () => {
           <input
             type="text"
             placeholder="Search for products..."
-            value={searchQuery}
+            value={searchTerm}
             onChange={handleSearchChange}
             onKeyDown={handleKeyPress}
           />
-          <button className="filter-button" onClick={toggleFilterPopup}>Filter</button>
+          <button className="filter-button" onClick={toggleFilterPopup}>
+            Filter
+          </button>
         </div>
 
         {isFilterOpen && (
@@ -129,7 +134,17 @@ const Products = () => {
             <div className="filter-section">
               <label>Category</label>
               <div className="category-options">
-                {['Academic Materials', 'Clothing', 'Technology & Electronics', 'Entertainment', 'Home Essentials', 'Accesories', 'Food & Beverage', 'Collectibles', 'Miscellaneous'].map((cat) => (
+                {[
+                  "Academic Materials",
+                  "Clothing",
+                  "Technology & Electronics",
+                  "Entertainment",
+                  "Home Essentials",
+                  "Accesories",
+                  "Food & Beverage",
+                  "Collectibles",
+                  "Miscellaneous",
+                ].map((cat) => (
                   <label key={cat} className="category-checkbox">
                     <input
                       type="checkbox"
