@@ -11,6 +11,7 @@ const Chat = ({ accountName }) => {
     const [users, setUsers] = useState([]);
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -76,38 +77,40 @@ const Chat = ({ accountName }) => {
         }
     };
 
-    const selectChat = (chat) => {
-        setSelectedChat(chat);
-        setRecipient(chat.recipient);
-        setMessages(chat.messages);
-    };
-
-    const loadPastMessages = async () => {
-        if (recipient) {
-            try {
-                const response = await axios.get(`http://localhost:3001/messages/${recipient}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setMessages(response.data);
-            } catch (error) {
-                console.error('Failed to load past messages:', error);
-            }
+    const selectChat = async (user) => {
+        setRecipient(user.id);
+        setSelectedChat(user);
+        try {
+            const response = await axios.get(`http://localhost:3001/messages/${user.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setMessages(response.data);
+        } catch (error) {
+            console.error('Failed to load past messages:', error);
         }
     };
+
+    const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return (
         <div id="chat">
             <h1>UC MarketPlace Chat</h1>
             <div id="chat-container">
                 <div id="chat-list">
-                    {users.map((user) => (
-                        <div key={user.id} className="chat-item" onClick={() => setRecipient(user.id)}>
+                    <input
+                        type="text"
+                        placeholder="Search users"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
+                    {filteredUsers.map((user) => (
+                        <div key={user.id} className="chat-item" onClick={() => selectChat(user)}>
                             <strong>{user.name}</strong>
                         </div>
                     ))}
                 </div>
                 <div id="chat-messages">
-                    <button onClick={loadPastMessages}>Load Past Messages</button>
                     {messages.map((msg, index) => (
                         <div key={index} className={`message ${msg.sender === accountName ? 'sent' : 'received'}`}>
                             <strong>{msg.sender}:</strong> {msg.message}

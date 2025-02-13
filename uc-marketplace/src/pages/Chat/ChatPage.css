@@ -20,6 +20,14 @@
     background-color: #f5f5f5;
 }
 
+.search-input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid #ccc;
+}
+
 .chat-item {
     padding: 10px;
     cursor: pointer;
