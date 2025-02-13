@@ -21,8 +21,7 @@ const wsServer = new WebSocketServer({
 
 let clients = [];
 
-const JWT_SECRET = "your_jwt_secret"; // Replace with your actual secret
-
+const JWT_SECRET = "1234567890"; // Replace with our real secret later.
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
   let userId = null;
@@ -49,11 +48,9 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    // Use the sender field from the received message data
     const name = data.sender || 'Unknown';
     const recipientId = parseInt(data.recipient);
 
-    // Find the sender's user ID
     const senderUser = await prisma.user.findFirst({
       where: { name: name },
     });
@@ -68,7 +65,6 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    // Find the recipient's user ID
     const recipientUser = await prisma.user.findUnique({
       where: { id: recipientId },
     });
@@ -78,7 +74,6 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    // Find the recipient's connection
     const recipientClient = clients.find(client => client.userId === recipientUser.id);
 
     if (recipientClient) {
@@ -89,7 +84,6 @@ wsServer.on('request', function(request) {
       console.log('Recipient client not found');
     }
 
-    // Store the message in the database
     await prisma.message.create({
       data: {
         sender: { connect: { id: senderUser.id } },
@@ -110,7 +104,6 @@ const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
-// API for product listings
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -166,7 +159,6 @@ app.delete("/products/:productId", async (req, res) => {
   }
 });
 
-// API for services listing
 app.post("/services", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -221,7 +213,6 @@ app.delete("/services/:serviceId", async (req, res) => {
   }
 });
 
-// API calls for users
 app.get("/user", async (req, res) => {
   try {
     const user = await prisma.user.findMany();
