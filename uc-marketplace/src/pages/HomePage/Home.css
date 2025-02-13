@@ -37,8 +37,8 @@
 }
 
 .category-section {
-  flex: 1; /* Each section takes up available space */
-  min-width: 45%; /* Ensures a minimum width, preventing collapse */
+  flex: 1;
+  min-width: 45%;
 }
 
 .cat-title {
@@ -52,22 +52,22 @@
 
 .category-list {
   display: flex;
-  flex-wrap: wrap; /* Allow items to wrap within the list */
+  flex-wrap: wrap;
   padding: 0;
-  justify-content: flex-start; /* Align items to the left */
-  gap: 10px; /* Space between the items */
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .category-list li {
-  width: calc(33.33% - 10px); /* 3 items per row with spacing */
+  width: calc(33.33% - 10px);
   padding: 10px;
-  box-sizing: border-box; /* Include padding in width calculation */
+  box-sizing: border-box;
   font-size: 14px;
-  display: flex; /*Needed to center the button */
-  justify-content: center; /*Needed to center the button */
+  display: flex;
+  justify-content: center;
 }
 
-.category-list a, .category-list button { /* Target both <a> and <button> */
+.category-list a, .category-list button {
   text-align: center;
   text-decoration: none;
   padding: 0.3rem 0.6rem;
@@ -76,12 +76,12 @@
   font-weight: 500;
   color: #000;
   font-size: 14px;
-  display: block; /* Important: Make the link/button fill the li */
+  display: block; 
   width: 100%;
   box-sizing: border-box;
-  background-color: transparent; /*Needed to make button styles work */
-  border: none; /*Needed to make button styles work */
-  cursor: pointer; /*Indicate it's clickable */
+  background-color: transparent; 
+  border: none; 
+  cursor: pointer; 
 }
 
 .category-list a:hover, .category-list button:hover {
@@ -91,28 +91,28 @@
   opacity: 1;
 }
 
-@media (max-width: 1200px) { /* Adjust breakpoint as needed */
+@media (max-width: 1200px) {
   .category-list li {
-    width: calc(50% - 10px); /* 2 items per row on medium screens */
+    width: calc(50% - 10px);
   }
 
   .category-section {
-    min-width: 48%; /* Adjust min-width if needed */
+    min-width: 48%;
   }
 }
 
-@media (max-width: 768px) { /* Adjust breakpoint as needed */
+@media (max-width: 768px) {
   .category-list li {
-    width: 100%; /* 1 item per row on small screens */
+    width: 100%;
   }
 
   .category-section {
-    min-width: 100%; /* Full width on small screens */
+    min-width: 100%;
   }
 
   .categories {
-    padding: 1rem 2rem; /* Reduce padding on small screens */
-    flex-direction: column; /*Stack category sections */
+    padding: 1rem 2rem;
+    flex-direction: column;
   }
 }
 
@@ -122,16 +122,6 @@
   display: inline-block;
 }
 
-/* Optional: Separate style for Product and Service Categories (optional, to add specific styles) */
-.product-category {
-  background-color: black; /* You can customize with different background */
-}
-
-.service-category {
-  background-color: black; /* You can customize with different background */
-}
-
-
 .categories a:hover {
   border-radius: 20px;
   box-shadow: inset 100px 0 0 0 #e00122;
@@ -139,7 +129,6 @@
   color: rgb(255, 255, 255);
   text-decoration: none;
 }
-
 
 .reviews {
   background-color: #e00122;
