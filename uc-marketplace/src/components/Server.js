@@ -2,21 +2,108 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
+const cors = require("cors");
+const http = require('http');
+const WebSocketServer = require('websocket').server;
 
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
-const cors = require("cors");
-
-const generateJwt = (user) => {
-  return jwt.sign({ email: user.email }, "JWT_SECRET");
-};
 
 app.use(express.json());
-
 app.use(cors());
 
-// api for product listings
+const server = http.createServer(app);
+
+const wsServer = new WebSocketServer({
+  httpServer: server
+});
+
+let clients = [];
+
+const JWT_SECRET = "1234567890"; // Replace with our real secret later.
+wsServer.on('request', function(request) {
+  const connection = request.accept(null, request.origin);
+  let userId = null;
+  clients.push({ connection, userId });
+  console.log('Connection accepted.');
+
+  connection.on('message', async function(message) {
+    const data = JSON.parse(message.utf8Data);
+    console.log('Received Message:', data);
+
+    if (data.type === 'authenticate') {
+      const token = data.token;
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        userId = decoded.userId;
+        const client = clients.find(client => client.connection === connection);
+        if (client) {
+          client.userId = userId;
+        }
+        console.log('User authenticated:', userId);
+      } catch (err) {
+        console.log('Authentication failed:', err);
+      }
+      return;
+    }
+
+    const name = data.sender || 'Unknown';
+    const recipientId = parseInt(data.recipient);
+
+    const senderUser = await prisma.user.findFirst({
+      where: { name: name },
+    });
+
+    if (!senderUser) {
+      console.log('Sender not found');
+      return;
+    }
+
+    if (!recipientId) {
+      console.log('Recipient ID not specified or invalid');
+      return;
+    }
+
+    const recipientUser = await prisma.user.findUnique({
+      where: { id: recipientId },
+    });
+
+    if (!recipientUser) {
+      console.log('Recipient not found');
+      return;
+    }
+
+    const recipientClient = clients.find(client => client.userId === recipientUser.id);
+
+    if (recipientClient) {
+      const messageData = { ...data, sender: name };
+      console.log('Sending message to recipient:', recipientUser.id);
+      recipientClient.connection.sendUTF(JSON.stringify(messageData));
+    } else {
+      console.log('Recipient client not found');
+    }
+
+    await prisma.message.create({
+      data: {
+        sender: { connect: { id: senderUser.id } },
+        recipient: { connect: { id: recipientUser.id } },
+        message: data.message,
+        timestamp: new Date(),
+      },
+    });
+  });
+
+  connection.on('close', function(reasonCode, description) {
+    clients = clients.filter(client => client.connection !== connection);
+    console.log('Peer disconnected.');
+  });
+});
+
+const generateJwt = (user) => {
+  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+};
+
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -37,13 +124,8 @@ app.post("/products", async (req, res) => {
   }
 });
 
-// export default async function handler(req, res) {
-//     const products = await prisma.product.findMany()
-//     res.status(200).json(products)
-// }
 app.get("/products", async (req, res) => {
   try {
-    const prisma = new PrismaClient();
     const products = await prisma.product.findMany();
     res.status(200).json(products);
   } catch (error) {
@@ -77,7 +159,6 @@ app.delete("/products/:productId", async (req, res) => {
   }
 });
 
-// api for services listing
 app.post("/services", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -103,7 +184,7 @@ app.get("/services", async (req, res) => {
     const services = await prisma.service.findMany();
     res.json(services);
   } catch (error) {
-    res.status(500).json({ error: "Error getting services" });
+    res.status500().json({ error: "Error getting services" });
   }
 });
 
@@ -132,7 +213,6 @@ app.delete("/services/:serviceId", async (req, res) => {
   }
 });
 
-// api calls for users
 app.get("/user", async (req, res) => {
   try {
     const user = await prisma.user.findMany();
@@ -178,35 +258,35 @@ app.post("/user/login", async (req, res) => {
       },
     });
     if (!user) {
-      res.json("User not found");
+      return res.status(401).json({ error: "User not found" });
     }
     const passwordMatch = await bcrypt.compare(
       req.body.password,
       user.password
     );
     if (!passwordMatch) {
-      res.json("Incorrect Password")
+      return res.status(401).json({ error: "Incorrect Password" });
     }
     const { password: _password, ...userWithoutPassword } = user;
     res.json({ ...userWithoutPassword, token: generateJwt(user) });
   } catch (error) {
-    res.json({ error: "Error logging in." });
+    res.status(500).json({ error: "Error logging in." });
   }
 });
 
-const authenticate = async (req=app.ExpressRequest, res = app.response, next=app.next) => {
+const authenticate = async (req, res, next) => {
   if (!req.headers.authorization) {
-    res.json("Unauthorized");
+    return res.json("Unauthorized");
   }
 
   const token = req.headers.authorization.split(" ")[1];
 
   if (!token) {
-    res.json("Token not found");
+    return res.json("Token not found");
   }
 
   try {
-    const decode = jwt.verify(token, "JWT_SECRET");
+    const decode = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: {
         email: decode.email,
@@ -220,7 +300,7 @@ const authenticate = async (req=app.ExpressRequest, res = app.response, next=app
   }
 };
 
-app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
+app.get("/user", authenticate, async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -231,7 +311,14 @@ app.get("/user", authenticate, async (req=app.ExpressRequest, res, next) => {
     next(err);
   }
 });
+app.post("/user/refresh-token", authenticate, (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const token = generateJwt(req.user);
+  res.json({ token });
+});
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
