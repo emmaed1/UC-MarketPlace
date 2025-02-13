@@ -77,8 +77,8 @@ const Products = () => {
       (!filters.minPrice || product.price >= parseFloat(filters.minPrice)) &&
       (!filters.maxPrice || product.price <= parseFloat(filters.maxPrice));
 
-    const matchesCategory =
-      filters.categories.length === 0 || filters.categories.includes(product.category);
+      const matchesCategory =
+      filters.categories.length === 0 || filters.categories.some(cat => product.categories.some(prodCat => prodCat.name === cat));
 
     return matchesSearch && matchesPrice && matchesCategory;
   });
@@ -129,7 +129,7 @@ const Products = () => {
             <div className="filter-section">
               <label>Category</label>
               <div className="category-options">
-                {['Academic Materials', 'Clothing', 'Technology and Electronics', 'Entertainment', 'Home Essentials', 'Accesories', 'Food and Beverage', 'Collectibles', 'Miscellaneous'].map((cat) => (
+                {['Academic Materials', 'Clothing', 'Technology & Electronics', 'Entertainment', 'Home Essentials', 'Accesories', 'Food & Beverage', 'Collectibles', 'Miscellaneous'].map((cat) => (
                   <label key={cat} className="category-checkbox">
                     <input
                       type="checkbox"
