@@ -16,14 +16,14 @@ const Chat = ({ accountName }) => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/user');
-                setUsers(response.data);
+                setUsers(response.data.filter(user => user.name !== accountName));
             } catch (error) {
                 console.error('Failed to fetch users:', error);
             }
         };
 
         fetchUsers();
-    }, []);
+    }, [accountName]);
 
     useEffect(() => {
         const newSocket = new WebSocket('ws://localhost:3001');
