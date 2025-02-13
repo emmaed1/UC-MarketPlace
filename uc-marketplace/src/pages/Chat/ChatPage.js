@@ -100,9 +100,9 @@ const Chat = ({ accountName }) => {
             <h1>UC MarketPlace Chat</h1>
             <div id="chat-container">
                 <div id="chat-list">
-                    {chats.map((chat, index) => (
-                        <div key={index} className="chat-item" onClick={() => selectChat(chat)}>
-                            <strong>Chat with {chat.recipientName}</strong>
+                    {users.map((user) => (
+                        <div key={user.id} className="chat-item" onClick={() => setRecipient(user.id)}>
+                            <strong>{user.name}</strong>
                         </div>
                     ))}
                 </div>
@@ -116,18 +116,6 @@ const Chat = ({ accountName }) => {
                 </div>
             </div>
             <div id="chat-input">
-                <select
-                    id="recipientSelect"
-                    value={recipient}
-                    onChange={(e) => setRecipient(e.target.value)}
-                >
-                    <option value="">Select a user</option>
-                    {users.map((user) => (
-                        <option key={user.id} value={user.id}>
-                            {user.name}
-                        </option>
-                    ))}
-                </select>
                 <input
                     id="messageInput"
                     type="text"
