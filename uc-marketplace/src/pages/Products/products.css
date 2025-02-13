@@ -220,6 +220,11 @@
   color: #ffffff;
 }
 
+.product-categories { /*may need to adjust*/
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
 .cart-button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
