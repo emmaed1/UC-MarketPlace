@@ -26,7 +26,6 @@ const ProductsCard = (props) => {
       <h4 className="product-title">{name}</h4>
       <p>{desc}</p>
       <h3 className="price">$ {price.toLocaleString()}</h3>
-      <h4>Category:</h4>
       <p>{categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}</p>
 
       <button

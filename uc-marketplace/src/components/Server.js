@@ -67,6 +67,9 @@ app.get("/products/:productId", async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
       where: { productId: productId },
+      include: {  // Make absolutely sure this is here!
+        categories: true,
+      },
     });
     res.json(product);
   } catch (error) {
