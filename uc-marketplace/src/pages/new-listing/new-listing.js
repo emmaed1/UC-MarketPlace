@@ -10,15 +10,15 @@ const NewListing = () => {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [categories, setCategories] = useState([
-    {id: 1, name: "Academic Materials" },
-    {id: 2, name: "Home Essentials" },
-    {id: 3, name: "Clothing" },
-    {id: 4, name: "Accesories" },
-    {id: 5, name: "Technology & Electronics" },
-    {id: 6, name: "Food & Beverage" },
-    {id: 7, name: "Entertainment" },
-    {id: 8, name: "Collectibles" },
-    {id: 9, name: "Miscellaneous" },
+    {id: 2, name: "Academic Materials" },
+    {id: 3, name: "Home Essentials" },
+    {id: 4, name: "Clothing" },
+    {id: 5, name: "Accesories" },
+    {id: 6, name: "Technology & Electronics" },
+    {id: 7, name: "Food & Beverage" },
+    {id: 8, name: "Entertainment" },
+    {id: 9, name: "Collectibles" },
+    {id: 10, name: "Miscellaneous" },
   ]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [img, setImage] = useState("");
@@ -40,9 +40,9 @@ const NewListing = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { name, desc, price, quantity, img };
+    const data = { name, desc, price, quantity, img }; // Removed categories here
     const postType = document.getElementById("listing-type").value;
-    console.log(document.getElementById("listing-type").value)
+  
     try {
       fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
@@ -55,24 +55,23 @@ const NewListing = () => {
           price: parseFloat(data.price),
           quantity: parseInt(data.quantity),
           rating: 0,
-          category: data.category,
-          img: ("images/"+data.img)
+          img: ("images/"+data.img),
+          categoryIds: selectedCategories,
         }),
       })
         .then((res) => res.json())
-        .then((data) => console.log(data));
-      if (data) {
-        console.log("Success", data);
-        Swal.fire({
-          title: "Success!",
-          text: "Your listing was successfully posted!",
-          icon: "success",
-        });
-      }
+        .then((data) => console.log(data)
+        );
+  
+      Swal.fire({
+        title: "Success!",
+        text: "Your listing was successfully posted!",
+        icon: "success",
+      });
     } catch (error) {
       console.log("Error: ", error);
     }
-  };
+  };  
 
   return (
     <div className="content">

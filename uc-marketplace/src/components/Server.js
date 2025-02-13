@@ -18,7 +18,7 @@ app.use(cors());
 
 // api for product listings
 app.post("/products", async (req, res) => {
-  const { name, desc, rating, price, quantity, img } = req.body;
+  const { name, desc, rating, price, quantity, img, categoryIds } = req.body;
 
   try {
     const product = await prisma.product.create({
@@ -29,6 +29,12 @@ app.post("/products", async (req, res) => {
         price,
         quantity,
         img,
+        categories: { // Connect to existing categories
+          connect: categoryIds.map((categoryId) => ({ id: categoryId })),
+        },
+      },
+      include: { // Include categories in the response
+        categories: true,
       },
     });
     res.json(product);
@@ -43,8 +49,12 @@ app.post("/products", async (req, res) => {
 // }
 app.get("/products", async (req, res) => {
   try {
-    const prisma = new PrismaClient();
-    const products = await prisma.product.findMany();
+    //const prisma = new PrismaClient();
+    const products = await prisma.product.findMany({
+      include: { // Include categories in the response
+        categories: true,
+      },
+    });
     res.status(200).json(products);
   } catch (error) {
     console.log("Error!");
