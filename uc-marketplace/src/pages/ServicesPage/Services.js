@@ -1,18 +1,76 @@
-import { useEffect, useState } from "react";
 import "./Services.css"; 
-import logo from '../../assets/uc-MP-logo.png';
 import ServicesCard from './servicesCard'
-import servicesData from "./servicesData";
+import { useEffect, useState } from "react";
 
-const ServicesView = () => {
+const Services = () => {
+  const [services, setServices] = useState([]); // Store the services
+  const [searchQuery, setSearchQuery] = useState(""); // Store the search input
+  const [searchTerm, setSearchTerm] = useState(""); // Store the confirmed search term
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState({ minPrice: "", maxPrice: "" });
+  const [filterCriteria, setFilterCriteria] = useState({ minPrice: "", maxPrice: "" });
+
   useEffect(() => {
-    fetch('http://localhost:3001/services', {method: "GET"})
-      .then(res => res.json())
-      .then(data => getServices(data))
-      .catch(err => {console.log("Error getting services", err)});
+    fetchServices();
   }, []);
 
-  const [services, getServices] = useState([]);
+  // Function to fetch all services
+  const fetchServices = () => {
+    fetch('http://localhost:3001/services', { method: "GET" })
+      .then(res => res.json())
+      .then(data => setServices(data))
+      .catch(err => console.log("Error getting services", err));
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setIsSearchTriggered(false);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      setSearchTerm(searchQuery);
+      setIsSearchTriggered(true);
+    }
+  };
+
+  const toggleFilterPopup = () => {
+    setIsFilterOpen(!isFilterOpen);
+  };
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilterCriteria((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(filterCriteria);
+    setIsFilterOpen(false);
+    setIsSearchTriggered(true); // Ensures search is triggered even if search bar is empty
+  };
+
+  const clearFilters = () => {
+    setAppliedFilters({ minPrice: "", maxPrice: "" });
+    setFilterCriteria({ minPrice: "", maxPrice: "" });
+    setSearchQuery("");   // Clears search input field
+    setSearchTerm("");    // Clears applied search filter
+    setIsSearchTriggered(true); 
+  };
+  
+
+  const filteredServices= services.filter((service) => {
+    const matchesSearch =
+      !isSearchTriggered ||
+      service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      service.desc.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesPrice =
+      (!appliedFilters.minPrice || service.price >= parseFloat(appliedFilters.minPrice)) &&
+      (!appliedFilters.maxPrice || service.price <= parseFloat(appliedFilters.maxPrice));
+
+    return matchesSearch && matchesPrice;
+  });
 
   return (
     <div className="content">
@@ -23,18 +81,51 @@ const ServicesView = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search services..."
+        <input 
+          type="text" 
+          id="search" 
+          placeholder="Search for services..." 
+          value={searchQuery}
+          onChange={handleSearchChange} // Update search query
+          onKeyDown={handleKeyPress} // Trigger search on Enter key press
         />
+        <button className="filter-button" onClick={toggleFilterPopup}>
+            Filter
+          </button>
       </div>
+
+      {isFilterOpen && (
+          <div className="filter-popup">
+            <h3>Filter Options</h3>
+            <label>Min Price:</label>
+            <input
+              type="number"
+              name="minPrice"
+              value={filterCriteria.minPrice}
+              onChange={handleFilterChange}
+            />
+            <label>Max Price:</label>
+            <input
+              type="number"
+              name="maxPrice"
+              value={filterCriteria.maxPrice}
+              onChange={handleFilterChange}
+            />
+            <button onClick={applyFilters}style={{ marginLeft: "10px" }}>Apply</button>
+            <button onClick={clearFilters} style={{ marginLeft: "10px"}}>Clear Filters</button>
+          </div>
+        )}
+
       <div className="services-content">
-          {services.map((item) => (
-            <ServicesCard key={item.servicesId}{...item} />
-          ))}
-        </div>
+        {filteredServices.length > 0 ? (
+          filteredServices.map((item) => (
+            <ServicesCard key={item.serviceId} {...item} />
+          ))
+        ) : (
+          <p>No services found.</p>
+        )}
+      </div>
       <div className="features-container">
         <div className="featured-section">
           <h3 className="featured-title">Special Offers</h3>
@@ -60,4 +151,4 @@ const ServicesView = () => {
   );
 };
 
-export default ServicesView;
+export default Services;

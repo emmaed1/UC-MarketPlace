@@ -55,6 +55,26 @@
   border: 1px solid #ccc;
   max-width: 900px; /* Optional: set a max-width to limit how wide it can get */
 }
+/*added filter button css*/
+.filter-button {
+  color: #fff;
+  background-color: #e00122;  /* Same red color as your other buttons */
+  margin-top: 1rem;
+  margin-left: 10px;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;  /* Make it less rounded to match the search bar */
+  font-size: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease;  /* Smooth color transition */
+  display: inline-block;  /* Ensures it's a block element, but inline with other items */
+}
+
+.filter-button:hover {
+  color: #eee;
+  background-color: #c3001d;  /* Darker shade for hover effect */
+}
+
 .products-content {
   padding: 2rem 1rem 4rem;
   display: grid;
@@ -88,6 +108,7 @@
   .product-title {
     font-size: 1.1rem;
     margin: 0.6rem 0;
+    color: red;
   }
 
   .price {

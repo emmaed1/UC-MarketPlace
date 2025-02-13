@@ -311,7 +311,6 @@ app.get("/user", authenticate, async (req, res, next) => {
     next(err);
   }
 });
-
 app.post("/user/refresh-token", authenticate, (req, res) => {
   if (!req.user) {
     return res.status(401).json({ error: "Unauthorized" });
