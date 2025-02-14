@@ -83,7 +83,6 @@ const NewListing = () => {
         size: file.size
       });
 
-      // Check file size (5MB limit)
       const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         e.target.value = '';
