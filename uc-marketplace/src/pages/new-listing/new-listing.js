@@ -14,42 +14,40 @@ const NewListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('desc', desc);
-    formData.append('price', price);
-    formData.append('quantity', quantity);
-    formData.append('rating', 5);
-    if (image) {
-      formData.append('image', image);
-    }
+    const postType = document.getElementById("listing-type").value;
 
     try {
-      console.log("Submitting form data:", {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('desc', desc);
+      formData.append('price', price);
+      formData.append('quantity', quantity);
+      formData.append('rating', 5);
+      if (image) {
+        formData.append('image', image);
+      }
+
+      console.log("Submitting:", {
+        type: postType,
         name,
         desc,
         price,
         quantity,
-        image: image ? image.name : 'No image'
+        hasImage: !!image
       });
 
-      const response = await fetch("http://localhost:3001/products", {
+      const response = await fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
-        body: formData,
+        body: formData
       });
-
-      console.log("Response status:", response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Server error response:", errorText);
-        throw new Error(errorText || 'Failed to create product');
-      }
 
       const data = await response.json();
-      console.log("Success response:", data);
-      
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create listing');
+      }
+
+      console.log("Success", data);
       Swal.fire({
         title: "Success!",
         text: "Your listing was successfully posted!",
@@ -62,16 +60,13 @@ const NewListing = () => {
       setPrice(0);
       setQuantity(0);
       setImage(null);
-      
-      // Reset file input
-      const fileInput = document.getElementById('photos');
-      if (fileInput) fileInput.value = '';
-      
+      document.getElementById('photos').value = '';
+
     } catch (error) {
-      console.error("Full error details:", error);
+      console.error("Error: ", error);
       Swal.fire({
         title: "Error!",
-        text: `Failed to create listing: ${error.message}`,
+        text: error.message,
         icon: "error",
       });
     } finally {
@@ -80,9 +75,37 @@ const NewListing = () => {
   };
 
   const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      console.log("Selected file:", file.name, "Size:", file.size);
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Selected file:", {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
+
+      // Check file size (5MB limit)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        e.target.value = '';
+        Swal.fire({
+          title: "Error!",
+          text: "File size too large. Please choose an image under 5MB.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        e.target.value = '';
+        Swal.fire({
+          title: "Error!",
+          text: "Please select an image file.",
+          icon: "error",
+        });
+        return;
+      }
+
       setImage(file);
     }
   };
@@ -90,7 +113,7 @@ const NewListing = () => {
   return (
     <div className="content">
       <div className="welcome-content">
-        <img src={logo} alt="uc marketplace-logo"></img>
+        <img src={logo} alt="uc marketplace-logo" />
         <div className="welcome-text">
           <h1>List Product or Service</h1>
         </div>
@@ -100,7 +123,7 @@ const NewListing = () => {
         <h2>Create a New Listing</h2>
         <form className="listing-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="listing-title">Type:</label>
+            <label htmlFor="listing-type">Type:</label>
             <select id="listing-type" name="listingType">
               <option value="product">Product</option>
               <option value="service">Service</option>
@@ -128,7 +151,7 @@ const NewListing = () => {
               placeholder="Enter Product or Service Description:"
               rows="5"
               required
-            ></textarea>
+            />
           </div>
 
           <div className="form-group">
