@@ -200,6 +200,11 @@
     background-color: #e00122;
     color: #ffffff;
   }
+
+  .service-categories { /*may need to adjust*/
+    font-style: italic;
+    font-size: 0.8rem;
+  }
   
   .request-button {
     margin-top: 1rem;
