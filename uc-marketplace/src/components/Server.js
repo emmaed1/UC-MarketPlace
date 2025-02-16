@@ -29,11 +29,11 @@ app.post("/products", async (req, res) => {
         price,
         quantity,
         img,
-        categories: { // Connect to existing categories
+        categories: {
           connect: categoryIds.map((categoryId) => ({ id: categoryId })),
         },
       },
-      include: { // Include categories in the response
+      include: {
         categories: true,
       },
     });
@@ -49,9 +49,8 @@ app.post("/products", async (req, res) => {
 // }
 app.get("/products", async (req, res) => {
   try {
-    //const prisma = new PrismaClient();
     const products = await prisma.product.findMany({
-      include: { // Include categories in the response
+      include: { 
         categories: true,
       },
     });
@@ -67,7 +66,7 @@ app.get("/products/:productId", async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
       where: { productId: productId },
-      include: {  // Make absolutely sure this is here!
+      include: {
         categories: true,
       },
     });
@@ -92,7 +91,7 @@ app.delete("/products/:productId", async (req, res) => {
 
 // api for services listing
 app.post("/services", async (req, res) => {
-  const { name, desc, rating, price, quantity, img } = req.body;
+  const { name, desc, rating, price, quantity, img, categoryIds } = req.body;
 
   try {
     const service = await prisma.service.create({
@@ -111,7 +110,7 @@ app.post("/services", async (req, res) => {
         categories: true,
       },
     });
-    res.json(product);
+    res.json(service);
   } catch (error) {
     res.status(500).json({ error: "Error creating product" });
   }
