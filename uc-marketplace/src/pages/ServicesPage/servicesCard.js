@@ -5,7 +5,7 @@ import BookingCalendar from "./BookingCalender";
 import "./Services.css";
 
 const ServicesCard = (props) => {
-  const { serviceId, name, desc, rating, price, img } = props;
+  const { serviceId, name, desc, rating, price, img, categories } = props;
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Handler to close the calendar
@@ -22,6 +22,7 @@ const ServicesCard = (props) => {
       <h4 className="title">{name}</h4>
       <p>{desc}</p>
       <h3 className="price">$ {price.toLocaleString()}</h3>
+      <p>{categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}</p>
       <button
         type="button"
         className="service-button"
