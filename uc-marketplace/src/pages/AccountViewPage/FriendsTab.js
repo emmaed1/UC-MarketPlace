@@ -31,7 +31,8 @@ const FriendsTab = ({ accountName }) => {
 
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
-    !friends.some(friend => friend.id === user.id)
+    !friends.some(friend => friend.id === user.id) &&
+    user.name !== accountName // Exclude the logged-in user
   );
 
   return (
