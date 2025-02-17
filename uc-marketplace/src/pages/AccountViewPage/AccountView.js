@@ -3,6 +3,7 @@ import "./AccountView.css";
 import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage"; // Import the Chat component
+import FriendsTab from "./FriendsTab"; // Import the FriendsTab component
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -96,7 +97,12 @@ export default function AccountView() {
         </div>
       )}
 
-      {option !== "Messages" && (
+      {/* Friends Section */}
+      {option === "Friends" && (
+        <FriendsTab accountName={accountName} />
+      )}
+
+      {option !== "Messages" && option !== "Friends" && (
         <div className="newlisting-reviews-container">
           <div className="newlisting">
             <h3 className="newlist-title">
