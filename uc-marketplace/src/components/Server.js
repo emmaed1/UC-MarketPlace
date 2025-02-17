@@ -49,50 +49,62 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    const name = data.sender || 'Unknown';
-    const recipientId = parseInt(data.recipient);
+    if (data.type === 'message') {
+      const name = data.sender || 'Unknown';
+      const recipientId = parseInt(data.recipient);
 
-    const senderUser = await prisma.user.findFirst({
-      where: { name: name },
-    });
+      const senderUser = await prisma.user.findFirst({
+        where: { name: name },
+      });
 
-    if (!senderUser) {
-      console.log('Sender not found');
-      return;
-    }
+      if (!senderUser) {
+        console.log('Sender not found');
+        return;
+      }
 
-    if (!recipientId) {
-      console.log('Recipient ID not specified or invalid');
-      return;
-    }
+      if (!recipientId) {
+        console.log('Recipient ID not specified or invalid');
+        return;
+      }
 
-    const recipientUser = await prisma.user.findUnique({
-      where: { id: recipientId },
-    });
+      const recipientUser = await prisma.user.findUnique({
+        where: { id: recipientId },
+      });
 
-    if (!recipientUser) {
-      console.log('Recipient not found');
-      return;
-    }
+      if (!recipientUser) {
+        console.log('Recipient not found');
+        return;
+      }
 
-    const recipientClient = clients.find(client => client.userId === recipientUser.id);
+      const recipientClient = clients.find(client => client.userId === recipientUser.id);
 
-    if (recipientClient) {
-      const messageData = { ...data, sender: name };
-      console.log('Sending message to recipient:', recipientUser.id);
-      recipientClient.connection.sendUTF(JSON.stringify(messageData));
-    } else {
-      console.log('Recipient client not found');
-    }
-
-    await prisma.message.create({
-      data: {
-        sender: { connect: { id: senderUser.id } },
-        recipient: { connect: { id: recipientUser.id } },
+      const messageData = {
+        type: 'message',
         message: data.message,
-        timestamp: new Date(),
-      },
-    });
+        sender: { id: senderUser.id, name: senderUser.name },
+        recipient: { id: recipientUser.id, name: recipientUser.name },
+        timestamp: new Date()
+      };
+
+      if (recipientClient) {
+        console.log('Sending message to recipient:', recipientUser.id);
+        recipientClient.connection.sendUTF(JSON.stringify(messageData));
+      } else {
+        console.log('Recipient client not found');
+      }
+
+      await prisma.message.create({
+        data: {
+          sender: { connect: { id: senderUser.id } },
+          recipient: { connect: { id: recipientUser.id } },
+          message: data.message,
+          timestamp: new Date(),
+        },
+      });
+
+      // Send the message back to the sender as well
+      connection.sendUTF(JSON.stringify(messageData));
+    }
   });
 
   connection.on('close', function(reasonCode, description) {

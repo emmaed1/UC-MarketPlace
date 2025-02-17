@@ -77,6 +77,12 @@ const Chat = ({ accountName }) => {
         }
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    };
+
     const selectChat = async (user) => {
         setRecipient(user.id);
         setSelectedChat(user);
@@ -134,6 +140,7 @@ const Chat = ({ accountName }) => {
                     placeholder="Type your message here"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
                 />
                 <button onClick={sendMessage}>Send</button>
             </div>
