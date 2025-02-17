@@ -121,8 +121,8 @@ const Chat = ({ accountName }) => {
                         </div>
                     )}
                     {messages.map((msg, index) => (
-                        <div key={index} className={`message ${msg.sender === accountName ? 'sent' : 'received'}`}>
-                            <strong>{msg.sender}:</strong> {msg.message}
+                        <div key={index} className={`message ${msg.sender.name === accountName ? 'sent' : 'received'}`}>
+                            <strong>{msg.sender.name}:</strong> {msg.message}
                         </div>
                     ))}
                 </div>

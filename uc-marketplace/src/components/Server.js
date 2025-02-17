@@ -289,6 +289,10 @@ app.get("/messages/:recipientId", async (req, res) => {
       },
       orderBy: {
         timestamp: 'asc'
+      },
+      include: {
+        sender: true,
+        recipient: true
       }
     });
     res.json(messages);
