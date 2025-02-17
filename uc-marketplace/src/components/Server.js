@@ -105,35 +105,6 @@ const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
-const authenticate = async (req, res, next) => {
-  if (!req.headers.authorization) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ error: "Token not found" });
-  }
-
-  try {
-    const decode = jwt.verify(token, JWT_SECRET);
-    const user = await prisma.user.findUnique({
-      where: {
-        id: decode.userId,
-      },
-    });
-    if (!user) {
-      return res.status(401).json({ error: "User not found" });
-    }
-    req.user = user;
-    next();
-  } catch (err) {
-    console.log("Error verifying token or finding user:", err);
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-};
-
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -304,9 +275,9 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
-app.get("/messages/:recipientId", authenticate, async (req, res) => {
+app.get("/messages/:recipientId", async (req, res) => {
   const recipientId = parseInt(req.params.recipientId);
-  const userId = req.user.id;
+  const userId = req.query.userId; // Assuming userId is passed as a query parameter
 
   try {
     const messages = await prisma.message.findMany({
@@ -327,24 +298,29 @@ app.get("/messages/:recipientId", authenticate, async (req, res) => {
   }
 });
 
-app.get("/user", authenticate, async (req, res, next) => {
+app.get("/user", async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-    const { password: _password, ...userWithoutPassword } = req.user;
-    res.json(userWithoutPassword);
+    const user = await prisma.user.findMany();
+    res.json(user);
   } catch (err) {
     next(err);
   }
 });
 
-app.post("/user/refresh-token", authenticate, (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+app.post("/user/refresh-token", async (req, res) => {
+  const userId = req.body.userId; // Assuming userId is passed in the request body
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const token = generateJwt(user);
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: "Error refreshing token" });
   }
-  const token = generateJwt(req.user);
-  res.json({ token });
 });
 
 server.listen(port, () => {
