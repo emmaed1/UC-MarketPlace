@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import ProductsCard from "./productsCard";
 import "./products.css";
+import { useSearchParams } from 'react-router-dom';
 
 const Products = () => {
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || "";
   const [filters, setFilters] = useState({
     minPrice: "",
     maxPrice: "",
-    categories: [],
+    categories: initialCategory ? [initialCategory] : [],
   });
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +18,7 @@ const Products = () => {
   const [appliedFilters, setAppliedFilters] = useState({
     minPrice: "",
     maxPrice: "",
-    categories: [],
+    categories: initialCategory ? [initialCategory] : [],
   });
 
   useEffect(() => {
@@ -137,11 +140,11 @@ const Products = () => {
                 {[
                   "Academic Materials",
                   "Clothing",
-                  "Technology & Electronics",
+                  "Technology and Electronics",
                   "Entertainment",
                   "Home Essentials",
                   "Accesories",
-                  "Food & Beverage",
+                  "Food and Beverage",
                   "Collectibles",
                   "Miscellaneous",
                 ].map((cat) => (

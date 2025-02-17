@@ -1,78 +1,60 @@
 import "./Home.css";
-import logo from '../../assets/uc-MP-logo.png'
+import logo from '../../assets/uc-MP-logo.png';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryName, isProduct) => {
+    const basePath = isProduct ? "/products" : "/services";
+    navigate(`${basePath}?category=${categoryName}`);
+  };
+
   return (
     <div className="content">
       <div className="welcome-content">
         <img src={logo} alt='uc marketplace-logo'></img>
         <div className="welcome-text">
-            <h1>Welcome to UC MarketPlace</h1>
-          </div>
+          <h1>Welcome to UC MarketPlace</h1>
+        </div>
       </div>
       <div className="categories">
         <div className="category-section">
           <h3 className="cat-title">Browse Product Categories</h3>
           <ul className="category-list">
-            <li>
-              <a href="/products/1">Academic Materials</a>
-            </li>
-            <li>
-              <a href="/products/2">Home Essentials</a>
-            </li>
-            <li>
-              <a href="/products/3">Clothing</a>
-            </li>
-            <li>
-              <a href="/products/4">Accesories</a>
-            </li>
-            <li>
-              <a href="/products/5">Technology & Electronics</a>
-            </li>
-            <li>
-              <a href="/products/6">Food & Beverage</a>
-            </li>
-            <li>
-              <a href="/products/6">Entertainment</a>
-            </li>
-            <li>
-              <a href="/products/6">Collectibles</a>
-            </li>
-            <li>
-              <a href="/products/6">Miscellaneous</a>
-            </li>
+            {[
+              "Academic Materials", "Home Essentials", "Clothing", "Accesories",
+              "Technology and Electronics", "Food and Beverage", "Entertainment",
+              "Collectibles", "Miscellaneous"
+            ].map(category => (
+              <li key={category}>
+                <a 
+                  href="#"
+                  onClick={() => handleCategoryClick(category, true)}
+                >
+                  {category}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="category-section">
           <h3 className="cat-title">Browse Service Categories</h3>
           <ul className="category-list">
-            <li>
-              <a href="/services/1">Academic Help</a>
-            </li>
-            <li>
-              <a href="/services/2">Technology Support</a>
-            </li>
-            <li>
-              <a href="/services/3">Photography & Videography</a>
-            </li>
-            <li>
-              <a href="/services/4">Beauty & Personal Care</a>
-            </li>
-            <li>
-              <a href="/services/5">Automotive Services</a>
-            </li>
-            <li>
-              <a href="/services/6">Creative Work</a>
-            </li>
-            <li>
-              <a href="/services/7">Pet Services</a>
-            </li>
-            <li>
-              <a href="/services/8">Entertainment & Event Planning</a>
-            </li>
-            <li>
-              <a href="/services/9">Miscellaneous</a>
-            </li>
+            {[
+              "Academic Help", "Technology Support", "Photography and Videography",
+              "Beauty and Personal Care", "Automotive Services", "Creative Work",
+              "Pet Services", "Entertainment and Event Planning", "Miscellaneous"
+            ].map(category => (
+              <li key={category}>
+                <a 
+                  href="#"
+                  onClick={() => handleCategoryClick(category, false)}
+                >
+                  {category}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

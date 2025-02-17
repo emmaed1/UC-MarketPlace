@@ -1,12 +1,16 @@
-import ServicesCard from './servicesCard'
+// services.js
+import ServicesCard from './servicesCard';
 import { useEffect, useState } from "react";
 import "./Services.css";
+import { useSearchParams } from 'react-router-dom';
 
 const Services = () => {
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || "";
   const [filters, setFilters] = useState({
     minPrice: "",
     maxPrice: "",
-    categories: [],
+    categories: initialCategory ? [initialCategory] : [],
   });
   const [services, setServices] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,14 +19,13 @@ const Services = () => {
   const [appliedFilters, setAppliedFilters] = useState({
     minPrice: "",
     maxPrice: "",
-    categories: [],
+    categories: initialCategory ? [initialCategory] : [],
   });
 
   useEffect(() => {
     fetchServices();
   }, []);
 
-  // Function to fetch all services
   const fetchServices = () => {
     fetch('http://localhost:3001/services', { method: "GET" })
       .then(res => res.json())
@@ -70,10 +73,10 @@ const Services = () => {
     setSearchTerm("");
     setAppliedSearchTerm("");
   };
-  
-  const filteredServices= services.filter((service) => {
+
+  const filteredServices = services.filter((service) => {
     const matchesSearch =
-      !appliedSearchTerm||
+      !appliedSearchTerm ||
       service.name.toLowerCase().includes(appliedSearchTerm.toLowerCase()) ||
       service.desc.toLowerCase().includes(appliedSearchTerm.toLowerCase());
 
@@ -88,29 +91,29 @@ const Services = () => {
   });
 
   return (
-    <div className="content">
-      <div className="banner">
-        <div className="banner-text">
-          <h1>Explore Our Services</h1>
-          <p>Find the services tailored to your academic needs and beyond.</p>
-        </div>
-      </div>
+    <> {/* Added Fragment here */}
+      <div className="content">
+        <div className="services-content"> {/* Added this div */}
+          <div className="services-text"> {/* Added this div */}
+            <h1>Explore Our Services</h1>
+            <p>Find the services tailored to your academic needs and beyond.</p>
+          </div> {/* close services-text */}
+        </div> {/* close services-content */}
 
-      <div className="search-bar">
-        <input 
-          type="text" 
-          id="search" 
-          placeholder="Search for services..." 
-          value={searchTerm}
-          onChange={handleSearchChange} // Update search query
-          onKeyDown={handleKeyPress} // Trigger search on Enter key press
-        />
-        <button className="filter-button" onClick={toggleFilterPopup}>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search for services..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyPress}
+          />
+          <button className="filter-button" onClick={toggleFilterPopup}>
             Filter
           </button>
-      </div>
+        </div>
 
-      {isFilterOpen && (
+        {isFilterOpen && (
           <div className="filter-popup">
             <h3>Filter Options</h3>
             <label>Price </label>
@@ -138,12 +141,12 @@ const Services = () => {
                 {[
                   "Academic Help",
                   "Technology Support",
-                  "Photography & Videography",
-                  "Beauty & Personal Care",
+                  "Photography and Videography",
+                  "Beauty and Personal Care",
                   "Automotive Services",
                   "Creative Work",
                   "Pet Services",
-                  "Entertainment & Event Planning",
+                  "Entertainment and Event Planning",
                   "Miscellaneous",
                 ].map((cat) => (
                   <label key={cat} className="category-checkbox">
@@ -166,38 +169,23 @@ const Services = () => {
           </div>
         )}
 
-
-      <div className="services-content">
-        {filteredServices.length > 0 ? (
-          filteredServices.map((item) => (
-            <ServicesCard key={item.serviceId} {...item} />
-          ))
-        ) : (
-          <p>No services found.</p>
-        )}
-      </div>
-      <div className="features-container">
-        <div className="featured-section">
-          <h3 className="featured-title">Special Offers</h3>
-          <a href="/special-offers">View Offers</a>
+        <div className="services-content"> {/* Added this div */}
+          {filteredServices.length > 0 ? (
+            filteredServices.map((item) => (
+              <ServicesCard key={item.serviceId} {...item} />
+            ))
+          ) : (
+            <p>No services found.</p>
+          )}
+        </div> {/* close services-content */}
+        <div className="features-container">
+          {/* ... (featured sections) */}
         </div>
-
-        <div className="featured-section">
-          <h3 className="featured-title">Top Services</h3>
-          <a href="/top-services">Explore Now</a>
-        </div>
-
-        <div className="featured-section">
-          <h3 className="featured-title">New Arrivals</h3>
-          <a href="/new-arrivals">See What's New</a>
+        <div className="faq-section">
+          {/* ... (FAQ section) */}
         </div>
       </div>
-      
-      <div className="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        <p>Find answers to common questions about our services.</p>
-      </div>
-    </div>
+    </> // Close the fragment
   );
 };
 
