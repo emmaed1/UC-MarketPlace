@@ -8,6 +8,14 @@
     box-sizing: border-box;
 }
 
+#chat h1 {
+    font-size: 2em;
+    color: #ff0000; /* Red color for the heading */
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
 #chat-container {
     display: flex;
     flex: 1;
@@ -56,7 +64,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden; 
+    overflow: hidden; /* Prevent the entire container from scrolling */
 }
 
 .chat-header {
@@ -64,7 +72,7 @@
     border-bottom: 1px solid #ccc;
     background-color: #f5f5f5;
     text-align: center;
-    flex-shrink: 0; 
+    flex-shrink: 0; /* Ensure the header does not shrink */
     font-weight: bold;
 }
 
@@ -73,7 +81,6 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    overflow-y: auto; 
     background-color: #fff;
 }
 
@@ -87,7 +94,7 @@
 }
 
 .message strong {
-    color: #000; 
+    color: #000; /* Change the text color to black */
 }
 
 .message.sent {
@@ -107,7 +114,7 @@
     padding: 15px;
     border-top: 1px solid #ccc;
     background-color: #f5f5f5;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Ensure the input does not shrink */
 }
 
 #messageInput {
