@@ -10,6 +10,7 @@ export default function AccountView() {
   const [showModal, setShowModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState(null);
   const [accountName, setAccountName] = useState("");
+  const [selectedChatUser, setSelectedChatUser] = useState(null);
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -30,6 +31,11 @@ export default function AccountView() {
   const closeModal = () => {
     setShowModal(false);
     setSelectedListingId(null);
+  };
+
+  const handleMessageFriend = (friend) => {
+    setSelectedChatUser(friend);
+    setOption("Messages");
   };
 
   return (
@@ -93,13 +99,13 @@ export default function AccountView() {
       {/* Chat Section */}
       {option === "Messages" && (
         <div id="chat" className="content">
-          <Chat accountName={accountName} />
+          <Chat accountName={accountName} selectedChatUser={selectedChatUser} />
         </div>
       )}
 
       {/* Friends Section */}
       {option === "Friends" && (
-        <FriendsTab accountName={accountName} />
+        <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
       )}
 
       {option !== "Messages" && option !== "Friends" && (

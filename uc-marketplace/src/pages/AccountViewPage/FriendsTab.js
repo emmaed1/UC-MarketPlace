@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './FriendsTab.css'; // Import the CSS file for styling
 
-const FriendsTab = ({ accountName }) => {
+const FriendsTab = ({ accountName, onMessageFriend }) => {
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]);
   const [showAddFriends, setShowAddFriends] = useState(false);
@@ -41,8 +41,15 @@ const FriendsTab = ({ accountName }) => {
       <ul className="friends-list">
         {friends.map(friend => (
           <li key={friend.id} className="friend-item">
-            {friend.name}
-            <button className="remove-button" onClick={() => removeFriend(friend)}>Remove</button>
+            <div>
+              <strong>{friend.name}</strong>
+              <p>Email: {friend.email}</p>
+              <p>Phone: {friend.phone}</p>
+            </div>
+            <div>
+              <button className="message-button" onClick={() => onMessageFriend(friend)}>Message</button>
+              <button className="remove-button" onClick={() => removeFriend(friend)}>Remove</button>
+            </div>
           </li>
         ))}
       </ul>

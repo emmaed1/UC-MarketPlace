@@ -26,7 +26,7 @@
     background-color: #f1f1f1;
   }
   
-  .remove-button, .add-button, .toggle-button {
+  .remove-button, .add-button, .toggle-button, .message-button {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
@@ -36,7 +36,7 @@
     transition: background-color 0.3s;
   }
   
-  .remove-button:hover, .add-button:hover, .toggle-button:hover {
+  .remove-button:hover, .add-button:hover, .toggle-button:hover, .message-button:hover {
     background-color: #cc0000;
   }
   
