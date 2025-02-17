@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './ChatPage.css'; // Import the CSS file
 
@@ -9,9 +9,9 @@ const Chat = ({ accountName }) => {
     const [recipient, setRecipient] = useState('');
     const [token, setToken] = useState(localStorage.getItem('token') || '');
     const [users, setUsers] = useState([]);
-    const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -120,29 +120,32 @@ const Chat = ({ accountName }) => {
                         </div>
                     ))}
                 </div>
-                <div id="chat-messages">
+                <div id="chat-messages-container">
                     {selectedChat && (
                         <div className="chat-header">
                             <strong>Chatting with {selectedChat.name}</strong>
                         </div>
                     )}
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`message ${msg.sender.name === accountName ? 'sent' : 'received'}`}>
-                            <strong>{msg.sender.name}:</strong> {msg.message}
-                        </div>
-                    ))}
+                    <div id="chat-messages">
+                        {messages.map((msg, index) => (
+                            <div key={index} className={`message ${msg.sender.name === accountName ? 'sent' : 'received'}`}>
+                                <strong>{msg.sender.name}:</strong> {msg.message}
+                            </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </div>
+                    <div id="chat-input">
+                        <input
+                            id="messageInput"
+                            type="text"
+                            placeholder="Type your message here"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
+                        <button onClick={sendMessage}>Send</button>
+                    </div>
                 </div>
-            </div>
-            <div id="chat-input">
-                <input
-                    id="messageInput"
-                    type="text"
-                    placeholder="Type your message here"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                />
-                <button onClick={sendMessage}>Send</button>
             </div>
         </div>
     );

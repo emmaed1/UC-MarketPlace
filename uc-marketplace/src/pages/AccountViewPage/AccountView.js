@@ -96,14 +96,16 @@ export default function AccountView() {
         </div>
       )}
 
-      <div className="newlisting-reviews-container">
-        <div className="newlisting">
-          <h3 className="newlist-title">
-            Have another product or service to sell?
-          </h3>
-          <a href="/new-listing">Create Listing</a>
+      {option !== "Messages" && (
+        <div className="newlisting-reviews-container">
+          <div className="newlisting">
+            <h3 className="newlist-title">
+              Have another product or service to sell?
+            </h3>
+            <a href="/new-listing">Create Listing</a>
+          </div>
         </div>
-      </div>
+      )}
 
       <ListingDetailsModal
         show={showModal}
