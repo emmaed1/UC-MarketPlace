@@ -8,6 +8,8 @@ const fs = require("fs");
 const axios = require("axios");
 const FormData = require('form-data');
 const cors = require("cors");
+const http = require('http');
+const WebSocketServer = require('websocket').server;
 
 const prisma = new PrismaClient();
 const app = express();
@@ -17,8 +19,11 @@ const port = 3001;
 const SIGHTENGINE_API_USER = '1623082989';
 const SIGHTENGINE_API_SECRET = 'Bxzv9ouesgZeYyJKieHz7g4oWWCuLeAk';
 
+// JWT configuration
+const JWT_SECRET = "1234567890"; // Replace with real secret later
+
 const generateJwt = (user) => {
-  return jwt.sign({ email: user.email }, "JWT_SECRET");
+  return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 };
 
 // Configure multer
@@ -73,37 +78,25 @@ async function checkImageContent(filePath) {
 }
 
 function isContentAppropriate(result) {
-  // Detailed weapon check
   const weaponDetected = 
     result.weapon.classes.firearm > 0.5 || 
     result.weapon.classes.knife > 0.5 ||
     result.weapon.classes.firearm_gesture > 0.5 ||
     result.weapon.classes.firearm_toy > 0.5;
 
-  // More comprehensive checks
   const checks = [
-    // Nudity checks
     result.nudity.sexual_activity > 0.1,
     result.nudity.sexual_display > 0.1,
     result.nudity.erotica > 0.1,
     result.nudity.very_suggestive > 0.1,
     result.nudity.suggestive > 0.1,
-
-    // Weapon checks (expanded)
     weaponDetected,
-
-    // Drug checks
     result.recreational_drug.prob > 0.1,
-
-    // Medical checks
     result.medical.prob > 0.1,
-
-    // Violence checks
     result.violence.prob > 0.1,
     result.gore.prob > 0.1
   ];
 
-  // Log the specific weapon detection for debugging
   console.log('Weapon Detection:', {
     firearm: result.weapon.classes.firearm,
     knife: result.weapon.classes.knife,
@@ -111,11 +104,96 @@ function isContentAppropriate(result) {
     weaponDetected
   });
 
-  // If any check is true (exceeds threshold), the content is inappropriate
   return !checks.some(check => check);
 }
 
-// api for product listings
+// WebSocket server setup
+const server = http.createServer(app);
+const wsServer = new WebSocketServer({
+  httpServer: server
+});
+
+let clients = [];
+
+wsServer.on('request', function(request) {
+  const connection = request.accept(null, request.origin);
+  let userId = null;
+  clients.push({ connection, userId });
+  console.log('Connection accepted.');
+
+  connection.on('message', async function(message) {
+    const data = JSON.parse(message.utf8Data);
+    console.log('Received Message:', data);
+
+    if (data.type === 'authenticate') {
+      const token = data.token;
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        userId = decoded.userId;
+        const client = clients.find(client => client.connection === connection);
+        if (client) {
+          client.userId = userId;
+        }
+        console.log('User authenticated:', userId);
+      } catch (err) {
+        console.log('Authentication failed:', err);
+      }
+      return;
+    }
+
+    const name = data.sender || 'Unknown';
+    const recipientId = parseInt(data.recipient);
+
+    const senderUser = await prisma.user.findFirst({
+      where: { name: name },
+    });
+
+    if (!senderUser) {
+      console.log('Sender not found');
+      return;
+    }
+
+    if (!recipientId) {
+      console.log('Recipient ID not specified or invalid');
+      return;
+    }
+
+    const recipientUser = await prisma.user.findUnique({
+      where: { id: recipientId },
+    });
+
+    if (!recipientUser) {
+      console.log('Recipient not found');
+      return;
+    }
+
+    const recipientClient = clients.find(client => client.userId === recipientUser.id);
+
+    if (recipientClient) {
+      const messageData = { ...data, sender: name };
+      console.log('Sending message to recipient:', recipientUser.id);
+      recipientClient.connection.sendUTF(JSON.stringify(messageData));
+    } else {
+      console.log('Recipient client not found');
+    }
+
+    await prisma.message.create({
+      data: {
+        sender: { connect: { id: senderUser.id } },
+        recipient: { connect: { id: recipientUser.id } },
+        message: data.message,
+        timestamp: new Date(),
+      },
+    });
+  });
+
+  connection.on('close', function(reasonCode, description) {
+    clients = clients.filter(client => client.connection !== connection);
+    console.log('Peer disconnected.');
+  });
+});
+
+// Product routes
 app.post("/products", upload.single('image'), async (req, res) => {
   const { name, desc, rating, price, quantity } = req.body;
   let imagePath = null;
@@ -161,7 +239,42 @@ app.post("/products", upload.single('image'), async (req, res) => {
   }
 });
 
-// api for services listing
+app.get("/products", async (req, res) => {
+  try {
+    const products = await prisma.product.findMany();
+    res.status(200).json(products);
+  } catch (error) {
+    console.log("Error!");
+    res.status(500).json({ error: "Error getting products" });
+  }
+});
+
+app.get("/products/:productId", async (req, res) => {
+  const productId = parseInt(req.params.productId);
+  try {
+    const product = await prisma.product.findUnique({
+      where: { productId: productId },
+    });
+    res.json(product);
+  } catch (error) {
+    console.log("Error!");
+    res.status(500).json({ error: "Error getting products" });
+  }
+});
+
+app.delete("/products/:productId", async (req, res) => {
+  const productId = parseInt(req.params.productId);
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: { productId: productId },
+    });
+    res.json(deletedProduct);
+  } catch (error) {
+    res.status(500).json({ error: "Errors deleting product" });
+  }
+});
+
+// Service routes
 app.post("/services", upload.single('image'), async (req, res) => {
   const { name, desc, rating, price, quantity } = req.body;
   let imagePath = null;
@@ -207,45 +320,6 @@ app.post("/services", upload.single('image'), async (req, res) => {
   }
 });
 
-// Get all products
-app.get("/products", async (req, res) => {
-  try {
-    const products = await prisma.product.findMany();
-    res.status(200).json(products);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
-  }
-});
-
-// Get product by ID
-app.get("/products/:productId", async (req, res) => {
-  const productId = parseInt(req.params.productId);
-  try {
-    const product = await prisma.product.findUnique({
-      where: { productId: productId },
-    });
-    res.json(product);
-  } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
-  }
-});
-
-// Delete product
-app.delete("/products/:productId", async (req, res) => {
-  const productId = parseInt(req.params.productId);
-  try {
-    const deletedProduct = await prisma.product.delete({
-      where: { productId: productId },
-    });
-    res.json(deletedProduct);
-  } catch (error) {
-    res.status(500).json({ error: "Errors deleting product" });
-  }
-});
-
-// Get all services
 app.get("/services", async (req, res) => {
   try {
     const services = await prisma.service.findMany();
@@ -255,7 +329,6 @@ app.get("/services", async (req, res) => {
   }
 });
 
-// Get service by ID
 app.get("/services/:serviceId", async (req, res) => {
   const serviceId = parseInt(req.params.serviceId);
   try {
@@ -269,7 +342,6 @@ app.get("/services/:serviceId", async (req, res) => {
   }
 });
 
-// Delete service
 app.delete("/services/:serviceId", async (req, res) => {
   const serviceId = parseInt(req.params.serviceId);
   try {
@@ -282,7 +354,7 @@ app.delete("/services/:serviceId", async (req, res) => {
   }
 });
 
-// api calls for users
+// User routes
 app.get("/user", async (req, res) => {
   try {
     const user = await prisma.user.findMany();
@@ -328,7 +400,7 @@ app.post("/user/login", async (req, res) => {
       },
     });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(401).json({ error: "User not found" });
     }
     const passwordMatch = await bcrypt.compare(
       req.body.password,
@@ -340,11 +412,11 @@ app.post("/user/login", async (req, res) => {
     const { password: _password, ...userWithoutPassword } = user;
     res.json({ ...userWithoutPassword, token: generateJwt(user) });
   } catch (error) {
-    res.status(500).json({ error: "Error logging in" });
+    res.status(500).json({ error: "Error logging in." });
   }
 });
 
-// Test moderation route
+// Image moderation routes
 app.get("/test-moderation", async (req, res) => {
   try {
     const formData = new FormData();
@@ -369,7 +441,6 @@ app.get("/test-moderation", async (req, res) => {
   }
 });
 
-// URL image moderation route
 app.post("/check-image-url", async (req, res) => {
   try {
     const { imageUrl } = req.body;
@@ -406,6 +477,7 @@ app.post("/check-image-url", async (req, res) => {
   }
 });
 
+// Authentication middleware
 const authenticate = async (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -418,7 +490,7 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const decode = jwt.verify(token, "JWT_SECRET");
+    const decode = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: {
         email: decode.email,
@@ -432,6 +504,7 @@ const authenticate = async (req, res, next) => {
   }
 };
 
+// Protected routes
 app.get("/user/profile", authenticate, async (req, res) => {
   try {
     if (!req.user) {
@@ -444,6 +517,14 @@ app.get("/user/profile", authenticate, async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+app.post("/user/refresh-token", authenticate, (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const token = generateJwt(req.user);
+  res.json({ token });
+});
+
+server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
