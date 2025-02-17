@@ -2,16 +2,23 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
+<<<<<<< HEAD
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
 const FormData = require('form-data');
 const cors = require("cors");
+=======
+const cors = require("cors");
+const http = require('http');
+const WebSocketServer = require('websocket').server;
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
 
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
+<<<<<<< HEAD
 
 // Sightengine credentials
 const SIGHTENGINE_API_USER = '1623082989';
@@ -39,6 +46,9 @@ if (!fs.existsSync('./uploads')) {
   fs.mkdirSync('./uploads');
 }
 
+=======
+
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
 app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
@@ -115,6 +125,7 @@ function isContentAppropriate(result) {
   return !checks.some(check => check);
 }
 
+<<<<<<< HEAD
 // api for product listings
 app.post("/products", upload.single('image'), async (req, res) => {
   const { name, desc, rating, price, quantity } = req.body;
@@ -143,6 +154,101 @@ app.post("/products", upload.single('image'), async (req, res) => {
       });
     }
   }
+=======
+const server = http.createServer(app);
+
+const wsServer = new WebSocketServer({
+  httpServer: server
+});
+
+let clients = [];
+
+const JWT_SECRET = "1234567890"; // Replace with our real secret later.
+wsServer.on('request', function(request) {
+  const connection = request.accept(null, request.origin);
+  let userId = null;
+  clients.push({ connection, userId });
+  console.log('Connection accepted.');
+
+  connection.on('message', async function(message) {
+    const data = JSON.parse(message.utf8Data);
+    console.log('Received Message:', data);
+
+    if (data.type === 'authenticate') {
+      const token = data.token;
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        userId = decoded.userId;
+        const client = clients.find(client => client.connection === connection);
+        if (client) {
+          client.userId = userId;
+        }
+        console.log('User authenticated:', userId);
+      } catch (err) {
+        console.log('Authentication failed:', err);
+      }
+      return;
+    }
+
+    const name = data.sender || 'Unknown';
+    const recipientId = parseInt(data.recipient);
+
+    const senderUser = await prisma.user.findFirst({
+      where: { name: name },
+    });
+
+    if (!senderUser) {
+      console.log('Sender not found');
+      return;
+    }
+
+    if (!recipientId) {
+      console.log('Recipient ID not specified or invalid');
+      return;
+    }
+
+    const recipientUser = await prisma.user.findUnique({
+      where: { id: recipientId },
+    });
+
+    if (!recipientUser) {
+      console.log('Recipient not found');
+      return;
+    }
+
+    const recipientClient = clients.find(client => client.userId === recipientUser.id);
+
+    if (recipientClient) {
+      const messageData = { ...data, sender: name };
+      console.log('Sending message to recipient:', recipientUser.id);
+      recipientClient.connection.sendUTF(JSON.stringify(messageData));
+    } else {
+      console.log('Recipient client not found');
+    }
+
+    await prisma.message.create({
+      data: {
+        sender: { connect: { id: senderUser.id } },
+        recipient: { connect: { id: recipientUser.id } },
+        message: data.message,
+        timestamp: new Date(),
+      },
+    });
+  });
+
+  connection.on('close', function(reasonCode, description) {
+    clients = clients.filter(client => client.connection !== connection);
+    console.log('Peer disconnected.');
+  });
+});
+
+const generateJwt = (user) => {
+  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+};
+
+app.post("/products", async (req, res) => {
+  const { name, desc, rating, price, quantity, img } = req.body;
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
 
   try {
     const product = await prisma.product.create({
@@ -161,6 +267,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // api for services listing
 app.post("/services", upload.single('image'), async (req, res) => {
   const { name, desc, rating, price, quantity } = req.body;
@@ -208,6 +315,8 @@ app.post("/services", upload.single('image'), async (req, res) => {
 });
 
 // Get all products
+=======
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
 app.get("/products", async (req, res) => {
   try {
     const products = await prisma.product.findMany();
@@ -245,13 +354,36 @@ app.delete("/products/:productId", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // Get all services
+=======
+app.post("/services", async (req, res) => {
+  const { name, desc, rating, price, quantity, img } = req.body;
+
+  try {
+    const service = await prisma.service.create({
+      data: {
+        name,
+        desc,
+        rating,
+        price,
+        quantity,
+        img,
+      },
+    });
+    res.json(service);
+  } catch (error) {
+    res.status(500).json({ error: "Error creating service" });
+  }
+});
+
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
 app.get("/services", async (req, res) => {
   try {
     const services = await prisma.service.findMany();
     res.json(services);
   } catch (error) {
-    res.status(500).json({ error: "Error getting services" });
+    res.status500().json({ error: "Error getting services" });
   }
 });
 
@@ -282,7 +414,6 @@ app.delete("/services/:serviceId", async (req, res) => {
   }
 });
 
-// api calls for users
 app.get("/user", async (req, res) => {
   try {
     const user = await prisma.user.findMany();
@@ -328,7 +459,11 @@ app.post("/user/login", async (req, res) => {
       },
     });
     if (!user) {
+<<<<<<< HEAD
       return res.status(404).json({ error: "User not found" });
+=======
+      return res.status(401).json({ error: "User not found" });
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
     }
     const passwordMatch = await bcrypt.compare(
       req.body.password,
@@ -340,6 +475,7 @@ app.post("/user/login", async (req, res) => {
     const { password: _password, ...userWithoutPassword } = user;
     res.json({ ...userWithoutPassword, token: generateJwt(user) });
   } catch (error) {
+<<<<<<< HEAD
     res.status(500).json({ error: "Error logging in" });
   }
 });
@@ -409,16 +545,29 @@ app.post("/check-image-url", async (req, res) => {
 const authenticate = async (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(401).json({ error: "Unauthorized" });
+=======
+    res.status(500).json({ error: "Error logging in." });
+  }
+});
+
+const authenticate = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res.json("Unauthorized");
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
   }
 
   const token = req.headers.authorization.split(" ")[1];
 
   if (!token) {
+<<<<<<< HEAD
     return res.status(401).json({ error: "Token not found" });
+=======
+    return res.json("Token not found");
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
   }
 
   try {
-    const decode = jwt.verify(token, "JWT_SECRET");
+    const decode = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: {
         email: decode.email,
@@ -432,7 +581,11 @@ const authenticate = async (req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
 app.get("/user/profile", authenticate, async (req, res) => {
+=======
+app.get("/user", authenticate, async (req, res, next) => {
+>>>>>>> beb97ebc8bb9f4005bcfeff88437f2d16bfac34a
   try {
     if (!req.user) {
       return res.status(401).json({ error: "User not found" });
@@ -443,7 +596,14 @@ app.get("/user/profile", authenticate, async (req, res) => {
     res.status(500).json({ error: "Error fetching profile" });
   }
 });
+app.post("/user/refresh-token", authenticate, (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  const token = generateJwt(req.user);
+  res.json({ token });
+});
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
