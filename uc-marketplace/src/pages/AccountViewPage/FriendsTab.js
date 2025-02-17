@@ -21,12 +21,35 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
     fetchUsers();
   }, []);
 
-  const addFriend = (user) => {
-    setFriends([...friends, user]);
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/friends/${accountName}`);
+        setFriends(response.data);
+      } catch (error) {
+        console.error('Failed to fetch friends:', error);
+      }
+    };
+
+    fetchFriends();
+  }, [accountName]);
+
+  const addFriend = async (user) => {
+    try {
+      const response = await axios.post(`http://localhost:3001/friends/${accountName}`, { friendId: user.id });
+      setFriends([...friends, response.data]);
+    } catch (error) {
+      console.error('Failed to add friend:', error);
+    }
   };
 
-  const removeFriend = (user) => {
-    setFriends(friends.filter(friend => friend.id !== user.id));
+  const removeFriend = async (user) => {
+    try {
+      await axios.delete(`http://localhost:3001/friends/${accountName}/${user.id}`);
+      setFriends(friends.filter(friend => friend.id !== user.id));
+    } catch (error) {
+      console.error('Failed to remove friend:', error);
+    }
   };
 
   const filteredUsers = users.filter(user => 

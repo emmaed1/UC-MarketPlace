@@ -117,6 +117,81 @@ const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
+// Add friends endpoints
+app.get("/friends/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName },
+      include: { friends: true, friendOf: true }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const friends = [...user.friends, ...user.friendOf];
+    res.json(friends);
+  } catch (error) {
+    console.error("Error fetching friends:", error);
+    res.status(500).json({ error: "Error fetching friends" });
+  }
+});
+
+app.post("/friends/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  const { friendId } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const friend = await prisma.user.findUnique({
+      where: { id: friendId }
+    });
+    if (!friend) {
+      return res.status(404).json({ error: "Friend not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        friends: {
+          connect: { id: friend.id }
+        }
+      }
+    });
+    res.json(friend);
+  } catch (error) {
+    console.error("Error adding friend:", error);
+    res.status(500).json({ error: "Error adding friend" });
+  }
+});
+
+app.delete("/friends/:accountName/:friendId", async (req, res) => {
+  const accountName = req.params.accountName;
+  const friendId = parseInt(req.params.friendId);
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        friends: {
+          disconnect: { id: friendId }
+        }
+      }
+    });
+    res.json({ message: "Friend removed" });
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    res.status(500).json({ error: "Error removing friend" });
+  }
+});
+
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
