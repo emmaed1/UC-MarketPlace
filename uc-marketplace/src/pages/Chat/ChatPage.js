@@ -81,14 +81,14 @@ const Chat = ({ accountName }) => {
         setRecipient(user.id);
         setSelectedChat(user);
         try {
-            const response = await axios.get(`http://localhost:3001/messages/${user.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setMessages(response.data);
+          const response = await axios.get(`http://localhost:3001/messages/${user.id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setMessages(response.data);
         } catch (error) {
-            console.error('Failed to load past messages:', error);
+          console.error('Failed to load past messages:', error);
         }
-    };
+      };
 
     const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchTerm.toLowerCase()));
 

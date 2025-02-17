@@ -21,7 +21,8 @@ const wsServer = new WebSocketServer({
 
 let clients = [];
 
-const JWT_SECRET = "1234567890"; // Replace with our real secret later.
+const JWT_SECRET = "1234567890"; // Replace with your real secret later.
+
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
   let userId = null;
@@ -104,6 +105,35 @@ const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
+const authenticate = async (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const token = req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Token not found" });
+  }
+
+  try {
+    const decode = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({
+      where: {
+        id: decode.userId,
+      },
+    });
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log("Error verifying token or finding user:", err);
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+};
+
 app.post("/products", async (req, res) => {
   const { name, desc, rating, price, quantity, img } = req.body;
 
@@ -184,7 +214,7 @@ app.get("/services", async (req, res) => {
     const services = await prisma.service.findMany();
     res.json(services);
   } catch (error) {
-    res.status500().json({ error: "Error getting services" });
+    res.status(500).json({ error: "Error getting services" });
   }
 });
 
@@ -274,31 +304,28 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
-const authenticate = async (req, res, next) => {
-  if (!req.headers.authorization) {
-    return res.json("Unauthorized");
-  }
-
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (!token) {
-    return res.json("Token not found");
-  }
+app.get("/messages/:recipientId", authenticate, async (req, res) => {
+  const recipientId = parseInt(req.params.recipientId);
+  const userId = req.user.id;
 
   try {
-    const decode = jwt.verify(token, JWT_SECRET);
-    const user = await prisma.user.findUnique({
+    const messages = await prisma.message.findMany({
       where: {
-        email: decode.email,
+        OR: [
+          { senderId: userId, recipientId: recipientId },
+          { senderId: recipientId, recipientId: userId }
+        ]
       },
+      orderBy: {
+        timestamp: 'asc'
+      }
     });
-    req.user = user ?? undefined;
-    next();
-  } catch (err) {
-    req.user = undefined;
-    next();
+    res.json(messages);
+  } catch (error) {
+    console.log("Error fetching messages:", error);
+    res.status(500).json({ error: "Error fetching messages" });
   }
-};
+});
 
 app.get("/user", authenticate, async (req, res, next) => {
   try {
