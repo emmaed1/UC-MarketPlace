@@ -64,12 +64,12 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
       <ul className="friends-list">
         {friends.map(friend => (
           <li key={friend.id} className="friend-item">
-            <div>
+            <div className="friend-info">
               <strong>{friend.name}</strong>
               <p>Email: {friend.email}</p>
               <p>Phone: {friend.phone}</p>
             </div>
-            <div>
+            <div className="friend-actions">
               <button className="message-button" onClick={() => onMessageFriend(friend)}>Message</button>
               <button className="remove-button" onClick={() => removeFriend(friend)}>Remove</button>
             </div>
@@ -92,7 +92,7 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
           <ul className="users-list">
             {filteredUsers.map(user => (
               <li key={user.id} className="user-item">
-                {user.name}
+                <span>{user.name}</span>
                 <button className="add-button" onClick={() => addFriend(user)}>Add Friend</button>
               </li>
             ))}
