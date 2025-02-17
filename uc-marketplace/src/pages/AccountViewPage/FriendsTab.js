@@ -6,6 +6,7 @@ const FriendsTab = ({ accountName }) => {
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]);
   const [showAddFriends, setShowAddFriends] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -28,6 +29,11 @@ const FriendsTab = ({ accountName }) => {
     setFriends(friends.filter(friend => friend.id !== user.id));
   };
 
+  const filteredUsers = users.filter(user => 
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+    !friends.some(friend => friend.id === user.id)
+  );
+
   return (
     <div id="friends" className="content">
       <h2>Current Friends</h2>
@@ -45,8 +51,15 @@ const FriendsTab = ({ accountName }) => {
       {showAddFriends && (
         <div className="add-friends-section">
           <h3>All Users</h3>
+          <input
+            type="text"
+            placeholder="Search users"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
           <ul className="users-list">
-            {users.filter(user => !friends.some(friend => friend.id === user.id)).map(user => (
+            {filteredUsers.map(user => (
               <li key={user.id} className="user-item">
                 {user.name}
                 <button className="add-button" onClick={() => addFriend(user)}>Add Friend</button>
