@@ -401,7 +401,7 @@ app.post("/user/refresh-token", async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-    });
+    })
     if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
