@@ -14,33 +14,42 @@ const NewListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const postType = document.getElementById("listing-type").value;
+    const postType = document.getElementById("listing-type").value; 
+    const selectedCategoryIds = selectedCategories.map(Number);
 
     try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('desc', desc);
-      formData.append('price', price);
-      formData.append('quantity', quantity);
-      formData.append('rating', 5);
-      if (image) {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('desc', desc);
+    formData.append('price', price);
+    formData.append('quantity', quantity);
+    formData.append('rating', 5);
+    if (image) {
         formData.append('image', image);
-      }
-
-      console.log("Submitting:", {
+    }
+ 
+    
+    selectedCategoryIds.forEach((categoryId, index) => {
+        formData.append(`categoryIds[${index}]`, categoryId); 
+      
+    });
+ 
+ 
+    console.log("Submitting:", {
         type: postType,
         name,
         desc,
         price,
         quantity,
-        hasImage: !!image
-      });
-
-      const response = await fetch(`http://localhost:3001/${postType}s`, {
+        hasImage: !!image,
+        categoryIds: selectedCategoryIds 
+    });
+ 
+    const response = await fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
         body: formData
-      });
-
+    });
+has context menu
       const data = await response.json();
 
       if (!response.ok) {
@@ -54,7 +63,7 @@ const NewListing = () => {
         icon: "success",
       });
 
-      // Clear form
+  
       setName("");
       setDesc("");
       setPrice(0);
@@ -123,7 +132,11 @@ const NewListing = () => {
         <form className="listing-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="listing-type">Type:</label>
-            <select id="listing-type" name="listingType">
+            <select
+              id="listing-type"
+              name="listingType"
+              value={type}
+              onChange={(e) => setType(e.target.value)}>
               <option value="product">Product</option>
               <option value="service">Service</option>
             </select>
@@ -166,6 +179,25 @@ const NewListing = () => {
               step="0.01"
             />
           </div>
+        <div className="form-group">
+          <label htmlFor="category">Category:</label>
+          <div className="category-dropdown">
+            {categoriesToDisplay.map((cat) => (
+              <div key={cat.id} className="category-option">
+                <input
+                  type="checkbox"
+                  id={`category-${cat.id}`}
+                  value={cat.id}
+                  checked=
+{selectedCategories.includes(cat.id)}
+                    onChange={() => toggleCategory(cat.id)}
+                  />
+          <label htmlFor={`category-${cat.id}`}>
+{cat.name}</label>
+          </div>
+              ))}
+          </div>
+         </div>   
 
           <div className="form-group">
             <label htmlFor="quantity">Quantity:</label>
