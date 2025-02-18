@@ -1,75 +1,86 @@
 .content {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2, h3 {
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .friends-list, .users-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .friend-item, .user-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: #fff;
-  }
-  
-  .friend-item:hover, .user-item:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .friend-info {
-    flex-grow: 1;
-  }
-  
-  .friend-actions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .message-button, .remove-button, .add-button, .toggle-button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: #fff;
-    transition: background-color 0.3s;
-  }
-  
-  .message-button:hover, .remove-button:hover, .add-button:hover, .toggle-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .remove-button {
-    background-color: #dc3545;
-  }
-  
-  .remove-button:hover {
-    background-color: #c82333;
-  }
-  
-  .add-friends-section {
-    margin-top: 20px;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.friends-grid, .favorites-grid, .users-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.friend-item, .favorite-item, .user-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.friend-item:hover, .favorite-item:hover, .user-item:hover {
+  background-color: #f1f1f1;
+}
+
+.friend-info, .favorite-info {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.friend-actions, .favorite-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.message-button, .remove-button, .add-button, .toggle-button, .favorite-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.message-button:hover, .remove-button:hover, .add-button:hover, .toggle-button:hover, .favorite-button:hover {
+  background-color: #0056b3;
+}
+
+.remove-button {
+  background-color: #dc3545;
+}
+
+.remove-button:hover {
+  background-color: #c82333;
+}
+
+.favorite-button {
+  background-color: #ffc107;
+}
+
+.favorite-button:hover {
+  background-color: #e0a800;
+}
+
+.add-friends-section {
+  margin-top: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

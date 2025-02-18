@@ -5,6 +5,7 @@ import './FriendsTab.css';
 const FriendsTab = ({ accountName, onMessageFriend }) => {
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [showAddFriends, setShowAddFriends] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -52,6 +53,14 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
     }
   };
 
+  const toggleFavorite = (user) => {
+    if (favorites.some(favorite => favorite.id === user.id)) {
+      setFavorites(favorites.filter(favorite => favorite.id !== user.id));
+    } else {
+      setFavorites([...favorites, user]);
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
     !friends.some(friend => friend.id === user.id) &&
@@ -60,10 +69,33 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
 
   return (
     <div id="friends" className="content">
+      <h2>Favorite Friends</h2>
+      {favorites.length === 0 ? (
+        <p>No favorite friends yet.</p>
+      ) : (
+        <div className="favorites-grid">
+          {favorites.map(favorite => (
+            <div key={favorite.id} className="favorite-item">
+              <div className="favorite-info">
+                <strong>{favorite.name}</strong>
+                <p>Email: {favorite.email}</p>
+                <p>Phone: {favorite.phone}</p>
+              </div>
+              <div className="favorite-actions">
+                <button className="message-button" onClick={() => onMessageFriend(favorite)}>Message</button>
+                <button className="remove-button" onClick={() => removeFriend(favorite)}>Remove</button>
+                <button className="favorite-button" onClick={() => toggleFavorite(favorite)}>
+                  {favorites.some(favorite => favorite.id === favorite.id) ? "Unfavorite" : "Favorite"}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       <h2>Current Friends</h2>
-      <ul className="friends-list">
+      <div className="friends-grid">
         {friends.map(friend => (
-          <li key={friend.id} className="friend-item">
+          <div key={friend.id} className="friend-item">
             <div className="friend-info">
               <strong>{friend.name}</strong>
               <p>Email: {friend.email}</p>
@@ -72,10 +104,13 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
             <div className="friend-actions">
               <button className="message-button" onClick={() => onMessageFriend(friend)}>Message</button>
               <button className="remove-button" onClick={() => removeFriend(friend)}>Remove</button>
+              <button className="favorite-button" onClick={() => toggleFavorite(friend)}>
+                {favorites.some(favorite => favorite.id === friend.id) ? "Unfavorite" : "Favorite"}
+              </button>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
       <button className="toggle-button" onClick={() => setShowAddFriends(!showAddFriends)}>
         {showAddFriends ? "Hide Add Friends" : "Add New Friends"}
       </button>
@@ -89,14 +124,14 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-          <ul className="users-list">
+          <div className="users-grid">
             {filteredUsers.map(user => (
-              <li key={user.id} className="user-item">
+              <div key={user.id} className="user-item">
                 <span>{user.name}</span>
                 <button className="add-button" onClick={() => addFriend(user)}>Add Friend</button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>
