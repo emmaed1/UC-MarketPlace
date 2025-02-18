@@ -15,31 +15,19 @@
   flex-grow: 1;
 }
 
-.products-text h1{
+.products-text h1 {
   font-size: 2.4rem;
-    color: #333;
-    margin: 0;
-    font-weight: 700;
+  color: #333;
+  margin: 0;
+  font-weight: 700;
 }
-.products-text p{
+
+.products-text p {
   font-size: 1.2rem;
-    color: #666;
-    margin-top: 0.5rem;
+  color: #666;
+  margin-top: 0.5rem;
 }
 
-.search-bar {
-  text-align: center;
-  width: 100%;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-
-.search-bar {
-  text-align: center;
-  width: 100%;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
 .search-bar {
   text-align: center;
   width: 100%;
@@ -48,31 +36,31 @@
 }
 
 .search-bar input {
-  width: 100%; /* Expands the input across the available width */
+  width: 100%;
   padding: 10px;
   font-size: 16px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  max-width: 900px; /* Optional: set a max-width to limit how wide it can get */
+  max-width: 900px;
 }
-/*added filter button css*/
+
 .filter-button {
   color: #fff;
-  background-color: #e00122;  /* Same red color as your other buttons */
+  background-color: #e00122;
   margin-top: 1rem;
   margin-left: 10px;
   text-align: center;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  border-radius: 5px;  /* Make it less rounded to match the search bar */
+  border-radius: 5px;
   font-size: 1rem;
-  transition: color 0.3s ease, background-color 0.3s ease;  /* Smooth color transition */
-  display: inline-block;  /* Ensures it's a block element, but inline with other items */
+  transition: color 0.3s ease, background-color 0.3s ease;
+  display: inline-block;
 }
 
 .filter-button:hover {
   color: #eee;
-  background-color: #c3001d;  /* Darker shade for hover effect */
+  background-color: #c3001d;
 }
 
 .products-content {
@@ -81,8 +69,10 @@
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 1rem;
   text-align: center;
+}
 
-  @media (max-width: 400px) {
+@media (max-width: 400px) {
+  .products-content {
     grid-template-columns: 1fr;
   }
 }
@@ -93,64 +83,54 @@
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.9),
     inset 5px 5px 20px rgba(0, 0, 0, 0.3),
     inset -5px -5px 20px rgba(0, 0, 0, 0.3);
-
-  img {
-    width: 50%;
-    max-width: 200px;
-  }
-
-  .rating {
-    color: sandybrown;
-    font-size: 0.8rem;
-    letter-spacing: 1.2px;
-  }
-
-  .product-title {
-    font-size: 1.1rem;
-    margin: 0.6rem 0;
-    color: red;
-  }
-
-  .price {
-    font-weight: bold;
-  }
-
-  .btn {
-    color: #fff;
-    background-color: #e00122;
-    margin-top: 0.5rem;
-    text-align: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: #eee;
-    }
-
-    &.added {
-      background-color: green;
-    }
-  }
-
-  .details {
-    margin-top: 0.5rem;
-    text-align: center;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
-    background-color: #e00122;
-    color: #ffffff;
-    font-size: 1rem;
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  }
-  .details:hover {
-    background-color: #c3001d;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  }
 }
+
+.products img {
+  width: 50%;
+  max-width: 200px;
+}
+
+.products .rating {
+  color: sandybrown;
+  font-size: 0.8rem;
+  letter-spacing: 1.2px;
+}
+
+.products .product-title {
+  font-size: 1.1rem;
+  margin: 0.6rem 0;
+  color: red;
+}
+
+.products .price {
+  font-weight: bold;
+}
+
+.products .btn, .products .details {
+  color: #fff;
+  background-color: #e00122;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  display: inline-block;
+}
+
+.products .btn:hover, .products .details:hover {
+  color: #eee;
+  background-color: #c3001d;
+}
+
+.products .btn {
+  margin-right: 0.5rem;
+}
+
+.products .btn.added {
+  background-color: green;
+}
+
 
 .product-details-container {
   display: flex;
@@ -220,6 +200,11 @@
   color: #ffffff;
 }
 
+.product-categories {
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
 .cart-button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
@@ -229,45 +214,5 @@
   border: 1px solid #000000;
   border-radius: 6px;
   text-decoration: none;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Add transition for text color */
-}
-
-.cart-button:hover {
-  background-color: #e00122; /* Change background on hover */
-  color: #ffffff; /* Change text color on hover */
-}
-
-/* Seller Info Styles */
-.seller-info {
-  display: flex;
-  align-items: center; /* Centers content vertically within the section */
-  gap: 1rem; /* Adds space between the image and seller details */
-  margin-top: 1rem; /* Adds space between the product details and seller info */
-}
-
-.seller-profile-img {
-  width: 70px; /* Slightly smaller */
-  height: 70px;
-  border-radius: 50%; /* Makes the image circular */
-}
-
-.seller-details {
-  flex: 0.8; /* Reduces the width of seller details */
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-}
-
-.seller-name {
-  font-weight: bold;
-  color: #333; /* Adjust color as needed */
-  text-decoration: none;
-}
-
-.seller-name:hover {
-  text-decoration: underline; /* Optional: underline on hover */
-}
-
-.seller-description {
-  color: #555; /* Adjust color for readability */
+  transition: background-color 0.3s ease-in
 }

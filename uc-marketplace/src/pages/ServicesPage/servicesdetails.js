@@ -38,6 +38,11 @@ const ServiceDetails = (props) => {
                         <>
                             <h2 className="service-title">{service.name}</h2>
                             <p>{service.description}</p>
+                            <p  className="service-categories">
+                            {service.categories && service.categories.length
+                            ? service.categories.map((c) => c.name).join(", ")
+                            : "No Category"}
+                            </p>
                             <p className="service-price">Price: ${service.price}</p>
                             
                             {/* Book Service button */}
