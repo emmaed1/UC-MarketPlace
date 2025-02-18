@@ -24,7 +24,7 @@ const SIGHTENGINE_API_SECRET = 'Bxzv9ouesgZeYyJKieHz7g4oWWCuLeAk';
 const JWT_SECRET = "1234567890"; // Replace with real secret later
 
 const generateJwt = (user) => {
-  return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ email: user.email }, "JWT_SECRET");
 };
 
 // Configure multer
@@ -115,13 +115,13 @@ const wsServer = new WebSocketServer({
 });
 
 let clients = [];
-const JWT_SECRET = "1234567890";
+// const JWT_SECRET = "1234567890";
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
-  let userId = null; }); });
-  const generateJwt = (user) => {
-  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
-};
+  let userId = null; 
+//   const generateJwt = (user) => {
+//   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+// };
   clients.push({ connection, userId });
   console.log('Connection accepted.');
 
@@ -251,11 +251,10 @@ app.post("/products", upload.single('image'), async (req, res) => {
 
 app.get("/products", async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
     include:{
         categories: true,
-      },
-    });
+      }});
     res.status(200).json(products);
   } catch (error) {
     
@@ -346,11 +345,11 @@ app.post("/services", upload.single('image'), async (req, res) => {
 
 app.get("/services", async (req, res) => {
   try {
-    const services = await prisma.service.findMany();
+    const services = await prisma.service.findMany({
     include:{
       categories:true,
-        },
-  }),
+    },
+  });
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: "Error getting services" });
