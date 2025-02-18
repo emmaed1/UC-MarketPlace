@@ -4,17 +4,20 @@
   "private": true,
   "dependencies": {
     "@prisma/adapter-pg": "^6.2.1",
-    "@prisma/client": "^6.2.1",
+    "@prisma/client": "^6.3.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.8",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "multer": "^1.4.5-lts.1",
     "package.json": "^2.0.1",
     "pg": "^8.13.1",
     "react": "^19.0.0",
@@ -25,7 +28,8 @@
     "sass": "^1.83.1",
     "sweetalert2": "^11.15.10",
     "uc-marketplace": "file:",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "websocket": "^1.0.35"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
@@ -57,7 +61,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.6",
-    "prisma": "^6.2.1",
+    "prisma": "^6.3.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   }

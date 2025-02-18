@@ -277,4 +277,57 @@
   border: 1pt solid rgb(144, 144, 144);
   display: block ruby;
   padding: 0rem 3rem;
+  
+/* Chat Section Styling */
+#chat {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#chat h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+#chat #chat-messages {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#chat #chat-messages div {
+  margin-bottom: 10px;
+}
+
+#chat #chat-messages strong {
+  color: #007bff;
+}
+
+#chat #messageInput {
+  width: calc(100% - 100px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+#chat button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#chat button:hover {
+  background-color: #0056b3;
 }

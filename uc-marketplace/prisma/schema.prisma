@@ -1,10 +1,10 @@
-generator client {
-  provider = "prisma-client-js"
+datasource db {
+  provider = "postgresql" // or "mysql", "sqlite", etc.
+  url      = env("DATABASE_URL")
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+generator client {
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -12,6 +12,8 @@ model User {
   name     String?  @db.VarChar(255)
   email    String   @unique @db.VarChar(255)
   password String
+  messagesSent     Message[] @relation("Sender")
+  messagesReceived Message[] @relation("Recipient")
 }
 
 model Product {
@@ -22,6 +24,13 @@ model Product {
   quantity  Int
   rating    Float?
   img       String?
+  categories  ProductCategory[]
+}
+
+model ProductCategory {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  products   Product[] 
 }
 
 model Service {
@@ -32,4 +41,21 @@ model Service {
   quantity  Int
   rating    Float?
   img       String?
+  categories  ServiceCategory[]
+}
+
+model ServiceCategory {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  services  Service[]
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  sender      User     @relation("Sender", fields: [senderId], references: [id])
+  senderId    Int
+  recipient   User     @relation("Recipient", fields: [recipientId], references: [id])
+  recipientId Int
+  message     String
+  timestamp   DateTime @default(now())
 }

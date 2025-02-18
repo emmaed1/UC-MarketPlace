@@ -4,29 +4,30 @@ import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import './products.css'
 
 const ProductsCard = (props) => {
-  const { productId, desc, name, price, img } = props;
+  const { productId, desc, name, price, img, categories } = props;
   const { addItem } = useContext(cartContext);
   const [isAdded, setIsAdded] = useState(false);
+
   const handleAddToCart = () => {
     const item = { ...props };
     addItem(item);
 
     setIsAdded(true);
-
     setTimeout(() => {
       setIsAdded(false);
     }, 3000);
   };
 
-
   return (
     <div className="products">
       <figure>
-        <img src={img} key={props.img} alt="item-img" ></img>
+        <img src={img} alt="item-img" />
       </figure>
       <h4 className="product-title">{name}</h4>
       <p>{desc}</p>
       <h3 className="price">$ {price.toLocaleString()}</h3>
+      <p>{categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}</p>
+
       <button
         type="button"
         className={`btn ${isAdded ? "added" : ""}`}
@@ -34,9 +35,12 @@ const ProductsCard = (props) => {
       >
         {isAdded ? "Added" : "Add to cart"}
       </button>
-      <Link className='details' to={`/products/${productId}`}>View More</Link>
+      <Link className="details" to={`/products/${productId}`}>
+        View More
+      </Link>
     </div>
   );
 };
+
 
 export default ProductsCard;

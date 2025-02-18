@@ -44,6 +44,11 @@ const ProductDetails = () => {
             <>
               <h2 className="product-title">{product.name}</h2>
               <p>{product.desc}</p>
+              <p  className="product-categories">
+                  {product.categories && product.categories.length
+                  ? product.categories.map((c) => c.name).join(", ")
+                  : "No Category"}
+              </p>
               <p className="product-price">Price: ${product.price}</p>
               <button
                 type="button"

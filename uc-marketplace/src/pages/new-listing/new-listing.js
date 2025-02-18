@@ -4,52 +4,157 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 
 const NewListing = () => {
-  const [type, setType] = useState("");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const [img, setImage] = useState("")
-
-  const handleSubmit = (e) => {
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const productCategories = [
+      { id: 2, name: "Academic Materials" },
+      { id: 3, name: "Home Essentials" },
+      { id: 4, name: "Clothing" },
+      { id: 5, name: "Accesories" },
+      { id: 6, name: "Technology & Electronics" },
+      { id: 7, name: "Food & Beverage" },
+      { id: 8, name: "Entertainment" },
+      { id: 9, name: "Collectibles" },
+      { id: 10, name: "Miscellaneous" },
+    ];
+   
+    const serviceCategories = [
+      { id: 1, name: "Academic Help" },
+      { id: 2, name: "Technology Support" },
+      { id: 3, name: "Photography & Videography" },
+      { id: 4, name: "Beauty & Personal Care" },
+      { id: 5, name: "Automotive Services" },
+      { id: 6, name: "Creative Work" },
+      { id: 7, name: "Pet Services" },
+      { id: 8, name: "Entertainment & Event Planning" },
+      { id: 9, name: "Miscellaneous" },
+    ];
+   
+    const categoriesToDisplay = type === "product" ? productCategories : serviceCategories;
+   
+    const toggleCategory = (categoryId) => {
+      setSelectedCategories((prevSelected) =>
+        prevSelected.includes(categoryId)
+          ? prevSelected.filter((id) => id !== categoryId)
+          : [...prevSelected, categoryId]
+      );
+    };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { name, desc, price, quantity, img };
-    const postType = document.getElementById("listing-type").value;
-    console.log(document.getElementById("listing-type").value)
+    setLoading(true);
+    const postType = document.getElementById("listing-type").value; 
+    const selectedCategoryIds = selectedCategories.map(Number);
+
     try {
-      fetch(`http://localhost:3001/${postType}s`, {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('desc', desc);
+    formData.append('price', price);
+    formData.append('quantity', quantity);
+    formData.append('rating', 5);
+    if (image) {
+        formData.append('image', image);
+    }
+ 
+    
+    selectedCategoryIds.forEach((categoryId, index) => {
+        formData.append(`categoryIds[${index}]`, categoryId); 
+      
+    });
+ 
+ 
+    console.log("Submitting:", {
+        type: postType,
+        name,
+        desc,
+        price,
+        quantity,
+        hasImage: !!image,
+        categoryIds: selectedCategoryIds 
+    });
+ 
+    const response = await fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          desc: data.desc,
-          price: parseFloat(data.price),
-          quantity: parseInt(data.quantity),
-          rating: 0,
-          img: ("images/"+data.img)
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
-      if (data) {
-        console.log("Success", data);
-        Swal.fire({
-          title: "Success!",
-          text: "Your listing was successfully posted!",
-          icon: "success",
-        });
+        body: formData
+    });
+has context menu
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create listing');
       }
+
+      console.log("Success", data);
+      Swal.fire({
+        title: "Success!",
+        text: "Your listing was successfully posted!",
+        icon: "success",
+      });
+
+  
+      setName("");
+      setDesc("");
+      setPrice(0);
+      setQuantity(0);
+      setImage(null);
+      document.getElementById('photos').value = '';
+
     } catch (error) {
-      console.log("Error: ", error);
+      console.error("Error: ", error);
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Selected file:", {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
+
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        e.target.value = '';
+        Swal.fire({
+          title: "Error!",
+          text: "File size too large. Please choose an image under 5MB.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        e.target.value = '';
+        Swal.fire({
+          title: "Error!",
+          text: "Please select an image file.",
+          icon: "error",
+        });
+        return;
+      }
+
+      setImage(file);
     }
   };
 
   return (
     <div className="content">
       <div className="welcome-content">
-        <img src={logo} alt="uc marketplace-logo"></img>
+        <img src={logo} alt="uc marketplace-logo" />
         <div className="welcome-text">
           <h1>List Product or Service</h1>
         </div>
@@ -57,10 +162,14 @@ const NewListing = () => {
 
       <div className="listing-form-container">
         <h2>Create a New Listing</h2>
-        <form className="listing-form" onSubmit={handleSubmit} method="POST">
+        <form className="listing-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="listing-title">Type:</label>
-            <select id="listing-type" name="listingType">
+            <label htmlFor="listing-type">Type:</label>
+            <select
+              id="listing-type"
+              name="listingType"
+              value={type}
+              onChange={(e) => setType(e.target.value)}>
               <option value="product">Product</option>
               <option value="service">Service</option>
             </select>
@@ -87,7 +196,7 @@ const NewListing = () => {
               placeholder="Enter Product or Service Description:"
               rows="5"
               required
-            ></textarea>
+            />
           </div>
 
           <div className="form-group">
@@ -99,8 +208,29 @@ const NewListing = () => {
               onChange={(e) => setPrice(e.target.value)}
               placeholder="Enter Price:"
               required
+              min="0"
+              step="0.01"
             />
           </div>
+        <div className="form-group">
+          <label htmlFor="category">Category:</label>
+          <div className="category-dropdown">
+            {categoriesToDisplay.map((cat) => (
+              <div key={cat.id} className="category-option">
+                <input
+                  type="checkbox"
+                  id={`category-${cat.id}`}
+                  value={cat.id}
+                  checked=
+{selectedCategories.includes(cat.id)}
+                    onChange={() => toggleCategory(cat.id)}
+                  />
+          <label htmlFor={`category-${cat.id}`}>
+{cat.name}</label>
+          </div>
+              ))}
+          </div>
+         </div>   
 
           <div className="form-group">
             <label htmlFor="quantity">Quantity:</label>
@@ -111,27 +241,27 @@ const NewListing = () => {
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="Enter Quantity:"
               required
+              min="0"
             />
           </div>
 
           <div className="form-group">
-            <label htmlfor="photos">Upload Photos:</label>
+            <label htmlFor="photos">Upload Photos:</label>
             <input
               type="file"
               id="photos"
-              value={img}
-              onChange={(e) => setImage(e.target.value)}
+              onChange={handleImageChange}
               accept="image/*"
-              multiple
             />
           </div>
 
-          <button type="submit" className="post-button">
-            Post Listing
+          <button type="submit" className="post-button" disabled={loading}>
+            {loading ? 'Posting...' : 'Post Listing'}
           </button>
         </form>
       </div>
     </div>
   );
 };
+
 export default NewListing;
