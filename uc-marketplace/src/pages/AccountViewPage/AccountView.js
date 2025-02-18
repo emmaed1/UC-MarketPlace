@@ -165,5 +165,6 @@ export default function AccountView() {
         listingId={selectedListingId}
       />
     </div>
+    </div>
   );
 }
