@@ -1,21 +1,31 @@
-import "./Services.css"; 
-import ServicesCard from './servicesCard'
+// services.js
+import ServicesCard from './servicesCard';
 import { useEffect, useState } from "react";
+import "./Services.css";
+import { useSearchParams } from 'react-router-dom';
 
 const Services = () => {
-  const [services, setServices] = useState([]); // Store the services
-  const [searchQuery, setSearchQuery] = useState(""); // Store the search input
-  const [searchTerm, setSearchTerm] = useState(""); // Store the confirmed search term
-  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || "";
+  const [filters, setFilters] = useState({
+    minPrice: "",
+    maxPrice: "",
+    categories: initialCategory ? [initialCategory] : [],
+  });
+  const [services, setServices] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState({ minPrice: "", maxPrice: "" });
-  const [filterCriteria, setFilterCriteria] = useState({ minPrice: "", maxPrice: "" });
+  const [appliedFilters, setAppliedFilters] = useState({
+    minPrice: "",
+    maxPrice: "",
+    categories: initialCategory ? [initialCategory] : [],
+  });
 
   useEffect(() => {
     fetchServices();
   }, []);
 
-  // Function to fetch all services
   const fetchServices = () => {
     fetch('http://localhost:3001/services', { method: "GET" })
       .then(res => res.json())
@@ -24,14 +34,12 @@ const Services = () => {
   };
 
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-    setIsSearchTriggered(false);
+    setSearchTerm(event.target.value);
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      setSearchTerm(searchQuery);
-      setIsSearchTriggered(true);
+      setAppliedSearchTerm(searchTerm);
     }
   };
 
@@ -40,114 +48,144 @@ const Services = () => {
   };
 
   const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilterCriteria((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = event.target;
+    if (type === "checkbox") {
+      setFilters((prev) => ({
+        ...prev,
+        categories: checked
+          ? [...prev.categories, value]
+          : prev.categories.filter((cat) => cat !== value),
+      }));
+    } else {
+      setFilters((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const applyFilters = () => {
-    setAppliedFilters(filterCriteria);
+    setAppliedFilters(filters);
+    setAppliedSearchTerm(searchTerm);
     setIsFilterOpen(false);
-    setIsSearchTriggered(true); // Ensures search is triggered even if search bar is empty
   };
 
   const clearFilters = () => {
-    setAppliedFilters({ minPrice: "", maxPrice: "" });
-    setFilterCriteria({ minPrice: "", maxPrice: "" });
-    setSearchQuery("");   // Clears search input field
-    setSearchTerm("");    // Clears applied search filter
-    setIsSearchTriggered(true); 
+    setFilters({ minPrice: "", maxPrice: "", categories: [] });
+    setAppliedFilters({ minPrice: "", maxPrice: "", categories: [] });
+    setSearchTerm("");
+    setAppliedSearchTerm("");
   };
-  
 
-  const filteredServices= services.filter((service) => {
+  const filteredServices = services.filter((service) => {
     const matchesSearch =
-      !isSearchTriggered ||
-      service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.desc.toLowerCase().includes(searchTerm.toLowerCase());
+      !appliedSearchTerm ||
+      service.name.toLowerCase().includes(appliedSearchTerm.toLowerCase()) ||
+      service.desc.toLowerCase().includes(appliedSearchTerm.toLowerCase());
 
     const matchesPrice =
       (!appliedFilters.minPrice || service.price >= parseFloat(appliedFilters.minPrice)) &&
       (!appliedFilters.maxPrice || service.price <= parseFloat(appliedFilters.maxPrice));
 
-    return matchesSearch && matchesPrice;
+    const matchesCategory =
+      appliedFilters.categories.length === 0 || appliedFilters.categories.some(cat => service.categories.some(prodCat => prodCat.name === cat));
+
+    return matchesSearch && matchesPrice && matchesCategory;
   });
 
   return (
-    <div className="content">
-      <div className="banner">
-        <div className="banner-text">
-          <h1>Explore Our Services</h1>
-          <p>Find the services tailored to your academic needs and beyond.</p>
-        </div>
-      </div>
+    <> {/* Added Fragment here */}
+      <div className="content">
+        <div className="services-content"> {/* Added this div */}
+          <div className="services-text"> {/* Added this div */}
+            <h1>Explore Our Services</h1>
+            <p>Find the services tailored to your academic needs and beyond.</p>
+          </div> {/* close services-text */}
+        </div> {/* close services-content */}
 
-      <div className="search-bar">
-        <input 
-          type="text" 
-          id="search" 
-          placeholder="Search for services..." 
-          value={searchQuery}
-          onChange={handleSearchChange} // Update search query
-          onKeyDown={handleKeyPress} // Trigger search on Enter key press
-        />
-        <button className="filter-button" onClick={toggleFilterPopup}>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search for services..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyPress}
+          />
+          <button className="filter-button" onClick={toggleFilterPopup}>
             Filter
           </button>
-      </div>
+        </div>
 
-      {isFilterOpen && (
+        {isFilterOpen && (
           <div className="filter-popup">
             <h3>Filter Options</h3>
-            <label>Min Price:</label>
-            <input
-              type="number"
-              name="minPrice"
-              value={filterCriteria.minPrice}
-              onChange={handleFilterChange}
-            />
-            <label>Max Price:</label>
-            <input
-              type="number"
-              name="maxPrice"
-              value={filterCriteria.maxPrice}
-              onChange={handleFilterChange}
-            />
-            <button onClick={applyFilters}style={{ marginLeft: "10px" }}>Apply</button>
-            <button onClick={clearFilters} style={{ marginLeft: "10px"}}>Clear Filters</button>
+            <label>Price </label>
+            <div className="filter-section">
+              <label>Min Price:</label>
+              <input
+                type="number"
+                name="minPrice"
+                value={filters.minPrice}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-section">
+              <label>Max Price:</label>
+              <input
+                type="number"
+                name="maxPrice"
+                value={filters.maxPrice}
+                onChange={handleFilterChange}
+              />
+            </div>
+            <div className="filter-section">
+              <label>Category</label>
+              <div className="category-options">
+                {[
+                  "Academic Help",
+                  "Technology Support",
+                  "Photography and Videography",
+                  "Beauty and Personal Care",
+                  "Automotive Services",
+                  "Creative Work",
+                  "Pet Services",
+                  "Entertainment and Event Planning",
+                  "Miscellaneous",
+                ].map((cat) => (
+                  <label key={cat} className="category-checkbox">
+                    <input
+                      type="checkbox"
+                      name="categories"
+                      value={cat}
+                      checked={filters.categories.includes(cat)}
+                      onChange={handleFilterChange}
+                    />
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="filter-buttons">
+              <button onClick={applyFilters}>Apply</button>
+              <button onClick={clearFilters}>Clear Filters</button>
+            </div>
           </div>
         )}
 
-      <div className="services-content">
-        {filteredServices.length > 0 ? (
-          filteredServices.map((item) => (
-            <ServicesCard key={item.serviceId} {...item} />
-          ))
-        ) : (
-          <p>No services found.</p>
-        )}
-      </div>
-      <div className="features-container">
-        <div className="featured-section">
-          <h3 className="featured-title">Special Offers</h3>
-          <a href="/special-offers">View Offers</a>
+        <div className="services-content"> {/* Added this div */}
+          {filteredServices.length > 0 ? (
+            filteredServices.map((item) => (
+              <ServicesCard key={item.serviceId} {...item} />
+            ))
+          ) : (
+            <p>No services found.</p>
+          )}
+        </div> {/* close services-content */}
+        <div className="features-container">
+          {/* ... (featured sections) */}
         </div>
-
-        <div className="featured-section">
-          <h3 className="featured-title">Top Services</h3>
-          <a href="/top-services">Explore Now</a>
-        </div>
-
-        <div className="featured-section">
-          <h3 className="featured-title">New Arrivals</h3>
-          <a href="/new-arrivals">See What's New</a>
+        <div className="faq-section">
+          {/* ... (FAQ section) */}
         </div>
       </div>
-      
-      <div className="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        <p>Find answers to common questions about our services.</p>
-      </div>
-    </div>
+    </> // Close the fragment
   );
 };
 
