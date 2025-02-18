@@ -8,9 +8,42 @@ const NewListing = () => {
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const productCategories = [
+      { id: 2, name: "Academic Materials" },
+      { id: 3, name: "Home Essentials" },
+      { id: 4, name: "Clothing" },
+      { id: 5, name: "Accesories" },
+      { id: 6, name: "Technology & Electronics" },
+      { id: 7, name: "Food & Beverage" },
+      { id: 8, name: "Entertainment" },
+      { id: 9, name: "Collectibles" },
+      { id: 10, name: "Miscellaneous" },
+    ];
+   
+    const serviceCategories = [
+      { id: 1, name: "Academic Help" },
+      { id: 2, name: "Technology Support" },
+      { id: 3, name: "Photography & Videography" },
+      { id: 4, name: "Beauty & Personal Care" },
+      { id: 5, name: "Automotive Services" },
+      { id: 6, name: "Creative Work" },
+      { id: 7, name: "Pet Services" },
+      { id: 8, name: "Entertainment & Event Planning" },
+      { id: 9, name: "Miscellaneous" },
+    ];
+   
+    const categoriesToDisplay = type === "product" ? productCategories : serviceCategories;
+   
+    const toggleCategory = (categoryId) => {
+      setSelectedCategories((prevSelected) =>
+        prevSelected.includes(categoryId)
+          ? prevSelected.filter((id) => id !== categoryId)
+          : [...prevSelected, categoryId]
+      );
+    };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
