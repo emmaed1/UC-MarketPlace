@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './FriendsTab.css'; // Import the CSS file for styling
+import './FriendsTab.css';
 
 const FriendsTab = ({ accountName, onMessageFriend }) => {
   const [users, setUsers] = useState([]);
@@ -55,7 +55,7 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
     !friends.some(friend => friend.id === user.id) &&
-    user.name !== accountName // Exclude the logged-in user
+    user.name !== accountName 
   );
 
   return (

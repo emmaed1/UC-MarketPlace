@@ -21,7 +21,7 @@ const wsServer = new WebSocketServer({
 
 let clients = [];
 
-const JWT_SECRET = "1234567890"; // Replace with your real secret later.
+const JWT_SECRET = "1234567890";
 
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
@@ -102,7 +102,6 @@ wsServer.on('request', function(request) {
         },
       });
 
-      // Send the message back to the sender as well
       connection.sendUTF(JSON.stringify(messageData));
     }
   });
@@ -117,7 +116,6 @@ const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
-// Add friends endpoints
 app.get("/friends/:accountName", async (req, res) => {
   const accountName = req.params.accountName;
   try {
@@ -364,7 +362,7 @@ app.post("/user/login", async (req, res) => {
 
 app.get("/messages/:recipientId", async (req, res) => {
   const recipientId = parseInt(req.params.recipientId);
-  const userId = req.query.userId; // Assuming userId is passed as a query parameter
+  const userId = req.query.userId;
 
   try {
     const messages = await prisma.message.findMany({
@@ -399,7 +397,7 @@ app.get("/user", async (req, res, next) => {
 });
 
 app.post("/user/refresh-token", async (req, res) => {
-  const userId = req.body.userId; // Assuming userId is passed in the request body
+  const userId = req.body.userId; 
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },

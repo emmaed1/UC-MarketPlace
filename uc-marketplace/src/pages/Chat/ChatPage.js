@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import './ChatPage.css'; // Import the CSS file
+import './ChatPage.css'; 
 
 const Chat = ({ accountName, selectedChatUser }) => {
   const [socket, setSocket] = useState(null);

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./AccountView.css";
 import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
-import Chat from "../Chat/ChatPage"; // Import the Chat component
-import FriendsTab from "./FriendsTab"; // Import the FriendsTab component
+import Chat from "../Chat/ChatPage";
+import FriendsTab from "./FriendsTab";
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
