@@ -115,10 +115,13 @@ const wsServer = new WebSocketServer({
 });
 
 let clients = [];
-
+const JWT_SECRET = "1234567890";
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
-  let userId = null;
+  let userId = null; }); });
+  const generateJwt = (user) => {
+  return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+};
   clients.push({ connection, userId });
   console.log('Connection accepted.');
 
@@ -196,7 +199,7 @@ wsServer.on('request', function(request) {
 
 // Product routes
 app.post("/products", upload.single('image'), async (req, res) => {
-  const { name, desc, rating, price, quantity } = req.body;
+  const { name, desc, rating, price, quantity, img, categoryIds} = req.body;
   let imagePath = null;
 
   if (req.file) {
@@ -232,6 +235,12 @@ app.post("/products", upload.single('image'), async (req, res) => {
         price: parseFloat(price),
         quantity: parseInt(quantity),
         img: imagePath,
+        categories: {
+          connect: categoryIds.map((categoryId) => ({ id: categoryId })),
+        },
+      },
+      include: {
+        categories: true,
       },
     });
     res.json(product);
@@ -243,8 +252,13 @@ app.post("/products", upload.single('image'), async (req, res) => {
 app.get("/products", async (req, res) => {
   try {
     const products = await prisma.product.findMany();
+    include:{
+        categories: true,
+      },
+    });
     res.status(200).json(products);
   } catch (error) {
+    
     console.log("Error!");
     res.status(500).json({ error: "Error getting products" });
   }
@@ -255,6 +269,9 @@ app.get("/products/:productId", async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
       where: { productId: productId },
+      include:{
+        categories:true,
+      },
     });
     res.json(product);
   } catch (error) {
@@ -277,7 +294,7 @@ app.delete("/products/:productId", async (req, res) => {
 
 // Service routes
 app.post("/services", upload.single('image'), async (req, res) => {
-  const { name, desc, rating, price, quantity } = req.body;
+  const { name, desc, rating, price, quantity, img, categoryIds } = req.body;
   let imagePath = null;
 
   if (req.file) {
@@ -313,6 +330,12 @@ app.post("/services", upload.single('image'), async (req, res) => {
         price: parseFloat(price),
         quantity: parseInt(quantity),
         img: imagePath,
+        categories: {
+          connect: categoryIds.map((categoryId) => ({ id: categoryId })),
+        },
+      },
+      include: {
+        categories: true,
       },
     });
     res.json(service);
@@ -324,6 +347,10 @@ app.post("/services", upload.single('image'), async (req, res) => {
 app.get("/services", async (req, res) => {
   try {
     const services = await prisma.service.findMany();
+    include:{
+      categories:true,
+        },
+  }),
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: "Error getting services" });
@@ -335,6 +362,9 @@ app.get("/services/:serviceId", async (req, res) => {
   try {
     const services = await prisma.service.findUnique({
       where: { serviceId: serviceId },
+      include:{
+        categories:true,
+      },
     });
     res.json(services);
   } catch (error) {
