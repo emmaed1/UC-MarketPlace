@@ -35,6 +35,19 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
     fetchFriends();
   }, [accountName]);
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/favorites/${accountName}`);
+        setFavorites(response.data);
+      } catch (error) {
+        console.error('Failed to fetch favorite friends:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, [accountName]);
+
   const addFriend = async (user) => {
     try {
       const response = await axios.post(`http://localhost:3001/friends/${accountName}`, { friendId: user.id });
@@ -53,11 +66,17 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
     }
   };
 
-  const toggleFavorite = (user) => {
-    if (favorites.some(favorite => favorite.id === user.id)) {
-      setFavorites(favorites.filter(favorite => favorite.id !== user.id));
-    } else {
-      setFavorites([...favorites, user]);
+  const toggleFavorite = async (user) => {
+    try {
+      if (favorites.some(favorite => favorite.id === user.id)) {
+        await axios.delete(`http://localhost:3001/favorites/${accountName}/${user.id}`);
+        setFavorites(favorites.filter(favorite => favorite.id !== user.id));
+      } else {
+        const response = await axios.post(`http://localhost:3001/favorites/${accountName}`, { friendId: user.id });
+        setFavorites([...favorites, response.data]);
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite friend:', error);
     }
   };
 

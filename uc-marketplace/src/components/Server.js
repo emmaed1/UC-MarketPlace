@@ -439,6 +439,79 @@ app.post("/user/refresh-token", async (req, res) => {
   }
 });
 
+app.get("/favorites/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName },
+      include: { favoriteFriends: true }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user.favoriteFriends);
+  } catch (error) {
+    console.error("Error fetching favorite friends:", error);
+    res.status(500).json({ error: "Error fetching favorite friends" });
+  }
+});
+
+app.post("/favorites/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  const { friendId } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const friend = await prisma.user.findUnique({
+      where: { id: friendId }
+    });
+    if (!friend) {
+      return res.status(404).json({ error: "Friend not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        favoriteFriends: {
+          connect: { id: friend.id }
+        }
+      }
+    });
+    res.json(friend);
+  } catch (error) {
+    console.error("Error adding favorite friend:", error);
+    res.status(500).json({ error: "Error adding favorite friend" });
+  }
+});
+
+app.delete("/favorites/:accountName/:friendId", async (req, res) => {
+  const accountName = req.params.accountName;
+  const friendId = parseInt(req.params.friendId);
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        favoriteFriends: {
+          disconnect: { id: friendId }
+        }
+      }
+    });
+    res.json({ message: "Favorite friend removed" });
+  } catch (error) {
+    console.error("Error removing favorite friend:", error);
+    res.status(500).json({ error: "Error removing favorite friend" });
+  }
+});
+
 server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

@@ -16,6 +16,8 @@ model User {
   messagesSent      Message[] @relation("SentMessages")
   friends           User[]    @relation("UserFriends")
   friendOf          User[]    @relation("UserFriends")
+  favoriteFriends   User[]    @relation("UserFavorites")
+  favoritedBy       User[]    @relation("UserFavorites")
 }
 
 model Product {
@@ -32,7 +34,7 @@ model Product {
 model ProductCategory {
   id         Int        @id @default(autoincrement())
   name       String     @unique
-  products   Product[] 
+  products   Product[]
 }
 
 model Service {
