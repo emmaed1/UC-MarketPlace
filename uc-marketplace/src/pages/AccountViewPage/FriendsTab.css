@@ -37,18 +37,21 @@ h2, h3 {
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .friend-item:hover, .favorite-item:hover, .user-item:hover {
   background-color: #f1f1f1;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.friend-info, .favorite-info {
+.friend-info, .favorite-info, .user-info {
   flex-grow: 1;
   text-align: center;
 }
 
-.friend-actions, .favorite-actions {
+.friend-actions, .favorite-actions, .user-actions {
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -111,4 +114,42 @@ h2, h3 {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.user-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.user-item:hover {
+  background-color: #f1f1f1;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
 }
