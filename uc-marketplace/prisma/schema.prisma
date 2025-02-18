@@ -25,7 +25,13 @@ model Product {
   quantity  Int
   rating    Float?
   img       String?
-  productId Int     @id @default(autoincrement())
+  categories  ProductCategory[]
+}
+
+model ProductCategory {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  products   Product[] 
 }
 
 model Service {
@@ -35,7 +41,13 @@ model Service {
   quantity  Int
   rating    Float?
   img       String?
-  serviceId Int     @id @default(autoincrement())
+  categories  ServiceCategory[]
+}
+
+model ServiceCategory {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  services  Service[]
 }
 
 model Message {
