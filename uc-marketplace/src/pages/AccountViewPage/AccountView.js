@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import "./AccountView.css";
 import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
-import Chat from "../Chat/ChatPage"; // Import the Chat component
+import Chat from "../Chat/ChatPage";
+import FriendsTab from "./FriendsTab";
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
   const [showModal, setShowModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState(null);
   const [accountName, setAccountName] = useState("");
+  const [selectedChatUser, setSelectedChatUser] = useState(null);
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -29,6 +31,11 @@ export default function AccountView() {
   const closeModal = () => {
     setShowModal(false);
     setSelectedListingId(null);
+  };
+
+  const handleMessageFriend = (friend) => {
+    setSelectedChatUser(friend);
+    setOption("Messages");
   };
 
   return (
@@ -92,18 +99,25 @@ export default function AccountView() {
       {/* Chat Section */}
       {option === "Messages" && (
         <div id="chat" className="content">
-          <Chat accountName={accountName} />
+          <Chat accountName={accountName} selectedChatUser={selectedChatUser} />
         </div>
       )}
 
-      <div className="newlisting-reviews-container">
-        <div className="newlisting">
-          <h3 className="newlist-title">
-            Have another product or service to sell?
-          </h3>
-          <a href="/new-listing">Create Listing</a>
+      {/* Friends Section */}
+      {option === "Friends" && (
+        <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
+      )}
+
+      {option !== "Messages" && option !== "Friends" && (
+        <div className="newlisting-reviews-container">
+          <div className="newlisting">
+            <h3 className="newlist-title">
+              Have another product or service to sell?
+            </h3>
+            <a href="/new-listing">Create Listing</a>
+          </div>
         </div>
-      </div>
+      )}
 
       <ListingDetailsModal
         show={showModal}
