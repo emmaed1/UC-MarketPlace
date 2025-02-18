@@ -61,6 +61,7 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
     try {
       await axios.delete(`http://localhost:3001/friends/${accountName}/${user.id}`);
       setFriends(friends.filter(friend => friend.id !== user.id));
+      setFavorites(favorites.filter(favorite => favorite.id !== user.id));
     } catch (error) {
       console.error('Failed to remove friend:', error);
     }
@@ -102,9 +103,9 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
               </div>
               <div className="favorite-actions">
                 <button className="message-button" onClick={() => onMessageFriend(favorite)}>Message</button>
-                <button className="remove-button" onClick={() => removeFriend(favorite)}>Remove</button>
-                <button className="favorite-button" onClick={() => toggleFavorite(favorite)}>
-                  {favorites.some(favorite => favorite.id === favorite.id) ? "Unfavorite" : "Favorite"}
+                <button className="unfriend-button" onClick={() => removeFriend(favorite)}>Unfriend</button>
+                <button className="unfavorite-button" onClick={() => toggleFavorite(favorite)}>
+                  Unfavorite
                 </button>
               </div>
             </div>
@@ -122,8 +123,8 @@ const FriendsTab = ({ accountName, onMessageFriend }) => {
             </div>
             <div className="friend-actions">
               <button className="message-button" onClick={() => onMessageFriend(friend)}>Message</button>
-              <button className="remove-button" onClick={() => removeFriend(friend)}>Remove</button>
-              <button className="favorite-button" onClick={() => toggleFavorite(friend)}>
+              <button className="unfriend-button" onClick={() => removeFriend(friend)}>Unfriend</button>
+              <button className="unfavorite-button" onClick={() => toggleFavorite(friend)}>
                 {favorites.some(favorite => favorite.id === friend.id) ? "Unfavorite" : "Favorite"}
               </button>
             </div>
