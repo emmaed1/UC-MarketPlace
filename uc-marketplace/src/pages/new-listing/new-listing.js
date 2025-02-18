@@ -82,7 +82,7 @@ const NewListing = () => {
         method: "POST",
         body: formData
     });
-has context menu
+
       const data = await response.json();
 
       if (!response.ok) {
