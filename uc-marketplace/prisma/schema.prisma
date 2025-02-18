@@ -48,7 +48,8 @@ model ServiceCategory {
   id        Int        @id @default(autoincrement())
   name      String     @unique
   services  Service[]
- 
+}
+
 model Message {
   id          Int      @id @default(autoincrement())
   sender      User     @relation("Sender", fields: [senderId], references: [id])
