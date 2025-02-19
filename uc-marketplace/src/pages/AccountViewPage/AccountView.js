@@ -3,12 +3,12 @@ import "./AccountView.css";
 import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage"; // Import the Chat component
+import Profile from "../Profile/profile"
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
   const [showModal, setShowModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [accountName, setAccountName] = useState("");
 
   useEffect(() => {
@@ -30,18 +30,6 @@ export default function AccountView() {
   const closeModal = () => {
     setShowModal(false);
     setSelectedListingId(null);
-  };
-
-  const handleInputChange = (event) => {
-    setAccountName(event.target.value);
-  };
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleSaveClick = () => {
-    setIsEditing(false);
   };
 
   return (
@@ -102,46 +90,27 @@ export default function AccountView() {
         </ul>
       </div>
       <div className="account-content">
+      {/* Profile section */}
+      {option === "Profile" && (
         <div id="profile" className="content">
-          <h2 className="account-title">Profile</h2>
-          {isEditing ? (
-        <div className="profile-header">
-          <label>Name</label>
-          <input
-            type="text"
-            value={accountName}
-            onChange={handleInputChange}
-          />
-          <button onClick={handleSaveClick}>Save</button>
-        </div>
-      ) : (
-        <div className="profile-header">
-          <label>Name</label>
-          <p>{accountName}</p>
-          <button onClick={handleEditClick}>Edit</button>
+          <Profile accountName={accountName}/>
         </div>
       )}
-        </div>
+
+      {/* My Listings section */}
+      {option === "My Listings" && (
         <div id="listings" className="content">
-          <h2 className="account-title">My Listings</h2>
+          <p>my listings section</p>
           <div className="newlisting-reviews-container">
-            <div className="newlisting">
-              <h3 className="newlist-title">
-                Have another product or service to sell?
-              </h3>
-              <a href="/new-listing">Create Listing</a>
-            </div>
-          </div>
-          <div id="messages" className="content">
-            <h2 className="account-title">Messages</h2>
-          </div>
-          <div id="security" className="content">
-            <h2 className="account-title">Security</h2>
-          </div>
-          <div id="friends" className="content">
-            <h2 className="account-title">Friends</h2>
-          </div>
+        <div className="newlisting">
+          <h3 className="newlist-title">
+            Have another product or service to sell?
+          </h3>
+          <a href="/new-listing">Create Listing</a>
         </div>
+      </div>
+        </div>
+      )}
 
       {/* Chat Section */}
       {option === "Messages" && (
@@ -150,14 +119,12 @@ export default function AccountView() {
         </div>
       )}
 
-      <div className="newlisting-reviews-container">
-        <div className="newlisting">
-          <h3 className="newlist-title">
-            Have another product or service to sell?
-          </h3>
-          <a href="/new-listing">Create Listing</a>
+      {/* Security section */}
+      {option === "Security" && (
+        <div id="security" className="content">
+          <p>security section</p>
         </div>
-      </div>
+      )}
 
       <ListingDetailsModal
         show={showModal}
