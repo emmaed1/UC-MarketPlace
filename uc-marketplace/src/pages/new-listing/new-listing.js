@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { useState } from "react";
 
 const NewListing = () => {
+  const [type, setType] = useState("product");
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
@@ -12,81 +13,79 @@ const NewListing = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const productCategories = [
-      { id: 2, name: "Academic Materials" },
-      { id: 3, name: "Home Essentials" },
-      { id: 4, name: "Clothing" },
-      { id: 5, name: "Accesories" },
-      { id: 6, name: "Technology & Electronics" },
-      { id: 7, name: "Food & Beverage" },
-      { id: 8, name: "Entertainment" },
-      { id: 9, name: "Collectibles" },
-      { id: 10, name: "Miscellaneous" },
-    ];
-   
-    const serviceCategories = [
-      { id: 1, name: "Academic Help" },
-      { id: 2, name: "Technology Support" },
-      { id: 3, name: "Photography & Videography" },
-      { id: 4, name: "Beauty & Personal Care" },
-      { id: 5, name: "Automotive Services" },
-      { id: 6, name: "Creative Work" },
-      { id: 7, name: "Pet Services" },
-      { id: 8, name: "Entertainment & Event Planning" },
-      { id: 9, name: "Miscellaneous" },
-    ];
-   
-    const categoriesToDisplay = type === "product" ? productCategories : serviceCategories;
-   
-    const toggleCategory = (categoryId) => {
-      setSelectedCategories((prevSelected) =>
-        prevSelected.includes(categoryId)
-          ? prevSelected.filter((id) => id !== categoryId)
-          : [...prevSelected, categoryId]
-      );
-    };
+    { id: 2, name: "Academic Materials" },
+    { id: 3, name: "Home Essentials" },
+    { id: 4, name: "Clothing" },
+    { id: 5, name: "Accesories" },
+    { id: 6, name: "Technology & Electronics" },
+    { id: 7, name: "Food & Beverage" },
+    { id: 8, name: "Entertainment" },
+    { id: 9, name: "Collectibles" },
+    { id: 10, name: "Miscellaneous" },
+  ];
+
+  const serviceCategories = [
+    { id: 1, name: "Academic Help" },
+    { id: 2, name: "Technology Support" },
+    { id: 3, name: "Photography & Videography" },
+    { id: 4, name: "Beauty & Personal Care" },
+    { id: 5, name: "Automotive Services" },
+    { id: 6, name: "Creative Work" },
+    { id: 7, name: "Pet Services" },
+    { id: 8, name: "Entertainment & Event Planning" },
+    { id: 9, name: "Miscellaneous" },
+  ];
+
+  const categoriesToDisplay =
+    type === "product" ? productCategories : serviceCategories;
+
+  const toggleCategory = (categoryId) => {
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(categoryId)
+        ? prevSelected.filter((id) => id !== categoryId)
+        : [...prevSelected, categoryId]
+    );
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const postType = document.getElementById("listing-type").value; 
+    const postType = document.getElementById("listing-type").value;
     const selectedCategoryIds = selectedCategories.map(Number);
 
     try {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('desc', desc);
-    formData.append('price', price);
-    formData.append('quantity', quantity);
-    formData.append('rating', 5);
-    if (image) {
-        formData.append('image', image);
-    }
- 
-    
-    selectedCategoryIds.forEach((categoryId, index) => {
-        formData.append(`categoryIds[${index}]`, categoryId); 
-      
-    });
- 
- 
-    console.log("Submitting:", {
-        type: postType,
-        name,
-        desc,
-        price,
-        quantity,
-        hasImage: !!image,
-        categoryIds: selectedCategoryIds 
-    });
- 
-    const response = await fetch(`http://localhost:3001/${postType}s`, {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("desc", desc);
+      formData.append("price", price);
+      formData.append("quantity", quantity);
+      formData.append("rating", 5);
+      if (image) {
+        formData.append("image", image);
+      }
+
+      selectedCategoryIds.forEach((categoryId, index) => {
+        formData.append(`categoryIds[${index}]`, categoryId);
+      });
+
+      // console.log("Submitting:", {
+      //     type: postType,
+      //     name,
+      //     desc,
+      //     price,
+      //     quantity,
+      //     hasImage: !!image,
+      //     categoryIds: selectedCategoryIds
+      // });
+
+      const response = await fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
-        body: formData
-    });
-has context menu
+        body: formData,
+      });
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create listing');
+        throw new Error(data.error || "Failed to create listing");
       }
 
       console.log("Success", data);
@@ -96,14 +95,12 @@ has context menu
         icon: "success",
       });
 
-  
       setName("");
       setDesc("");
       setPrice(0);
       setQuantity(0);
       setImage(null);
-      document.getElementById('photos').value = '';
-
+      document.getElementById("photos").value = "";
     } catch (error) {
       console.error("Error: ", error);
       Swal.fire({
@@ -122,12 +119,12 @@ has context menu
       console.log("Selected file:", {
         name: file.name,
         type: file.type,
-        size: file.size
+        size: file.size,
       });
 
       const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
-        e.target.value = '';
+        e.target.value = "";
         Swal.fire({
           title: "Error!",
           text: "File size too large. Please choose an image under 5MB.",
@@ -137,8 +134,8 @@ has context menu
       }
 
       // Check file type
-      if (!file.type.startsWith('image/')) {
-        e.target.value = '';
+      if (!file.type.startsWith("image/")) {
+        e.target.value = "";
         Swal.fire({
           title: "Error!",
           text: "Please select an image file.",
@@ -169,7 +166,8 @@ has context menu
               id="listing-type"
               name="listingType"
               value={type}
-              onChange={(e) => setType(e.target.value)}>
+              onChange={(e) => setType(e.target.value)}
+            >
               <option value="product">Product</option>
               <option value="service">Service</option>
             </select>
@@ -212,25 +210,23 @@ has context menu
               step="0.01"
             />
           </div>
-        <div className="form-group">
-          <label htmlFor="category">Category:</label>
-          <div className="category-dropdown">
-            {categoriesToDisplay.map((cat) => (
-              <div key={cat.id} className="category-option">
-                <input
-                  type="checkbox"
-                  id={`category-${cat.id}`}
-                  value={cat.id}
-                  checked=
-{selectedCategories.includes(cat.id)}
+          <div className="form-group">
+            <label htmlFor="category">Category:</label>
+            <div className="category-dropdown">
+              {categoriesToDisplay.map((cat) => (
+                <div key={cat.id} className="category-option">
+                  <input
+                    type="checkbox"
+                    id={`category-${cat.id}`}
+                    value={cat.id}
+                    checked={selectedCategories.includes(cat.id)}
                     onChange={() => toggleCategory(cat.id)}
                   />
-          <label htmlFor={`category-${cat.id}`}>
-{cat.name}</label>
-          </div>
+                  <label htmlFor={`category-${cat.id}`}>{cat.name}</label>
+                </div>
               ))}
+            </div>
           </div>
-         </div>   
 
           <div className="form-group">
             <label htmlFor="quantity">Quantity:</label>
@@ -256,7 +252,7 @@ has context menu
           </div>
 
           <button type="submit" className="post-button" disabled={loading}>
-            {loading ? 'Posting...' : 'Post Listing'}
+            {loading ? "Posting..." : "Post Listing"}
           </button>
         </form>
       </div>
