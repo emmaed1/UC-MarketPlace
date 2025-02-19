@@ -1,4 +1,3 @@
-
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -16,18 +15,12 @@ const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
 
-// Sightengine credentials
-const SIGHTENGINE_API_USER = '1623082989';
-const SIGHTENGINE_API_SECRET = 'Bxzv9ouesgZeYyJKieHz7g4oWWCuLeAk';
-
-// JWT configuration
-const JWT_SECRET = "1234567890"; // Replace with real secret later
+const JWT_SECRET = "1234567890";
 
 const generateJwt = (user) => {
   return jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 };
 
-// Configure multer
 const storage = multer.diskStorage({
   destination: './uploads/',
   filename: function (req, file, cb) {
@@ -40,7 +33,6 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-// Create uploads directory if it doesn't exist
 if (!fs.existsSync('./uploads')) {
   fs.mkdirSync('./uploads');
 }
@@ -49,7 +41,9 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
-// Function to check image content with Sightengine
+const SIGHTENGINE_API_USER = '1623082989';
+const SIGHTENGINE_API_SECRET = 'Bxzv9ouesgZeYyJKieHz7g4oWWCuLeAk';
+
 async function checkImageContent(filePath) {
   try {
     const formData = new FormData();
@@ -65,15 +59,12 @@ async function checkImageContent(filePath) {
       }
     );
 
-    console.log('Sightengine response:', JSON.stringify(response.data, null, 2));
-
     const result = response.data;
     return {
       isAppropriate: isContentAppropriate(result),
       details: result
     };
   } catch (error) {
-    console.error('Sightengine error:', error.response?.data || error);
     throw error;
   }
 }
@@ -98,17 +89,9 @@ function isContentAppropriate(result) {
     result.gore.prob > 0.1
   ];
 
-  console.log('Weapon Detection:', {
-    firearm: result.weapon.classes.firearm,
-    knife: result.weapon.classes.knife,
-    firearmGesture: result.weapon.classes.firearm_gesture,
-    weaponDetected
-  });
-
   return !checks.some(check => check);
 }
 
-// WebSocket server setup
 const server = http.createServer(app);
 const wsServer = new WebSocketServer({
   httpServer: server
@@ -120,11 +103,9 @@ wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
   let userId = null;
   clients.push({ connection, userId });
-  console.log('Connection accepted.');
 
   connection.on('message', async function(message) {
     const data = JSON.parse(message.utf8Data);
-    console.log('Received Message:', data);
 
     if (data.type === 'authenticate') {
       const token = data.token;
@@ -135,10 +116,7 @@ wsServer.on('request', function(request) {
         if (client) {
           client.userId = userId;
         }
-        console.log('User authenticated:', userId);
-      } catch (err) {
-        console.log('Authentication failed:', err);
-      }
+      } catch (err) {}
       return;
     }
 
@@ -150,12 +128,10 @@ wsServer.on('request', function(request) {
     });
 
     if (!senderUser) {
-      console.log('Sender not found');
       return;
     }
 
     if (!recipientId) {
-      console.log('Recipient ID not specified or invalid');
       return;
     }
 
@@ -164,7 +140,6 @@ wsServer.on('request', function(request) {
     });
 
     if (!recipientUser) {
-      console.log('Recipient not found');
       return;
     }
 
@@ -172,10 +147,7 @@ wsServer.on('request', function(request) {
 
     if (recipientClient) {
       const messageData = { ...data, sender: name };
-      console.log('Sending message to recipient:', recipientUser.id);
       recipientClient.connection.sendUTF(JSON.stringify(messageData));
-    } else {
-      console.log('Recipient client not found');
     }
 
     await prisma.message.create({
@@ -190,19 +162,16 @@ wsServer.on('request', function(request) {
 
   connection.on('close', function(reasonCode, description) {
     clients = clients.filter(client => client.connection !== connection);
-    console.log('Peer disconnected.');
   });
 });
 
-// Product routes
 app.post("/products", upload.single('image'), async (req, res) => {
-  const { name, desc, rating, price, quantity } = req.body;
+  const { name, desc, rating, price, quantity, categories } = req.body;
   let imagePath = null;
 
   if (req.file) {
     try {
       const contentCheck = await checkImageContent(req.file.path);
-      console.log('Content check result:', contentCheck);
 
       if (!contentCheck.isAppropriate) {
         fs.unlinkSync(req.file.path);
@@ -212,28 +181,48 @@ app.post("/products", upload.single('image'), async (req, res) => {
         });
       }
 
-      imagePath = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      imagePath = `http://localhost:3001/uploads/${req.file.filename}`;
     } catch (error) {
-      console.error('Content check failed:', error);
-      fs.unlinkSync(req.file.path);
+      if (req.file) fs.unlinkSync(req.file.path);
       return res.status(400).json({ 
-        error: "Failed to validate image content",
+        error: "Failed to process image",
         details: error.message
       });
     }
   }
 
   try {
+    let categoryNames = [];
+    if (categories && categories !== '[]') {
+      try {
+        categoryNames = JSON.parse(categories);
+      } catch (e) {
+        return res.status(400).json({ error: 'Invalid categories format' });
+      }
+    }
+
+    const productData = {
+      name,
+      desc,
+      rating: rating ? parseFloat(rating) : null,
+      price: parseFloat(price),
+      quantity: parseInt(quantity),
+      img: imagePath,
+    };
+
+    if (categoryNames.length > 0) {
+      productData.categories = {
+        connect: categoryNames.map(name => ({ name }))
+      };
+    }
+
     const product = await prisma.product.create({
-      data: {
-        name,
-        desc,
-        rating: rating ? parseFloat(rating) : null,
-        price: parseFloat(price),
-        quantity: parseInt(quantity),
-        img: imagePath,
-      },
+      data: productData,
+      include: {
+        categories: true
+      }
     });
+
     res.json(product);
   } catch (error) {
     res.status(500).json({ error: "Error creating product" });
@@ -241,11 +230,22 @@ app.post("/products", upload.single('image'), async (req, res) => {
 });
 
 app.get("/products", async (req, res) => {
+  const category = req.query.category;
   try {
-    const products = await prisma.product.findMany();
-    res.status(200).json(products);
+    const products = await prisma.product.findMany({
+      where: category ? {
+        categories: {
+          some: {
+            name: category
+          }
+        }
+      } : {},
+      include: {
+        categories: true
+      }
+    });
+    res.json(products);
   } catch (error) {
-    console.log("Error!");
     res.status(500).json({ error: "Error getting products" });
   }
 });
@@ -255,11 +255,13 @@ app.get("/products/:productId", async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
       where: { productId: productId },
+      include: {
+        categories: true
+      }
     });
     res.json(product);
   } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting products" });
+    res.status(500).json({ error: "Error getting product" });
   }
 });
 
@@ -271,19 +273,17 @@ app.delete("/products/:productId", async (req, res) => {
     });
     res.json(deletedProduct);
   } catch (error) {
-    res.status(500).json({ error: "Errors deleting product" });
+    res.status(500).json({ error: "Error deleting product" });
   }
 });
 
-// Service routes
 app.post("/services", upload.single('image'), async (req, res) => {
-  const { name, desc, rating, price, quantity } = req.body;
+  const { name, desc, rating, price, quantity, categories } = req.body;
   let imagePath = null;
 
   if (req.file) {
     try {
       const contentCheck = await checkImageContent(req.file.path);
-      console.log('Content check result:', contentCheck);
 
       if (!contentCheck.isAppropriate) {
         fs.unlinkSync(req.file.path);
@@ -293,28 +293,48 @@ app.post("/services", upload.single('image'), async (req, res) => {
         });
       }
 
-      imagePath = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+      imagePath = `http://localhost:3001/uploads/${req.file.filename}`;
     } catch (error) {
-      console.error('Content check failed:', error);
-      fs.unlinkSync(req.file.path);
+      if (req.file) fs.unlinkSync(req.file.path);
       return res.status(400).json({ 
-        error: "Failed to validate image content",
+        error: "Failed to process image",
         details: error.message
       });
     }
   }
 
   try {
+    let categoryNames = [];
+    if (categories && categories !== '[]') {
+      try {
+        categoryNames = JSON.parse(categories);
+      } catch (e) {
+        return res.status(400).json({ error: 'Invalid categories format' });
+      }
+    }
+
+    const serviceData = {
+      name,
+      desc,
+      rating: rating ? parseFloat(rating) : null,
+      price: parseFloat(price),
+      quantity: parseInt(quantity),
+      img: imagePath,
+    };
+
+    if (categoryNames.length > 0) {
+      serviceData.categories = {
+        connect: categoryNames.map(name => ({ name }))
+      };
+    }
+
     const service = await prisma.service.create({
-      data: {
-        name,
-        desc,
-        rating: rating ? parseFloat(rating) : null,
-        price: parseFloat(price),
-        quantity: parseInt(quantity),
-        img: imagePath,
-      },
+      data: serviceData,
+      include: {
+        categories: true
+      }
     });
+
     res.json(service);
   } catch (error) {
     res.status(500).json({ error: "Error creating service" });
@@ -323,7 +343,11 @@ app.post("/services", upload.single('image'), async (req, res) => {
 
 app.get("/services", async (req, res) => {
   try {
-    const services = await prisma.service.findMany();
+    const services = await prisma.service.findMany({
+      include: {
+        categories: true
+      }
+    });
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: "Error getting services" });
@@ -333,13 +357,15 @@ app.get("/services", async (req, res) => {
 app.get("/services/:serviceId", async (req, res) => {
   const serviceId = parseInt(req.params.serviceId);
   try {
-    const services = await prisma.service.findUnique({
+    const service = await prisma.service.findUnique({
       where: { serviceId: serviceId },
+      include: {
+        categories: true
+      }
     });
-    res.json(services);
+    res.json(service);
   } catch (error) {
-    console.log("Error!");
-    res.status(500).json({ error: "Error getting services" });
+    res.status(500).json({ error: "Error getting service" });
   }
 });
 
@@ -351,15 +377,14 @@ app.delete("/services/:serviceId", async (req, res) => {
     });
     res.json(deletedService);
   } catch (error) {
-    res.status(500).json({ error: "Errors deleting service" });
+    res.status(500).json({ error: "Error deleting service" });
   }
 });
 
-// User routes
 app.get("/user", async (req, res) => {
   try {
-    const user = await prisma.user.findMany();
-    res.json(user);
+    const users = await prisma.user.findMany();
+    res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Error getting users" });
   }
@@ -370,7 +395,8 @@ app.post("/user", async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
     const user = await prisma.user.create({
       data: {
-        ...req.body, password: hash
+        ...req.body, 
+        password: hash
       },
     });
     const { password: _password, ...userWithoutPassword } = user;
@@ -388,7 +414,6 @@ app.get("/user/:id", async (req, res) => {
     });
     res.json(user);
   } catch (error) {
-    console.log("Error!");
     res.status(500).json({ error: "Error getting user" });
   }
 });
@@ -417,68 +442,86 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
-// Image moderation routes
-app.get("/test-moderation", async (req, res) => {
+app.get("/categories", async (req, res) => {
   try {
-    const formData = new FormData();
-    formData.append('models', 'nudity-2.1,weapon,alcohol,recreational_drug,medical,face-attributes,gore-2.0,violence');
-    formData.append('api_user', SIGHTENGINE_API_USER);
-    formData.append('api_secret', SIGHTENGINE_API_SECRET);
-    formData.append('url', 'https://sightengine.com/assets/img/examples/example7.jpg');
-
-    const response = await axios.post('https://api.sightengine.com/1.0/check.json', 
-      formData, 
-      {
-        headers: formData.getHeaders()
-      }
-    );
-
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({
-      error: "API test failed",
-      details: error.response?.data || error.message
+    const productCategories = await prisma.productCategory.findMany();
+    const serviceCategories = await prisma.serviceCategory.findMany();
+    
+    res.json({
+      productCategories,
+      serviceCategories
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.post("/check-image-url", async (req, res) => {
+app.get("/init-categories", async (req, res) => {
   try {
-    const { imageUrl } = req.body;
+    await prisma.productCategory.deleteMany({});
+    await prisma.serviceCategory.deleteMany({});
 
-    if (!imageUrl) {
-      return res.status(400).json({ error: "Image URL is required" });
+    const productCategories = [
+      "Academic Materials",
+      "Home Essentials",
+      "Clothing",
+      "Accessories",
+      "Technology & Electronics",
+      "Food & Beverage",
+      "Entertainment",
+      "Collectibles",
+      "Miscellaneous"
+    ];
+
+    const serviceCategories = [
+      "Academic Help",
+      "Technology Support",
+      "Photography & Videography",
+      "Beauty & Personal Care",
+      "Automotive Services",
+      "Creative Work",
+      "Pet Services",
+      "Entertainment & Event Planning",
+      "Miscellaneous"
+    ];
+
+    for (const name of productCategories) {
+      try {
+        await prisma.productCategory.create({
+          data: { name }
+        });
+      } catch (error) {}
     }
 
-    const formData = new FormData();
-    formData.append('models', 'nudity-2.1,weapon,alcohol,recreational_drug,medical,face-attributes,gore-2.0,violence');
-    formData.append('api_user', SIGHTENGINE_API_USER);
-    formData.append('api_secret', SIGHTENGINE_API_SECRET);
-    formData.append('url', imageUrl);
+    for (const name of serviceCategories) {
+      try {
+        await prisma.serviceCategory.create({
+          data: { name }
+        });
+      } catch (error) {}
+    }
 
-    const response = await axios.post('https://api.sightengine.com/1.0/check.json', 
-      formData, 
-      {
-        headers: formData.getHeaders()
-      }
-    );
-
-    const result = response.data;
-    const isAppropriate = isContentAppropriate(result);
+    const finalProductCategories = await prisma.productCategory.findMany({
+      orderBy: { name: 'asc' }
+    });
+    const finalServiceCategories = await prisma.serviceCategory.findMany({
+      orderBy: { name: 'asc' }
+    });
 
     res.json({
-      isAppropriate,
-      details: result
+      productCategories: finalProductCategories,
+      serviceCategories: finalServiceCategories,
+      message: "Categories reset and initialized successfully"
     });
+
   } catch (error) {
-    res.status(500).json({
-      error: "Image check failed",
-      details: error.response?.data || error.message
+    res.status(500).json({ 
+      error: "Error initializing categories",
+      details: error.message
     });
   }
 });
 
-// Authentication middleware
 const authenticate = async (req, res, next) => {
   if (!req.headers.authorization) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -491,10 +534,10 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const decode = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: {
-        email: decode.email,
+        email: decoded.email,
       },
     });
     req.user = user ?? undefined;
@@ -505,7 +548,6 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-// Protected routes
 app.get("/user/profile", authenticate, async (req, res) => {
   try {
     if (!req.user) {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductsCard from "./productsCard";
 import "./products.css";
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -20,24 +20,17 @@ const Products = () => {
     maxPrice: "",
     categories: initialCategory ? [initialCategory] : [],
   });
-  const location = useLocation();
 
   useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    const category = query.get('category');
-
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/products?category=${category}`);
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
     fetchProducts();
-  }, [location.search]);
+  }, []);
+
+  const fetchProducts = () => {
+    fetch("http://localhost:3001/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((err) => console.log("Error getting products", err));
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);

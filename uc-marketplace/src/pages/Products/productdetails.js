@@ -32,12 +32,19 @@ const ProductDetails = (props) => {
     <div>
       <div className="product-details">
         <div className="product-image">
-          <img
-            src={'/'+product.img} key={id}
-            alt={
-              product ? `${product.name} Image` : "Product Image Not Available"
-            }
-          />
+          {product.img ? (
+            <img
+              src={product.img}
+              key={id}
+              alt={product ? `${product.name} Image` : "Product Image Not Available"}
+              onError={(e) => {
+                console.error('Failed to load image:', product.img);
+                e.target.src = '/assets/placeholder.png';
+              }}
+            />
+          ) : (
+            <div className="no-image">No Image Available</div>
+          )}
         </div>
         <div className="product-description">
           {product ? (

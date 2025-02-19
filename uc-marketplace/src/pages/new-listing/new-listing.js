@@ -1,7 +1,7 @@
 import "./new-listing.css";
 import logo from "../../assets/uc-MP-logo.png";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const NewListing = () => {
   const [name, setName] = useState("");
@@ -10,6 +10,38 @@ const NewListing = () => {
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState({ product: [], service: [] });
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const initResponse = await fetch('http://localhost:3001/init-categories');
+      if (!initResponse.ok) {
+        throw new Error('Failed to initialize categories');
+      }
+      
+      const response = await fetch('http://localhost:3001/categories');
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+      
+      const data = await response.json();
+      setCategories({
+        product: data.productCategories,
+        service: data.serviceCategories
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to load categories. Please refresh the page.",
+        icon: "error",
+      });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,18 +55,10 @@ const NewListing = () => {
       formData.append('price', price);
       formData.append('quantity', quantity);
       formData.append('rating', 5);
+      formData.append('categories', JSON.stringify(selectedCategories));
       if (image) {
         formData.append('image', image);
       }
-
-      console.log("Submitting:", {
-        type: postType,
-        name,
-        desc,
-        price,
-        quantity,
-        hasImage: !!image
-      });
 
       const response = await fetch(`http://localhost:3001/${postType}s`, {
         method: "POST",
@@ -47,23 +71,21 @@ const NewListing = () => {
         throw new Error(data.error || 'Failed to create listing');
       }
 
-      console.log("Success", data);
       Swal.fire({
         title: "Success!",
         text: "Your listing was successfully posted!",
         icon: "success",
       });
 
-      // Clear form
       setName("");
       setDesc("");
       setPrice(0);
       setQuantity(0);
       setImage(null);
+      setSelectedCategories([]);
       document.getElementById('photos').value = '';
 
     } catch (error) {
-      console.error("Error: ", error);
       Swal.fire({
         title: "Error!",
         text: error.message,
@@ -77,12 +99,6 @@ const NewListing = () => {
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log("Selected file:", {
-        name: file.name,
-        type: file.type,
-        size: file.size
-      });
-
       const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         e.target.value = '';
@@ -94,7 +110,6 @@ const NewListing = () => {
         return;
       }
 
-      // Check file type
       if (!file.type.startsWith('image/')) {
         e.target.value = '';
         Swal.fire({
@@ -107,6 +122,16 @@ const NewListing = () => {
 
       setImage(file);
     }
+  };
+
+  const handleCategoryChange = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+    setSelectedCategories(selectedOptions);
+  };
+
+  const getRelevantCategories = () => {
+    const type = document.getElementById("listing-type")?.value;
+    return type === 'product' ? categories.product : categories.service;
   };
 
   return (
@@ -123,7 +148,11 @@ const NewListing = () => {
         <form className="listing-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="listing-type">Type:</label>
-            <select id="listing-type" name="listingType">
+            <select 
+              id="listing-type" 
+              name="listingType"
+              onChange={() => setSelectedCategories([])}
+            >
               <option value="product">Product</option>
               <option value="service">Service</option>
             </select>
@@ -178,6 +207,23 @@ const NewListing = () => {
               required
               min="0"
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="categories">Categories:</label>
+            <select
+              id="categories"
+              multiple
+              value={selectedCategories}
+              onChange={handleCategoryChange}
+              required
+            >
+              {getRelevantCategories().map(category => (
+                <option key={category.name} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">

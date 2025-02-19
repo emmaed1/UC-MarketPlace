@@ -1,4 +1,27 @@
 -- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "name" VARCHAR(255),
+    "email" VARCHAR(255) NOT NULL,
+    "password" TEXT NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Product" (
+    "productId" SERIAL NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "desc" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "rating" DOUBLE PRECISION,
+    "img" TEXT,
+
+    CONSTRAINT "Product_pkey" PRIMARY KEY ("productId")
+);
+
+-- CreateTable
 CREATE TABLE "ProductCategory" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
@@ -7,11 +30,35 @@ CREATE TABLE "ProductCategory" (
 );
 
 -- CreateTable
+CREATE TABLE "Service" (
+    "serviceId" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "desc" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "rating" DOUBLE PRECISION,
+    "img" TEXT,
+
+    CONSTRAINT "Service_pkey" PRIMARY KEY ("serviceId")
+);
+
+-- CreateTable
 CREATE TABLE "ServiceCategory" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "ServiceCategory_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Message" (
+    "id" SERIAL NOT NULL,
+    "senderId" INTEGER NOT NULL,
+    "recipientId" INTEGER NOT NULL,
+    "message" TEXT NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -31,6 +78,9 @@ CREATE TABLE "_ServiceToServiceCategory" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ProductCategory_name_key" ON "ProductCategory"("name");
 
 -- CreateIndex
@@ -41,6 +91,12 @@ CREATE INDEX "_ProductToProductCategory_B_index" ON "_ProductToProductCategory"(
 
 -- CreateIndex
 CREATE INDEX "_ServiceToServiceCategory_B_index" ON "_ServiceToServiceCategory"("B");
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_recipientId_fkey" FOREIGN KEY ("recipientId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ProductToProductCategory" ADD CONSTRAINT "_ProductToProductCategory_A_fkey" FOREIGN KEY ("A") REFERENCES "Product"("productId") ON DELETE CASCADE ON UPDATE CASCADE;
