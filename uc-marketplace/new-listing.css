@@ -1,248 +1,75 @@
-import "./new-listing.css";
-import logo from "../../assets/uc-MP-logo.png";
-import Swal from "sweetalert2";
-import { useState, useEffect } from "react";
+.welcome-content {
+  background-color: #f5f5f5;
+  display: flex;  
+  align-items: center;
+  padding: 1rem 2rem;
+  border-radius: .5px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+}
+.welcome-content img {
+  margin-right: 1rem;
+  height: auto;
+  max-height: 200px;
+  width: auto;
+}
 
-const NewListing = () => {
-  const [name, setName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [price, setPrice] = useState(0);
-  const [quantity, setQuantity] = useState(0);
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState({ product: [], service: [] });
-  const [selectedCategories, setSelectedCategories] = useState([]);
+.welcome-text {
+ flex-grow: 1;
+  width: auto;
+}
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+.welcome-text h1 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
 
-  const fetchCategories = async () => {
-    try {
-      const initResponse = await fetch('http://localhost:3001/init-categories');
-      if (!initResponse.ok) {
-        throw new Error('Failed to initialize categories');
-      }
-      
-      const response = await fetch('http://localhost:3001/categories');
-      if (!response.ok) {
-        throw new Error('Failed to fetch categories');
-      }
-      
-      const data = await response.json();
-      setCategories({
-        product: data.productCategories,
-        service: data.serviceCategories
-      });
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to load categories. Please refresh the page.",
-        icon: "error",
-      });
-    }
-  };
+.listing-form-container {
+  background-color: #ffffff;
+  padding: 2rem;
+  margin-top: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const postType = document.getElementById("listing-type").value;
+.listing-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-    try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('desc', desc);
-      formData.append('price', price);
-      formData.append('quantity', quantity);
-      formData.append('rating', 5);
-      formData.append('categories', JSON.stringify(selectedCategories));
-      if (image) {
-        formData.append('image', image);
-      }
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
 
-      const response = await fetch(`http://localhost:3001/${postType}s`, {
-        method: "POST",
-        body: formData
-      });
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
 
-      const data = await response.json();
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create listing');
-      }
+.submit-button {
+  padding: .75rem;
+  background-color: #e00122;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
-      Swal.fire({
-        title: "Success!",
-        text: "Your listing was successfully posted!",
-        icon: "success",
-      });
-
-      setName("");
-      setDesc("");
-      setPrice(0);
-      setQuantity(0);
-      setImage(null);
-      setSelectedCategories([]);
-      document.getElementById('photos').value = '';
-
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: error.message,
-        icon: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const maxSize = 5 * 1024 * 1024;
-      if (file.size > maxSize) {
-        e.target.value = '';
-        Swal.fire({
-          title: "Error!",
-          text: "File size too large. Please choose an image under 5MB.",
-          icon: "error",
-        });
-        return;
-      }
-
-      if (!file.type.startsWith('image/')) {
-        e.target.value = '';
-        Swal.fire({
-          title: "Error!",
-          text: "Please select an image file.",
-          icon: "error",
-        });
-        return;
-      }
-
-      setImage(file);
-    }
-  };
-
-  const handleCategoryChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
-    setSelectedCategories(selectedOptions);
-  };
-
-  const getRelevantCategories = () => {
-    const type = document.getElementById("listing-type")?.value;
-    return type === 'product' ? categories.product : categories.service;
-  };
-
-  return (
-    <div className="content">
-      <div className="welcome-content">
-        <img src={logo} alt="uc marketplace-logo" />
-        <div className="welcome-text">
-          <h1>List Product or Service</h1>
-        </div>
-      </div>
-
-      <div className="listing-form-container">
-        <h2>Create a New Listing</h2>
-        <form className="listing-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="listing-type">Type:</label>
-            <select 
-              id="listing-type" 
-              name="listingType"
-              onChange={() => setSelectedCategories([])}
-            >
-              <option value="product">Product</option>
-              <option value="service">Service</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter Product or Service Name:"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Description:</label>
-            <textarea
-              id="description"
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-              placeholder="Enter Product or Service Description:"
-              rows="5"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="price">Price:</label>
-            <input
-              type="number"
-              id="price"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Enter Price:"
-              required
-              min="0"
-              step="0.01"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="quantity">Quantity:</label>
-            <input
-              type="number"
-              id="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              placeholder="Enter Quantity:"
-              required
-              min="0"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="categories">Categories:</label>
-            <select
-              id="categories"
-              multiple
-              value={selectedCategories}
-              onChange={handleCategoryChange}
-              required
-            >
-              {getRelevantCategories().map(category => (
-                <option key={category.name} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="photos">Upload Photos:</label>
-            <input
-              type="file"
-              id="photos"
-              onChange={handleImageChange}
-              accept="image/*"
-            />
-          </div>
-
-          <button type="submit" className="post-button" disabled={loading}>
-            {loading ? 'Posting...' : 'Post Listing'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-export default NewListing;
+.submit-button:hover {
+  background-color: #c0001b;
+}
