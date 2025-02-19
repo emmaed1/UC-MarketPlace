@@ -1,0 +1,13 @@
+.account-title {
+    width: auto;
+    border-bottom: 1px solid black;
+  }
+  
+  .profile-header {
+    display: block ruby;
+  }
+  .profile-header p{
+    border: 1pt solid rgb(144, 144, 144);
+    display: block ruby;
+    padding: 0rem 3rem;
+  }

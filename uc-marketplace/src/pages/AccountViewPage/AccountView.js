@@ -3,6 +3,7 @@ import "./AccountView.css";
 import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage"; // Import the Chat component
+import Profile from "../Profile/profile"
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -88,6 +89,28 @@ export default function AccountView() {
           </li>
         </ul>
       </div>
+      <div className="account-content">
+      {/* Profile section */}
+      {option === "Profile" && (
+        <div id="profile" className="content">
+          <Profile accountName={accountName}/>
+        </div>
+      )}
+
+      {/* My Listings section */}
+      {option === "My Listings" && (
+        <div id="listings" className="content">
+          <p>my listings section</p>
+          <div className="newlisting-reviews-container">
+        <div className="newlisting">
+          <h3 className="newlist-title">
+            Have another product or service to sell?
+          </h3>
+          <a href="/new-listing">Create Listing</a>
+        </div>
+      </div>
+        </div>
+      )}
 
       {/* Chat Section */}
       {option === "Messages" && (
@@ -96,20 +119,19 @@ export default function AccountView() {
         </div>
       )}
 
-      <div className="newlisting-reviews-container">
-        <div className="newlisting">
-          <h3 className="newlist-title">
-            Have another product or service to sell?
-          </h3>
-          <a href="/new-listing">Create Listing</a>
+      {/* Security section */}
+      {option === "Security" && (
+        <div id="security" className="content">
+          <p>security section</p>
         </div>
-      </div>
+      )}
 
       <ListingDetailsModal
         show={showModal}
         onClose={closeModal}
         listingId={selectedListingId}
       />
+    </div>
     </div>
   );
 }
