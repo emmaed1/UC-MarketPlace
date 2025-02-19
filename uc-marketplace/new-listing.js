@@ -1,3 +1,8 @@
+import "./new-listing.css";
+import logo from "../../assets/uc-MP-logo.png";
+import Swal from "sweetalert2";
+import { useState } from "react";
+
 const NewListing = () => {
   const [type, setType] = useState("product");
   const [name, setName] = useState("");
@@ -7,17 +12,16 @@ const NewListing = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [img, setImage] = useState("");
 
-  // Ensure these arrays are defined
   const productCategories = [
-    { id: 1, name: "Academic Materials" },
-    { id: 2, name: "Home Essentials" },
-    { id: 3, name: "Clothing" },
-    { id: 4, name: "Accesories" },
-    { id: 5, name: "Technology & Electronics" },
-    { id: 6, name: "Food & Beverage" },
-    { id: 7, name: "Entertainment" },
-    { id: 8, name: "Collectibles" },
-    { id: 9, name: "Miscellaneous" },
+    { id: 2, name: "Academic Materials" },
+    { id: 3, name: "Home Essentials" },
+    { id: 4, name: "Clothing" },
+    { id: 5, name: "Accesories" },
+    { id: 6, name: "Technology & Electronics" },
+    { id: 7, name: "Food & Beverage" },
+    { id: 8, name: "Entertainment" },
+    { id: 9, name: "Collectibles" },
+    { id: 10, name: "Miscellaneous" },
   ];
 
   const serviceCategories = [
@@ -32,24 +36,50 @@ const NewListing = () => {
     { id: 9, name: "Miscellaneous" },
   ];
 
-  // Safely determine which categories to display
   const categoriesToDisplay = type === "product" ? productCategories : serviceCategories;
 
   const toggleCategory = (categoryId) => {
-    setSelectedCategories((prevSelected) => {
-      if (!prevSelected) return [categoryId]; // Handle undefined case
-      return prevSelected.includes(categoryId)
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(categoryId)
         ? prevSelected.filter((id) => id !== categoryId)
-        : [...prevSelected, categoryId];
-    });
+        : [...prevSelected, categoryId]
+    );
   };
 
-  // Add some debugging
-  console.log({
-    type,
-    categoriesToDisplay,
-    selectedCategories
-  });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = { name, desc, price, quantity, img };
+    const postType = document.getElementById("listing-type").value;
+    const selectedCategoryIds = selectedCategories.map(Number);
+
+    try {
+      fetch(`http://localhost:3001/${postType}s`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          desc: data.desc,
+          price: parseFloat(data.price),
+          quantity: parseInt(data.quantity),
+          rating: 0,
+          img: "images/" + data.img,
+          categoryIds: selectedCategoryIds,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+
+      Swal.fire({
+        title: "Success!",
+        text: "Your listing was successfully posted!",
+        icon: "success",
+      });
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
 
   return (
     <div className="content">
@@ -63,9 +93,8 @@ const NewListing = () => {
       <div className="listing-form-container">
         <h2>Create a New Listing</h2>
         <form className="listing-form" onSubmit={handleSubmit} method="POST">
-          {/* Type Selection */}
           <div className="form-group">
-            <label htmlFor="listing-type">Type:</label>
+            <label htmlFor="listing-title">Type:</label>
             <select
               id="listing-type"
               name="listingType"
@@ -77,7 +106,6 @@ const NewListing = () => {
             </select>
           </div>
 
-          {/* Name Input */}
           <div className="form-group">
             <label htmlFor="name">Name:</label>
             <input
@@ -90,7 +118,6 @@ const NewListing = () => {
             />
           </div>
 
-          {/* Description Input */}
           <div className="form-group">
             <label htmlFor="description">Description:</label>
             <textarea
@@ -103,62 +130,6 @@ const NewListing = () => {
             ></textarea>
           </div>
 
-          {/* Add this right after description and before price */}
-          <div className="form-group" style={{
-            border: '2px solid #ddd',
-            padding: '15px',
-            borderRadius: '4px',
-            marginBottom: '20px'
-          }}>
-            <label htmlFor="category" style={{
-              display: 'block',
-              marginBottom: '10px',
-              fontWeight: 'bold',
-              fontSize: '16px'
-            }}>Select Categories:</label>
-            <div className="category-dropdown" style={{
-              maxHeight: '200px',
-              overflowY: 'auto',
-              border: '1px solid #ccc',
-              padding: '10px',
-              borderRadius: '4px'
-            }}>
-              {categoriesToDisplay.map((cat) => (
-                <div key={cat.id} className="category-option" style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '8px',
-                  margin: '5px 0',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '4px'
-                }}>
-                  <input
-                    type="checkbox"
-                    id={`category-${cat.id}`}
-                    value={cat.id}
-                    checked={selectedCategories.includes(cat.id)}
-                    onChange={() => toggleCategory(cat.id)}
-                    style={{
-                      marginRight: '10px',
-                      width: '20px',
-                      height: '20px'
-                    }}
-                  />
-                  <label 
-                    htmlFor={`category-${cat.id}`}
-                    style={{
-                      margin: 0,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    {cat.name}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Price Input */}
           <div className="form-group">
             <label htmlFor="price">Price:</label>
             <input
@@ -171,7 +142,6 @@ const NewListing = () => {
             />
           </div>
 
-          {/* Quantity Input */}
           <div className="form-group">
             <label htmlFor="quantity">Quantity:</label>
             <input
@@ -184,14 +154,31 @@ const NewListing = () => {
             />
           </div>
 
-          {/* Photo Upload */}
+          <div className="form-group">
+            <label htmlFor="category">Category:</label>
+            <div className="category-dropdown">
+              {categoriesToDisplay.map((cat) => (
+                <div key={cat.id} className="category-option">
+                  <input
+                    type="checkbox"
+                    id={`category-${cat.id}`}
+                    value={cat.id}
+                    checked={selectedCategories.includes(cat.id)}
+                    onChange={() => toggleCategory(cat.id)}
+                  />
+                  <label htmlFor={`category-${cat.id}`}>{cat.name}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="form-group">
             <label htmlFor="photos">Upload Photos:</label>
             <input
               type="file"
               id="photos"
-              value={img}
-              onChange={(e) => setImage(e.target.files[0])}
+              value={img} // Fixed: Use img state
+              onChange={(e) => setImage(e.target.files[0])} // Get the file object
               accept="image/*"
               multiple
             />
@@ -204,4 +191,6 @@ const NewListing = () => {
       </div>
     </div>
   );
-}; 
+};
+
+export default NewListing;
