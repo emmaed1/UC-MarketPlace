@@ -5,13 +5,40 @@ const { PrismaClient } = require("@prisma/client");
 const cors = require("cors");
 const http = require('http');
 const WebSocketServer = require('websocket').server;
+const multer = require("multer");
+const path = require("path");
+const fs = require('fs');
+const axios = require('axios');
+const FormData = require('form-data');
 
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
 
+// SightEngine API credentials
+const SIGHTENGINE_API_USER = '1623082989';
+const SIGHTENGINE_API_SECRET = 'Bxzv9ouesgZeYyJKieHz7g4oWWCuLeAk';
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname)
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Create uploads directory if it doesn't exist
+if (!fs.existsSync('public/uploads')) {
+  fs.mkdirSync('public/uploads', { recursive: true });
+}
+
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 const server = http.createServer(app);
 
@@ -104,29 +131,230 @@ const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
 
-app.post("/products", async (req, res) => {
-  const { name, desc, rating, price, quantity, img, categoryIds } = req.body;
-
+// User registration endpoint
+app.post("/register", async (req, res) => {
   try {
-    const product = await prisma.product.create({
+    console.log('Registration attempt:', req.body);
+    const { name, email, password } = req.body;
+
+    // Check if user exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already registered" });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    const user = await prisma.user.create({
       data: {
         name,
-        desc,
-        rating,
-        price,
-        quantity,
-        img,
-        categories: {
-          connect: categoryIds.map((categoryId) => ({ id: categoryId })),
-        },
-      },
-      include: {
-        categories: true,
-      },
+        email,
+        password: hashedPassword
+      }
     });
-    res.json(product);
+
+    console.log('User created:', user.id);
+
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    });
+
   } catch (error) {
-    res.status(500).json({ error: "Error creating product" });
+    console.error('Registration error:', error);
+    res.status(500).json({ 
+      error: "Registration failed",
+      details: error.message 
+    });
+  }
+});
+
+// Add these functions
+async function checkImageContent(filePath) {
+  try {
+    const formData = new FormData();
+    formData.append('media', fs.createReadStream(filePath));
+    formData.append('models', 'nudity-2.1,weapon,alcohol,recreational_drug,medical,face-attributes,gore-2.0,violence');
+    formData.append('api_user', SIGHTENGINE_API_USER);
+    formData.append('api_secret', SIGHTENGINE_API_SECRET);
+
+    const response = await axios.post('https://api.sightengine.com/1.0/check.json', 
+      formData, 
+      {
+        headers: formData.getHeaders()
+      }
+    );
+
+    const result = response.data;
+    return {
+      isAppropriate: isContentAppropriate(result),
+      details: result
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+function isContentAppropriate(result) {
+  const weaponDetected = 
+    result.weapon.classes.firearm > 0.5 || 
+    result.weapon.classes.knife > 0.5 ||
+    result.weapon.classes.firearm_gesture > 0.5 ||
+    result.weapon.classes.firearm_toy > 0.5;
+
+  const checks = [
+    result.nudity.sexual_activity > 0.1,
+    result.nudity.sexual_display > 0.1,
+    result.nudity.erotica > 0.1,
+    result.nudity.very_suggestive > 0.1,
+    result.nudity.suggestive > 0.1,
+    weaponDetected,
+    result.recreational_drug.prob > 0.1,
+    result.medical.prob > 0.1,
+    result.violence.prob > 0.1,
+    result.gore.prob > 0.1
+  ];
+
+  return !checks.some(check => check);
+}
+
+// Product creation endpoint
+app.post("/products", upload.single('image'), async (req, res) => {
+  try {
+    console.log('File received:', req.file);
+    console.log('Form data received:', req.body);
+
+    // Add this image check block
+    if (req.file) {
+      const imageCheck = await checkImageContent(req.file.path);
+      
+      if (!imageCheck.isAppropriate) {
+        // Delete the uploaded file
+        fs.unlinkSync(req.file.path);
+        return res.status(400).json({
+          error: "Inappropriate image content detected",
+          details: imageCheck.details
+        });
+      }
+    }
+
+    const { name, desc, price, quantity, categoryIds } = req.body;
+    
+    // Parse category IDs
+    const parsedCategoryIds = JSON.parse(categoryIds).map(id => parseInt(id));
+
+    const data = {
+      name: String(name),
+      desc: String(desc),
+      price: parseFloat(price),
+      quantity: parseInt(quantity),
+      rating: 0,
+      img: req.file ? `/uploads/${req.file.filename}` : null,
+      categories: {
+        connect: parsedCategoryIds.map(id => ({ id }))
+      }
+    };
+
+    console.log('Creating product with data:', data);
+
+    const result = await prisma.product.create({
+      data,
+      include: {
+        categories: true
+      }
+    });
+
+    res.json(result);
+
+  } catch (error) {
+    console.error('Product creation error:', error);
+    res.status(500).json({ 
+      error: "Error creating product",
+      details: error.message 
+    });
+  }
+});
+
+// Service creation endpoint
+app.post("/services", upload.single('image'), async (req, res) => {
+  try {
+    console.log('Service creation attempt:', req.body);
+    const { name, desc, price, quantity, categoryIds } = req.body;
+    
+    // Validate price
+    const parsedPrice = parseFloat(price);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      return res.status(400).json({ 
+        error: "Invalid price",
+        details: "Price must be a positive number"
+      });
+    }
+
+    // Handle the uploaded file
+    const img = req.file ? `/uploads/${req.file.filename}` : null;
+    console.log('Uploaded file:', req.file);
+
+    // Parse categoryIds
+    let categories;
+    try {
+      categories = categoryIds ? 
+        (Array.isArray(categoryIds) ? categoryIds : JSON.parse(categoryIds))
+        .map(id => ({ id: parseInt(id) })) : [];
+    } catch (e) {
+      console.error('Error parsing categoryIds:', e);
+      categories = [];
+    }
+
+    const data = {
+      name: String(name),
+      desc: String(desc),
+      price: parsedPrice,
+      quantity: parseInt(quantity),
+      rating: 0,
+      img,
+      categories: {
+        connect: categories
+      }
+    };
+
+    console.log('Creating service with data:', data);
+
+    const result = await prisma.service.create({
+      data,
+      include: {
+        categories: true
+      }
+    });
+
+    // Add full URL to image
+    if (result.img) {
+      result.img = `http://localhost:3001${result.img}`;
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Service creation error:', error);
+    res.status(500).json({ 
+      error: "Error creating service",
+      details: error.message 
+    });
   }
 });
 
@@ -170,32 +398,6 @@ app.delete("/products/:productId", async (req, res) => {
     res.json(deletedProduct);
   } catch (error) {
     res.status(500).json({ error: "Errors deleting product" });
-  }
-});
-
-app.post("/services", async (req, res) => {
-  const { name, desc, rating, price, quantity, img, categoryIds } = req.body;
-
-  try {
-    const service = await prisma.service.create({
-      data: {
-        name,
-        desc,
-        rating,
-        price,
-        quantity,
-        img,
-        categories: { // Connect to existing categories
-          connect: categoryIds.map((categoryId) => ({ id: categoryId })),
-        },
-      },
-      include: { // Include categories in the response
-        categories: true,
-      },
-    });
-    res.json(service);
-  } catch (error) {
-    res.status(500).json({ error: "Error creating product" });
   }
 });
 

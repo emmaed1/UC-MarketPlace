@@ -1,61 +1,61 @@
-datasource db {
-  provider = "postgresql" // or "mysql", "sqlite", etc.
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String?  @db.VarChar(255)
-  email    String   @unique @db.VarChar(255)
-  password String
-  messagesSent     Message[] @relation("Sender")
+  id               Int       @id @default(autoincrement())
+  name             String?   @db.VarChar(255)
+  email            String    @unique @db.VarChar(255)
+  password         String
   messagesReceived Message[] @relation("Recipient")
+  messagesSent     Message[] @relation("Sender")
 }
 
 model Product {
-  productId Int     @id @default(autoincrement())
-  name      String  @db.VarChar(255)
-  desc      String
-  price     Float
-  quantity  Int
-  rating    Float?
-  img       String?
-  categories  ProductCategory[]
+  productId  Int               @id @default(autoincrement())
+  name       String            @db.VarChar(255)
+  desc       String
+  price      Float
+  quantity   Int
+  rating     Float?
+  img        String?
+  categories ProductCategory[] @relation("ProductToProductCategory")
 }
 
 model ProductCategory {
-  id         Int        @id @default(autoincrement())
-  name       String     @unique
-  products   Product[] 
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[] @relation("ProductToProductCategory")
 }
 
 model Service {
-  serviceId Int     @id @default(autoincrement())
-  name      String
-  desc      String
-  price     Float
-  quantity  Int
-  rating    Float?
-  img       String?
-  categories  ServiceCategory[]
+  serviceId  Int               @id @default(autoincrement())
+  name       String
+  desc       String
+  price      Float
+  quantity   Int
+  rating     Float?
+  img        String?
+  categories ServiceCategory[] @relation("ServiceToServiceCategory")
 }
 
 model ServiceCategory {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  services  Service[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  services Service[] @relation("ServiceToServiceCategory")
 }
 
 model Message {
   id          Int      @id @default(autoincrement())
-  sender      User     @relation("Sender", fields: [senderId], references: [id])
   senderId    Int
-  recipient   User     @relation("Recipient", fields: [recipientId], references: [id])
   recipientId Int
   message     String
   timestamp   DateTime @default(now())
+  recipient   User     @relation("Recipient", fields: [recipientId], references: [id])
+  sender      User     @relation("Sender", fields: [senderId], references: [id])
 }

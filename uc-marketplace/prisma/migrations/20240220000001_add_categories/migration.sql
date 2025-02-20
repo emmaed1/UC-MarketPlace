@@ -1,4 +1,4 @@
--- Insert Product Categories
+-- Add initial product categories
 INSERT INTO "ProductCategory" (name) VALUES
   ('Academic Materials'),
   ('Home Essentials'),
@@ -10,7 +10,7 @@ INSERT INTO "ProductCategory" (name) VALUES
   ('Collectibles'),
   ('Miscellaneous');
 
--- Insert Service Categories  
+-- Add initial service categories
 INSERT INTO "ServiceCategory" (name) VALUES
   ('Academic Help'),
   ('Technology Support'),
@@ -20,4 +20,4 @@ INSERT INTO "ServiceCategory" (name) VALUES
   ('Creative Work'),
   ('Pet Services'),
   ('Entertainment & Event Planning'),
-  ('Miscellaneous'); 
+  ('Miscellaneous');
