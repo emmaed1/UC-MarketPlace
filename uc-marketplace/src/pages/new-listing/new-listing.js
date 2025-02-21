@@ -2,6 +2,7 @@ import "./new-listing.css";
 import logo from "../../assets/uc-MP-logo.png";
 import Swal from "sweetalert2";
 import { useState } from "react";
+import axios from "axios";
 
 const NewListing = () => {
   const [type, setType] = useState("product");
@@ -11,17 +12,18 @@ const NewListing = () => {
   const [quantity, setQuantity] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [img, setImage] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const productCategories = [
-    { id: 2, name: "Academic Materials" },
-    { id: 3, name: "Home Essentials" },
-    { id: 4, name: "Clothing" },
-    { id: 5, name: "Accesories" },
-    { id: 6, name: "Technology & Electronics" },
-    { id: 7, name: "Food & Beverage" },
-    { id: 8, name: "Entertainment" },
-    { id: 9, name: "Collectibles" },
-    { id: 10, name: "Miscellaneous" },
+    { id: 1, name: "Academic Materials" },
+    { id: 2, name: "Home Essentials" },
+    { id: 3, name: "Clothing" },
+    { id: 4, name: "Accesories" },
+    { id: 5, name: "Technology & Electronics" },
+    { id: 6, name: "Food & Beverage" },
+    { id: 7, name: "Entertainment" },
+    { id: 8, name: "Collectibles" },
+    { id: 9, name: "Miscellaneous" },
   ];
 
   const serviceCategories = [
@@ -46,38 +48,58 @@ const NewListing = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { name, desc, price, quantity, img };
-    const postType = document.getElementById("listing-type").value;
-    const selectedCategoryIds = selectedCategories.map(Number);
-
+    
     try {
-      fetch(`http://localhost:3001/${postType}s`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          desc: data.desc,
-          price: parseFloat(data.price),
-          quantity: parseInt(data.quantity),
-          rating: 0,
-          img: "images/" + data.img,
-          categoryIds: selectedCategoryIds,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('desc', desc);
+      formData.append('price', price);
+      formData.append('quantity', quantity);
+      formData.append('categoryIds', JSON.stringify(selectedCategories));
+      if (selectedFile) {
+        formData.append('image', selectedFile);
+      }
 
+      const response = await axios.post('http://localhost:3001/products', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('Product created:', response.data);
       Swal.fire({
         title: "Success!",
         text: "Your listing was successfully posted!",
         icon: "success",
       });
+      
+      // Clear form
+      setName("");
+      setDesc("");
+      setPrice(0);
+      setQuantity(0);
+      setSelectedCategories([]);
+      setSelectedFile(null);
+
     } catch (error) {
-      console.error("Error: ", error);
+      console.error('Error creating product:', error);
+      
+      // Add this check for inappropriate content
+      if (error.response?.data?.error === "Inappropriate image content detected") {
+        Swal.fire({
+          title: "Error!",
+          text: "The uploaded image contains inappropriate content and cannot be used.",
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: error.message || "Failed to create listing",
+          icon: "error",
+        });
+      }
     }
   };
 
@@ -177,10 +199,8 @@ const NewListing = () => {
             <input
               type="file"
               id="photos"
-              value={img} // Fixed: Use img state
-              onChange={(e) => setImage(e.target.files[0])} // Get the file object
+              onChange={(e) => setSelectedFile(e.target.files[0])}
               accept="image/*"
-              multiple
             />
           </div>
 

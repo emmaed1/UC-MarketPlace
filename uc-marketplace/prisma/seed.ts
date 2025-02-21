@@ -3,44 +3,58 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  const user = await prisma.user.create({
-    data: {
-      name: 'Test User',
-      email: 'test@test.com',
-      password: "1234"
-    }
-  })
+  // Product Categories
+  const productCategories = [
+    { name: "Academic Materials" },
+    { name: "Home Essentials" },
+    { name: "Clothing" },
+    { name: "Accesories" },
+    { name: "Technology & Electronics" },
+    { name: "Food & Beverage" },
+    { name: "Entertainment" },
+    { name: "Collectibles" },
+    { name: "Miscellaneous" },
+  ];
 
-  const product = await prisma.product.create({
-    data: {
-      name: 'boots',
-      desc: "warm winter boots",
-      rating: "5",
-      price: 30,
-      quantity: 1
-    }
-  })
+  // Service Categories
+  const serviceCategories = [
+    { name: "Academic Help" },
+    { name: "Technology Support" },
+    { name: "Photography & Videography" },
+    { name: "Beauty & Personal Care" },
+    { name: "Automotive Services" },
+    { name: "Creative Work" },
+    { name: "Pet Services" },
+    { name: "Entertainment & Event Planning" },
+    { name: "Miscellaneous" },
+  ];
 
-  const service = await prisma.service.create({
-    data: {
-      name: 'tutoring',
-      desc: "tutoring in calculus 1-3",
-      rating: "5",
-      price: 20,
-      quantity: 1
-    }
-  })
-  console.log("USER: ", { user })
-  console.log("PRODUCT: ", { product })
-  console.log("SERVICE: ", { service })
+  console.log('Seeding product categories...');
+  for (const category of productCategories) {
+    await prisma.productCategory.upsert({
+      where: { name: category.name },
+      update: {},
+      create: category,
+    });
+  }
+
+  console.log('Seeding service categories...');
+  for (const category of serviceCategories) {
+    await prisma.serviceCategory.upsert({
+      where: { name: category.name },
+      update: {},
+      create: category,
+    });
+  }
+
+  console.log('Seeding completed!');
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
+  .catch((e) => {
     console.error(e)
-    await prisma.$disconnect()
     process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
   })
