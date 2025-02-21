@@ -8,12 +8,16 @@ datasource db {
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  name             String?   @db.VarChar(255)
-  email            String    @unique @db.VarChar(255)
-  password         String
-  messagesReceived Message[] @relation("Recipient")
-  messagesSent     Message[] @relation("Sender")
+  id                Int       @id @default(autoincrement())
+  name              String
+  email             String    @unique
+  password          String
+  messagesReceived  Message[] @relation("ReceivedMessages")
+  messagesSent      Message[] @relation("SentMessages")
+  friends           User[]    @relation("UserFriends")
+  friendOf          User[]    @relation("UserFriends")
+  favoriteFriends   User[]    @relation("UserFavorites")
+  favoritedBy       User[]    @relation("UserFavorites")
 }
 
 model Product {
@@ -54,8 +58,8 @@ model Message {
   id          Int      @id @default(autoincrement())
   senderId    Int
   recipientId Int
-  message     String
-  timestamp   DateTime @default(now())
-  recipient   User     @relation("Recipient", fields: [recipientId], references: [id])
-  sender      User     @relation("Sender", fields: [senderId], references: [id])
+  message    String
+  timestamp  DateTime @default(now())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  recipient  User     @relation("ReceivedMessages", fields: [recipientId], references: [id])
 }

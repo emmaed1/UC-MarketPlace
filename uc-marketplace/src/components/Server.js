@@ -48,7 +48,8 @@ const wsServer = new WebSocketServer({
 
 let clients = [];
 
-const JWT_SECRET = "1234567890"; // Replace with our real secret later.
+const JWT_SECRET = "1234567890";
+
 wsServer.on('request', function(request) {
   const connection = request.accept(null, request.origin);
   let userId = null;
@@ -75,50 +76,61 @@ wsServer.on('request', function(request) {
       return;
     }
 
-    const name = data.sender || 'Unknown';
-    const recipientId = parseInt(data.recipient);
+    if (data.type === 'message') {
+      const name = data.sender || 'Unknown';
+      const recipientId = parseInt(data.recipient);
 
-    const senderUser = await prisma.user.findFirst({
-      where: { name: name },
-    });
+      const senderUser = await prisma.user.findFirst({
+        where: { name: name },
+      });
 
-    if (!senderUser) {
-      console.log('Sender not found');
-      return;
-    }
+      if (!senderUser) {
+        console.log('Sender not found');
+        return;
+      }
 
-    if (!recipientId) {
-      console.log('Recipient ID not specified or invalid');
-      return;
-    }
+      if (!recipientId) {
+        console.log('Recipient ID not specified or invalid');
+        return;
+      }
 
-    const recipientUser = await prisma.user.findUnique({
-      where: { id: recipientId },
-    });
+      const recipientUser = await prisma.user.findUnique({
+        where: { id: recipientId },
+      });
 
-    if (!recipientUser) {
-      console.log('Recipient not found');
-      return;
-    }
+      if (!recipientUser) {
+        console.log('Recipient not found');
+        return;
+      }
 
-    const recipientClient = clients.find(client => client.userId === recipientUser.id);
+      const recipientClient = clients.find(client => client.userId === recipientUser.id);
 
-    if (recipientClient) {
-      const messageData = { ...data, sender: name };
-      console.log('Sending message to recipient:', recipientUser.id);
-      recipientClient.connection.sendUTF(JSON.stringify(messageData));
-    } else {
-      console.log('Recipient client not found');
-    }
-
-    await prisma.message.create({
-      data: {
-        sender: { connect: { id: senderUser.id } },
-        recipient: { connect: { id: recipientUser.id } },
+      const messageData = {
+        type: 'message',
         message: data.message,
-        timestamp: new Date(),
-      },
-    });
+        sender: { id: senderUser.id, name: senderUser.name },
+        recipient: { id: recipientUser.id, name: recipientUser.name },
+        timestamp: new Date()
+      };
+
+      if (recipientClient) {
+        console.log('Sending message to recipient:', recipientUser.id);
+        recipientClient.connection.sendUTF(JSON.stringify(messageData));
+      } else {
+        console.log('Recipient client not found');
+      }
+
+      await prisma.message.create({
+        data: {
+          sender: { connect: { id: senderUser.id } },
+          recipient: { connect: { id: recipientUser.id } },
+          message: data.message,
+          timestamp: new Date(),
+        },
+      });
+
+      connection.sendUTF(JSON.stringify(messageData));
+    }
   });
 
   connection.on('close', function(reasonCode, description) {
@@ -130,6 +142,80 @@ wsServer.on('request', function(request) {
 const generateJwt = (user) => {
   return jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
 };
+
+app.get("/friends/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName },
+      include: { friends: true, friendOf: true }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const friends = [...user.friends, ...user.friendOf];
+    res.json(friends);
+  } catch (error) {
+    console.error("Error fetching friends:", error);
+    res.status(500).json({ error: "Error fetching friends" });
+  }
+});
+
+app.post("/friends/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  const { friendId } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const friend = await prisma.user.findUnique({
+      where: { id: friendId }
+    });
+    if (!friend) {
+      return res.status(404).json({ error: "Friend not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        friends: {
+          connect: { id: friend.id }
+        }
+      }
+    });
+    res.json(friend);
+  } catch (error) {
+    console.error("Error adding friend:", error);
+    res.status(500).json({ error: "Error adding friend" });
+  }
+});
+
+app.delete("/friends/:accountName/:friendId", async (req, res) => {
+  const accountName = req.params.accountName;
+  const friendId = parseInt(req.params.friendId);
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        friends: {
+          disconnect: { id: friendId }
+        }
+      }
+    });
+    res.json({ message: "Friend removed" });
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    res.status(500).json({ error: "Error removing friend" });
+  }
+});
 
 // User registration endpoint
 app.post("/register", async (req, res) => {
@@ -410,7 +496,7 @@ app.get("/services", async (req, res) => {
     });
     res.status(200).json(services);
   } catch (error) {
-    res.status500().json({ error: "Error getting services" });
+    res.status(500).json({ error: "Error getting services" });
   }
 });
 
@@ -503,49 +589,129 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
-const authenticate = async (req, res, next) => {
-  if (!req.headers.authorization) {
-    return res.json("Unauthorized");
-  }
-
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (!token) {
-    return res.json("Token not found");
-  }
+app.get("/messages/:recipientId", async (req, res) => {
+  const recipientId = parseInt(req.params.recipientId);
+  const userId = req.query.userId;
 
   try {
-    const decode = jwt.verify(token, JWT_SECRET);
-    const user = await prisma.user.findUnique({
+    const messages = await prisma.message.findMany({
       where: {
-        email: decode.email,
+        OR: [
+          { senderId: userId, recipientId: recipientId },
+          { senderId: recipientId, recipientId: userId }
+        ]
       },
+      orderBy: {
+        timestamp: 'asc'
+      },
+      include: {
+        sender: true,
+        recipient: true
+      }
     });
-    req.user = user ?? undefined;
-    next();
-  } catch (err) {
-    req.user = undefined;
-    next();
+    res.json(messages);
+  } catch (error) {
+    console.log("Error fetching messages:", error);
+    res.status(500).json({ error: "Error fetching messages" });
   }
-};
+});
 
-app.get("/user", authenticate, async (req, res, next) => {
+app.get("/user", async (req, res, next) => {
   try {
-    if (!req.user) {
-      return res.sendStatus(401);
-    }
-    const { password: _password, ...userWithoutPassword } = req.user;
-    res.json(userWithoutPassword);
+    const user = await prisma.user.findMany();
+    res.json(user);
   } catch (err) {
     next(err);
   }
 });
-app.post("/user/refresh-token", authenticate, (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+
+app.post("/user/refresh-token", async (req, res) => {
+  const userId = req.body.userId; 
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    })
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const token = generateJwt(user);
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: "Error refreshing token" });
   }
-  const token = generateJwt(req.user);
-  res.json({ token });
+});
+
+app.get("/favorites/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName },
+      include: { favoriteFriends: true }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user.favoriteFriends);
+  } catch (error) {
+    console.error("Error fetching favorite friends:", error);
+    res.status(500).json({ error: "Error fetching favorite friends" });
+  }
+});
+
+app.post("/favorites/:accountName", async (req, res) => {
+  const accountName = req.params.accountName;
+  const { friendId } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const friend = await prisma.user.findUnique({
+      where: { id: friendId }
+    });
+    if (!friend) {
+      return res.status(404).json({ error: "Friend not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        favoriteFriends: {
+          connect: { id: friend.id }
+        }
+      }
+    });
+    res.json(friend);
+  } catch (error) {
+    console.error("Error adding favorite friend:", error);
+    res.status(500).json({ error: "Error adding favorite friend" });
+  }
+});
+
+app.delete("/favorites/:accountName/:friendId", async (req, res) => {
+  const accountName = req.params.accountName;
+  const friendId = parseInt(req.params.friendId);
+  try {
+    const user = await prisma.user.findFirst({
+      where: { name: accountName }
+    });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        favoriteFriends: {
+          disconnect: { id: friendId }
+        }
+      }
+    });
+    res.json({ message: "Favorite friend removed" });
+  } catch (error) {
+    console.error("Error removing favorite friend:", error);
+    res.status(500).json({ error: "Error removing favorite friend" });
+  }
 });
 
 server.listen(port, () => {

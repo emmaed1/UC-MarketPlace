@@ -1,0 +1,155 @@
+.content {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background-color: #e9ecef;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background-color: #fff3cd;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.friend-item, .favorite-item, .user-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.friend-item:hover, .favorite-item:hover, .user-item:hover {
+  background-color: #f1f1f1;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.friend-info, .favorite-info, .user-info {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.friend-actions, .favorite-actions, .user-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.message-button, .remove-button, .add-button, .toggle-button, .favorite-button, .unfavorite-button, .unfriend-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.message-button:hover, .remove-button:hover, .add-button:hover, .toggle-button:hover, .favorite-button:hover, .unfavorite-button:hover, .unfriend-button:hover {
+  background-color: #0056b3;
+}
+
+.remove-button {
+  background-color: #dc3545;
+}
+
+.remove-button:hover {
+  background-color: #c82333;
+}
+
+.unfriend-button {
+  background-color: #6c757d;
+}
+
+.unfriend-button:hover {
+  background-color: #5a6268;
+}
+
+.favorite-button {
+  background-color: #ffc107;
+}
+
+.favorite-button:hover {
+  background-color: #e0a800;
+}
+
+.unfavorite-button {
+  background-color: #ff5722;
+}
+
+.unfavorite-button:hover {
+  background-color: #e64a19;
+}
+
+.add-friends-section {
+  margin-top: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.user-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.user-item:hover {
+  background-color: #f1f1f1;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
