@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model User {
@@ -21,42 +21,42 @@ model User {
 }
 
 model Product {
-  productId Int     @id @default(autoincrement())
-  name      String  @db.VarChar(255)
-  desc      String
-  price     Float
-  quantity  Int
-  rating    Float?
-  img       String?
-  categories  ProductCategory[]
+  productId  Int               @id @default(autoincrement())
+  name       String            @db.VarChar(255)
+  desc       String
+  price      Float
+  quantity   Int
+  rating     Float?
+  img        String?
+  categories ProductCategory[] @relation("ProductToProductCategory")
 }
 
 model ProductCategory {
-  id         Int        @id @default(autoincrement())
-  name       String     @unique
-  products   Product[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[] @relation("ProductToProductCategory")
 }
 
 model Service {
-  serviceId Int     @id @default(autoincrement())
-  name      String
-  desc      String
-  price     Float
-  quantity  Int
-  rating    Float?
-  img       String?
-  categories  ServiceCategory[]
+  serviceId  Int               @id @default(autoincrement())
+  name       String
+  desc       String
+  price      Float
+  quantity   Int
+  rating     Float?
+  img        String?
+  categories ServiceCategory[] @relation("ServiceToServiceCategory")
 }
 
 model ServiceCategory {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  services  Service[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  services Service[] @relation("ServiceToServiceCategory")
 }
 
 model Message {
-  id         Int      @id @default(autoincrement())
-  senderId   Int
+  id          Int      @id @default(autoincrement())
+  senderId    Int
   recipientId Int
   message    String
   timestamp  DateTime @default(now())
