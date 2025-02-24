@@ -4,6 +4,7 @@ import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage";
 import FriendsTab from "./FriendsTab";
+import ProfilePage from "./ProfilePage"; // Import the ProfilePage component
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -11,6 +12,7 @@ export default function AccountView() {
   const [selectedListingId, setSelectedListingId] = useState(null);
   const [accountName, setAccountName] = useState("");
   const [selectedChatUser, setSelectedChatUser] = useState(null);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -19,6 +21,7 @@ export default function AccountView() {
       if (parsedInfo.name) {
         console.log(parsedInfo.name);
         setAccountName(parsedInfo.name);
+        setUserData(parsedInfo); // Store the entire user data
       }
     }
   }, []);
@@ -96,6 +99,11 @@ export default function AccountView() {
         </ul>
       </div>
 
+      {/* Profile Section */}
+      {option === "Profile" && (
+        <ProfilePage accountName={accountName} userData={userData} />
+      )}
+
       {/* Chat Section */}
       {option === "Messages" && (
         <div id="chat" className="content">
@@ -108,7 +116,7 @@ export default function AccountView() {
         <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
       )}
 
-      {option !== "Messages" && option !== "Friends" && (
+      {option !== "Messages" && option !== "Friends" && option !== "Profile" && (
         <div className="newlisting-reviews-container">
           <div className="newlisting">
             <h3 className="newlist-title">
