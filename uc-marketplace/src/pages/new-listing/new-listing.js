@@ -62,16 +62,19 @@ const NewListing = () => {
         formData.append('image', selectedFile);
       }
 
-      const response = await axios.post('http://localhost:3001/products', formData, {
+      // Choose endpoint based on type
+      const endpoint = type === 'product' ? 'products' : 'services';
+      
+      const response = await axios.post(`http://localhost:3001/${endpoint}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      console.log('Product created:', response.data);
+      console.log(`${type} created:`, response.data);
       Swal.fire({
         title: "Success!",
-        text: "Your listing was successfully posted!",
+        text: `Your ${type} was successfully posted!`,
         icon: "success",
       });
       
@@ -84,22 +87,15 @@ const NewListing = () => {
       setSelectedFile(null);
 
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error(`Error creating ${type}:`, error);
       
-      // Add this check for inappropriate content
-      if (error.response?.data?.error === "Inappropriate image content detected") {
-        Swal.fire({
-          title: "Error!",
-          text: "The uploaded image contains inappropriate content and cannot be used.",
-          icon: "error",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message || "Failed to create listing",
-          icon: "error",
-        });
-      }
+      const errorMessage = error.response?.data?.error || `Failed to create ${type}`;
+      
+      Swal.fire({
+        title: "Error!",
+        text: errorMessage,
+        icon: "error",
+      });
     }
   };
 

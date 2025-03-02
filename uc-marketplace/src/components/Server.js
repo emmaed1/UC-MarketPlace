@@ -327,17 +327,24 @@ app.post("/products", upload.single('image'), async (req, res) => {
     console.log('File received:', req.file);
     console.log('Form data received:', req.body);
 
-    // Add this image check block
+    // Check for image content before proceeding
     if (req.file) {
-      const imageCheck = await checkImageContent(req.file.path);
-      
-      if (!imageCheck.isAppropriate) {
-        // Delete the uploaded file
-        fs.unlinkSync(req.file.path);
-        return res.status(400).json({
-          error: "Inappropriate image content detected",
-          details: imageCheck.details
-        });
+      try {
+        const imageCheck = await checkImageContent(req.file.path);
+        
+        if (!imageCheck.isAppropriate) {
+          // Delete the uploaded file
+          fs.unlinkSync(req.file.path);
+          return res.status(400).json({
+            error: "Inappropriate image content detected"
+          });
+        }
+      } catch (error) {
+        // Delete the uploaded file if image check fails
+        if (req.file.path && fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+        throw error;
       }
     }
 
@@ -370,10 +377,14 @@ app.post("/products", upload.single('image'), async (req, res) => {
     res.json(result);
 
   } catch (error) {
+    // Clean up uploaded file if there's an error
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    
     console.error('Product creation error:', error);
     res.status(500).json({ 
-      error: "Error creating product",
-      details: error.message 
+      error: error.message || "Error creating product"
     });
   }
 });
