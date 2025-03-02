@@ -9,7 +9,17 @@ const ProductsCard = (props) => {
   const [isAdded, setIsAdded] = useState(false);
 
   const handleAddToCart = () => {
-    const item = { ...props };
+    const item = {
+      id: productId,
+      name: name,
+      price: price,
+      img: img,
+      quantity: 1,
+      desc: desc,
+      categories: categories
+    };
+
+    console.log('Adding item to cart:', item);
     addItem(item);
 
     setIsAdded(true);

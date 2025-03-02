@@ -1,16 +1,30 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 
 const Checkout = () => {
-  const location = useLocation(); // Access passed state (cart data)
   const navigate = useNavigate();
+  const [cartData, setCartData] = useState({ items: [], total: 0 });
 
-  const { cartItems, cartTotal } = location.state || { cartItems: [], cartTotal: 0 }; // Fallback if state is empty
+  useEffect(() => {
+    // Get cart data from URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const cartParam = params.get('cart');
+    
+    if (cartParam) {
+      try {
+        const decodedCart = JSON.parse(decodeURIComponent(cartParam));
+        console.log('Retrieved cart data:', decodedCart);
+        setCartData(decodedCart);
+      } catch (error) {
+        console.error('Error parsing cart data:', error);
+      }
+    }
+  }, []);
 
   const handleSubmitOrder = () => {
     console.log("Order submitted!");
-    navigate("/confirmation"); // Navigate to confirmation page
+    navigate("/confirmation");
   };
 
   return (
@@ -20,11 +34,11 @@ const Checkout = () => {
       {/* Cart Items */}
       <div className="cart-section">
         <h2>Your Cart</h2>
-        {cartItems.length > 0 ? (
-          cartItems.map((item, index) => (
+        {cartData.items.length > 0 ? (
+          cartData.items.map((item, index) => (
             <div className="cart-item" key={index}>
               <div className="item-details">
-                <h4 className="item-title">{item.title}</h4>
+                <h4 className="item-title">{item.name}</h4>
                 <p className="item-price">Price: ${item.price.toFixed(2)}</p>
                 <p className="item-quantity">Quantity: {item.quantity}</p>
                 <p className="item-subtotal">
@@ -41,7 +55,7 @@ const Checkout = () => {
       {/* Total Price */}
       <div className="total-section">
         <h3>Total Price:</h3>
-        <p className="cart-total">${cartTotal.toFixed(2)}</p>
+        <p className="cart-total">${cartData.total.toFixed(2)}</p>
       </div>
 
       {/* Delivery Method */}

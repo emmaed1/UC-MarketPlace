@@ -44,6 +44,24 @@ const Cart = () => {
     .map((item) => item.price * item.quantity)
     .reduce((prevValue, currValue) => prevValue + currValue, 0);
 
+  const handleCheckout = () => {
+    // Create a cart summary object with items and total
+    const cartSummary = {
+      items: cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        img: item.img
+      })),
+      total: cartTotal
+    };
+
+    // Encode and send as URL parameter
+    const cartParam = encodeURIComponent(JSON.stringify(cartSummary));
+    window.location.href = `/checkout?cart=${cartParam}`;
+  };
+
   return (
     <>
       {isCartOpen && (
@@ -110,12 +128,13 @@ const Cart = () => {
               </h3>
 
               <button
-              type="button"
-              className="checkout_btn"
-              disabled={cartQuantity === 0}>
-                <a href="/checkout">Checkout</a>
+                type="button"
+                className="checkout_btn"
+                disabled={cartQuantity === 0}
+                onClick={handleCheckout}
+              >
+                Checkout
               </button>
-              
             </div>
           </div>
         </div>

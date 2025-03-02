@@ -1,5 +1,4 @@
 import Router from "./components/Router";
-import Context from "./components/Context";
 import "./App.css";
 import { CartProvider } from "./components/ShoppingCart/Context/CartContext";
 import Cart from "./components/ShoppingCart/ShoppingCart";
@@ -10,6 +9,7 @@ import SignUp from "./pages/SignUpPage/signup";
 function setToken(userToken) {
   sessionStorage.setItem("token", JSON.stringify(userToken));
 }
+
 function getToken() {
   const tokenVal = sessionStorage.getItem("token");
   const userToken = JSON.parse(tokenVal);
@@ -41,10 +41,8 @@ function App() {
   return (
     <div className="App">
       <CartProvider>
-        <Context.Provider>
-          <Router />
-          <Cart />
-        </Context.Provider>
+        <Router />
+        <Cart />
       </CartProvider>
     </div>
   );
