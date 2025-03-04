@@ -4,7 +4,9 @@ import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage";
 import FriendsTab from "./FriendsTab";
-import ProfilePage from "./ProfilePage"; // Import the ProfilePage component
+import ProfilePage from "./ProfilePage";
+import SecurityTab from "./SecurityTab"; // Import the SecurityTab component
+import MyListingsTab from "./MyListingsTab"; // Import the MyListingsTab component
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -114,6 +116,16 @@ export default function AccountView() {
       {/* Friends Section */}
       {option === "Friends" && (
         <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
+      )}
+
+      {/* Security Section */}
+      {option === "Security" && (
+        <SecurityTab accountName={accountName} />
+      )}
+
+      {/* My Listings Section */}
+      {option === "My Listings" && (
+        <MyListingsTab accountName={accountName} />
       )}
 
       {option !== "Messages" && option !== "Friends" && option !== "Profile" && (
