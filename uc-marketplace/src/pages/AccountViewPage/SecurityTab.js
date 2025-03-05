@@ -30,39 +30,51 @@ export default function SecurityTab({ accountName }) {
       <h2>Security Settings</h2>
       <div className="form-group">
         <label htmlFor="shareFriendsList">Share Friends List</label>
-        <input
-          type="checkbox"
-          id="shareFriendsList"
-          checked={shareFriendsList}
-          onChange={handleToggleChange(setShareFriendsList, "shareFriendsList")}
-        />
+        <label className="switch">
+          <input
+            type="checkbox"
+            id="shareFriendsList"
+            checked={shareFriendsList}
+            onChange={handleToggleChange(setShareFriendsList, "shareFriendsList")}
+          />
+          <span className="slider round"></span>
+        </label>
       </div>
       <div className="form-group">
         <label htmlFor="shareLocationInfo">Share Location Info</label>
-        <input
-          type="checkbox"
-          id="shareLocationInfo"
-          checked={shareLocationInfo}
-          onChange={handleToggleChange(setShareLocationInfo, "shareLocationInfo")}
-        />
+        <label className="switch">
+          <input
+            type="checkbox"
+            id="shareLocationInfo"
+            checked={shareLocationInfo}
+            onChange={handleToggleChange(setShareLocationInfo, "shareLocationInfo")}
+          />
+          <span className="slider round"></span>
+        </label>
       </div>
       <div className="form-group">
         <label htmlFor="enableTwoFactorAuth">Enable Two-Factor Authentication</label>
-        <input
-          type="checkbox"
-          id="enableTwoFactorAuth"
-          checked={enableTwoFactorAuth}
-          onChange={handleToggleChange(setEnableTwoFactorAuth, "enableTwoFactorAuth")}
-        />
+        <label className="switch">
+          <input
+            type="checkbox"
+            id="enableTwoFactorAuth"
+            checked={enableTwoFactorAuth}
+            onChange={handleToggleChange(setEnableTwoFactorAuth, "enableTwoFactorAuth")}
+          />
+          <span className="slider round"></span>
+        </label>
       </div>
       <div className="form-group">
         <label htmlFor="receiveSecurityAlerts">Receive Security Alerts</label>
-        <input
-          type="checkbox"
-          id="receiveSecurityAlerts"
-          checked={receiveSecurityAlerts}
-          onChange={handleToggleChange(setReceiveSecurityAlerts, "receiveSecurityAlerts")}
-        />
+        <label className="switch">
+          <input
+            type="checkbox"
+            id="receiveSecurityAlerts"
+            checked={receiveSecurityAlerts}
+            onChange={handleToggleChange(setReceiveSecurityAlerts, "receiveSecurityAlerts")}
+          />
+          <span className="slider round"></span>
+        </label>
       </div>
     </div>
   );
