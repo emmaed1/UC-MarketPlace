@@ -125,16 +125,15 @@ export default function AccountView() {
 
       {/* My Listings Section */}
       {option === "My Listings" && (
-        <MyListingsTab accountName={accountName} />
-      )}
-
-      {option !== "Messages" && option !== "Friends" && option !== "Profile" && (
-        <div className="newlisting-reviews-container">
-          <div className="newlisting">
-            <h3 className="newlist-title">
-              Have another product or service to sell?
-            </h3>
-            <a href="/new-listing">Create Listing</a>
+        <div>
+          <MyListingsTab accountName={accountName} />
+          <div className="newlisting-reviews-container">
+            <div className="newlisting">
+              <h3 className="newlist-title">
+                Have another product or service to sell?
+              </h3>
+              <a href="/new-listing">Create Listing</a>
+            </div>
           </div>
         </div>
       )}
