@@ -5,6 +5,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^6.2.1",
     "@prisma/client": "^6.4.1",
+    "@stripe/react-stripe-js": "^3.3.0",
+    "@stripe/stripe-js": "^5.8.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
@@ -27,6 +29,7 @@
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
     "sass": "^1.83.1",
+    "stripe": "^17.7.0",
     "sweetalert2": "^11.15.10",
     "uc-marketplace": "file:",
     "web-vitals": "^4.2.4",

@@ -13,6 +13,59 @@ const Checkout = () => {
     navigate("/confirmation"); // Navigate to confirmation page
   };
 
+  document.addEventListener('DOMContentLoaded', async () => {
+    const stripe = stripe('pk_test_51Qyy4aKCv8fIXaN0RXYuZGuKmD19pibpZRuFYtHeFkZmV9nCZ3o5nESKDEkZedec96SSwLrmLB19pKFtdIZPR5Ec00zB3bezLw'); // test publishable key
+    const elements = stripe.elements();
+
+    const paymentElement = elements.create('payment');
+    paymentElement.mount('#payment-element');
+
+    const editPaymentButton = document.getElementById('editPaymentButton');
+    const paymentModal = document.getElementById('paymentModal');
+    const closeButton = document.querySelector('.close');
+    const submitPaymentButton = document.getElementById('submitPayment');
+    const submitOrderButton = document.getElementById('submitOrderButton');
+
+    // Modal Logic
+    editPaymentButton.addEventListener('click', () => {
+        paymentModal.style.display = 'block';
+    });
+
+    closeButton.addEventListener('click', () => {
+        paymentModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === paymentModal) {
+            paymentModal.style.display = 'none';
+        }
+    });
+
+    // Payment Submission Logic
+    submitPaymentButton.addEventListener('click', async () => {
+        const { error } = await stripe.confirmSetup({
+            elements,
+            confirmParams: {
+                return_url: window.location.origin + '/confirmation', // Change to your confirmation URL
+            },
+        });
+
+        if (error) {
+            alert(error.message);
+        } else {
+            paymentModal.style.display = 'none';
+            alert('Payment method saved successfully!');
+            // You can store the payment method ID in your database here
+        }
+    });
+
+    // Order Submission Logic (your existing logic)
+    submitOrderButton.addEventListener('click', () => {
+        // Your existing order submission logic from confirmation.js
+        console.log("order submitted");
+    });
+});
+
   return (
     <div className="checkout-page">
       <h1 className="checkout-title">Checkout</h1>
@@ -60,11 +113,24 @@ const Checkout = () => {
       {/* Payment Method */}
       <div className="payment-section">
         <h3>Payment Method</h3>
+        <button id="editPaymentButton">Edit Payment</button>
+
+        <div id="paymentModal" className="modal">
+            <div className="modal-content">
+                <span className="close">&times;</span>
+                <h2>Payment Details</h2>
+                <div id="payment-element">
+                    </div>
+                <button id="submitPayment">Save Payment</button>
+            </div>
+        </div>
+        {/*
         <select className="payment-dropdown">
           <option value="paypal">PayPal</option>
           <option value="credit-card">Credit Card</option>
           <option value="cash">Cash</option>
         </select>
+        */}
       </div>
 
       {/* Message to Seller */}

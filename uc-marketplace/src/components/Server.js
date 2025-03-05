@@ -10,6 +10,8 @@ const path = require("path");
 const fs = require('fs');
 const axios = require('axios');
 const FormData = require('form-data');
+const stripe = require('stripe')('sk_test_51Qyy4aKCv8fIXaN0G9vgCE4TBbt4I5e4DfKGyvkrIuPRtewz53WUTErFOswyTiN7YzBBmjbEfIChjLQB9qsT3bcV00fmhOVYCB');
+
 
 const prisma = new PrismaClient();
 const app = express();
@@ -527,6 +529,22 @@ app.delete("/services/:serviceId", async (req, res) => {
     res.status(500).json({ error: "Errors deleting service" });
   }
 });
+
+// Create Setup Intent
+app.post('/create-setup-intent', async (req, res) => {
+  try {
+      const setupIntent = await stripe.setupIntents.create();
+      res.send({ clientSecret: setupIntent.client_secret });
+  } catch (error) {
+      res.status(500).send({ error: error.message });
+  }
+});
+
+// Confirmation route
+app.get('/confirmation', (req, res) => {
+  res.send('Payment method saved successfully!');
+});
+
 
 app.get("/user", async (req, res) => {
   try {
