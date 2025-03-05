@@ -141,10 +141,10 @@ const Products = () => {
                   "Academic Materials",
                   "Clothing",
                   "Technology and Electronics",
+                  "Food and Beverage",
                   "Entertainment",
                   "Home Essentials",
-                  "Accesories",
-                  "Food and Beverage",
+                  "Accessories",
                   "Collectibles",
                   "Miscellaneous",
                 ].map((cat) => (

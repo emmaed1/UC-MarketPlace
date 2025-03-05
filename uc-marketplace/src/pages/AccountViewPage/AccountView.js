@@ -4,6 +4,9 @@ import logo from "../../assets/uc-MP-logo.png";
 import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage";
 import FriendsTab from "./FriendsTab";
+import ProfilePage from "./ProfilePage";
+import SecurityTab from "./SecurityTab"; // Import the SecurityTab component
+import MyListingsTab from "./MyListingsTab"; // Import the MyListingsTab component
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -11,6 +14,7 @@ export default function AccountView() {
   const [selectedListingId, setSelectedListingId] = useState(null);
   const [accountName, setAccountName] = useState("");
   const [selectedChatUser, setSelectedChatUser] = useState(null);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -19,6 +23,7 @@ export default function AccountView() {
       if (parsedInfo.name) {
         console.log(parsedInfo.name);
         setAccountName(parsedInfo.name);
+        setUserData(parsedInfo); // Store the entire user data
       }
     }
   }, []);
@@ -38,12 +43,22 @@ export default function AccountView() {
     setOption("Messages");
   };
 
+  const handleUserDataChange = (updatedUserData) => {
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      ...updatedUserData,
+    }));
+    if (updatedUserData.name) {
+      setAccountName(updatedUserData.name);
+    }
+  };
+
   return (
     <div className="account-content">
       <div className="welcome-content">
         <img src={logo} alt="uc marketplace-logo" />
         <div className="welcome-text">
-          <h1>Welcome to your account, {accountName}</h1>
+          <h1>Welcome to your account, {userData.name}</h1>
         </div>
       </div>
       <div className="nav">
@@ -96,6 +111,11 @@ export default function AccountView() {
         </ul>
       </div>
 
+      {/* Profile Section */}
+      {option === "Profile" && (
+        <ProfilePage accountName={accountName} userData={userData} onUserDataChange={handleUserDataChange} />
+      )}
+
       {/* Chat Section */}
       {option === "Messages" && (
         <div id="chat" className="content">
@@ -108,13 +128,22 @@ export default function AccountView() {
         <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
       )}
 
-      {option !== "Messages" && option !== "Friends" && (
-        <div className="newlisting-reviews-container">
-          <div className="newlisting">
-            <h3 className="newlist-title">
-              Have another product or service to sell?
-            </h3>
-            <a href="/new-listing">Create Listing</a>
+      {/* Security Section */}
+      {option === "Security" && (
+        <SecurityTab accountName={accountName} />
+      )}
+
+      {/* My Listings Section */}
+      {option === "My Listings" && (
+        <div>
+          <MyListingsTab accountName={accountName} />
+          <div className="newlisting-reviews-container">
+            <div className="newlisting">
+              <h3 className="newlist-title">
+                Have another product or service to sell?
+              </h3>
+              <a href="/new-listing">Create Listing</a>
+            </div>
           </div>
         </div>
       )}
