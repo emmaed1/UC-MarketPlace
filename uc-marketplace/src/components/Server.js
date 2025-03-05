@@ -600,6 +600,22 @@ app.post("/user/login", async (req, res) => {
   }
 });
 
+app.post("/api/updateUser", async (req, res) => {
+  const { accountName, name, email } = req.body;
+  console.log("Update user request received:", req.body);
+  try {
+    const user = await prisma.user.update({
+      where: { email: email },
+      data: { name, email },
+    });
+    console.log("User updated successfully:", user);
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error("Error updating user information:", error);
+    res.status(500).json({ success: false, error: "Error updating user information", details: error.message });
+  }
+});
+
 app.get("/messages/:recipientId", async (req, res) => {
   const recipientId = parseInt(req.params.recipientId);
   const userId = req.query.userId;
