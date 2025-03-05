@@ -19,8 +19,8 @@ const NewListing = () => {
     { id: 2, name: "Home Essentials" },
     { id: 3, name: "Clothing" },
     { id: 4, name: "Accesories" },
-    { id: 5, name: "Technology & Electronics" },
-    { id: 6, name: "Food & Beverage" },
+    { id: 5, name: "Technology and Electronics" },
+    { id: 6, name: "Food and Beverage" },
     { id: 7, name: "Entertainment" },
     { id: 8, name: "Collectibles" },
     { id: 9, name: "Miscellaneous" },
@@ -29,12 +29,12 @@ const NewListing = () => {
   const serviceCategories = [
     { id: 1, name: "Academic Help" },
     { id: 2, name: "Technology Support" },
-    { id: 3, name: "Photography & Videography" },
-    { id: 4, name: "Beauty & Personal Care" },
+    { id: 3, name: "Photography and Videography" },
+    { id: 4, name: "Beauty and Personal Care" },
     { id: 5, name: "Automotive Services" },
     { id: 6, name: "Creative Work" },
     { id: 7, name: "Pet Services" },
-    { id: 8, name: "Entertainment & Event Planning" },
+    { id: 8, name: "Entertainment and Event Planning" },
     { id: 9, name: "Miscellaneous" },
   ];
 
