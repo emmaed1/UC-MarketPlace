@@ -35,8 +35,10 @@ export default function ProfilePage({ accountName, userData }) {
           )}
           <input type="file" accept="image/*" onChange={handlePhotoUpload} />
         </div>
-        <p><strong>Name:</strong> {accountName}</p>
-        <p><strong>Email:</strong> {userData.email}</p>
+        <div className="profile-details">
+          <p><strong>Name:</strong> {accountName}</p>
+          <p><strong>Email:</strong> {userData.email}</p>
+        </div>
       </div>
     </div>
   );
