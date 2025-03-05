@@ -19,8 +19,8 @@ const NewListing = () => {
     { id: 2, name: "Home Essentials" },
     { id: 3, name: "Clothing" },
     { id: 4, name: "Accesories" },
-    { id: 5, name: "Technology & Electronics" },
-    { id: 6, name: "Food & Beverage" },
+    { id: 5, name: "Technology and Electronics" },
+    { id: 6, name: "Food and Beverage" },
     { id: 7, name: "Entertainment" },
     { id: 8, name: "Collectibles" },
     { id: 9, name: "Miscellaneous" },
@@ -29,12 +29,12 @@ const NewListing = () => {
   const serviceCategories = [
     { id: 1, name: "Academic Help" },
     { id: 2, name: "Technology Support" },
-    { id: 3, name: "Photography & Videography" },
-    { id: 4, name: "Beauty & Personal Care" },
+    { id: 3, name: "Photography and Videography" },
+    { id: 4, name: "Beauty and Personal Care" },
     { id: 5, name: "Automotive Services" },
     { id: 6, name: "Creative Work" },
     { id: 7, name: "Pet Services" },
-    { id: 8, name: "Entertainment & Event Planning" },
+    { id: 8, name: "Entertainment and Event Planning" },
     { id: 9, name: "Miscellaneous" },
   ];
 
@@ -62,16 +62,19 @@ const NewListing = () => {
         formData.append('image', selectedFile);
       }
 
-      const response = await axios.post('http://localhost:3001/products', formData, {
+      // Choose endpoint based on type
+      const endpoint = type === 'product' ? 'products' : 'services';
+      
+      const response = await axios.post(`http://localhost:3001/${endpoint}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      console.log('Product created:', response.data);
+      console.log(`${type} created:`, response.data);
       Swal.fire({
         title: "Success!",
-        text: "Your listing was successfully posted!",
+        text: `Your ${type} was successfully posted!`,
         icon: "success",
       });
       
@@ -84,22 +87,15 @@ const NewListing = () => {
       setSelectedFile(null);
 
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error(`Error creating ${type}:`, error);
       
-      // Add this check for inappropriate content
-      if (error.response?.data?.error === "Inappropriate image content detected") {
-        Swal.fire({
-          title: "Error!",
-          text: "The uploaded image contains inappropriate content and cannot be used.",
-          icon: "error",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message || "Failed to create listing",
-          icon: "error",
-        });
-      }
+      const errorMessage = error.response?.data?.error || `Failed to create ${type}`;
+      
+      Swal.fire({
+        title: "Error!",
+        text: errorMessage,
+        icon: "error",
+      });
     }
   };
 
