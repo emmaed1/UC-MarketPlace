@@ -43,12 +43,22 @@ export default function AccountView() {
     setOption("Messages");
   };
 
+  const handleUserDataChange = (updatedUserData) => {
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      ...updatedUserData,
+    }));
+    if (updatedUserData.name) {
+      setAccountName(updatedUserData.name);
+    }
+  };
+
   return (
     <div className="account-content">
       <div className="welcome-content">
         <img src={logo} alt="uc marketplace-logo" />
         <div className="welcome-text">
-          <h1>Welcome to your account, {accountName}</h1>
+          <h1>Welcome to your account, {userData.name}</h1>
         </div>
       </div>
       <div className="nav">
@@ -103,7 +113,7 @@ export default function AccountView() {
 
       {/* Profile Section */}
       {option === "Profile" && (
-        <ProfilePage accountName={accountName} userData={userData} />
+        <ProfilePage accountName={accountName} userData={userData} onUserDataChange={handleUserDataChange} />
       )}
 
       {/* Chat Section */}

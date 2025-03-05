@@ -30,22 +30,21 @@
   text-align: center;
 }
 
-.profile-photo img {
+.profile-photo img,
+.placeholder-photo {
   width: 150px;
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ccc;
-}
-
-.placeholder-photo {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background-color: #ccc;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
+}
+
+.placeholder-photo {
+  background-color: #ccc;
   color: #fff;
   font-size: 16px;
 }
@@ -69,4 +68,40 @@
 
 .profile-details strong {
   color: #333;
+}
+
+.profile-details input {
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+.profile-details button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-details button:hover {
+  background-color: #0056b3;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  margin-left: 10px;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268;
+}
+
+.notice {
+  color: #ff0000;
+  font-size: 14px;
+  margin-top: 10px;
 }
