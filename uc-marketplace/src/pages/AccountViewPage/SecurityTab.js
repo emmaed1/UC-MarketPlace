@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SecurityTab.css";
 
 export default function SecurityTab({ accountName }) {
@@ -7,8 +7,22 @@ export default function SecurityTab({ accountName }) {
   const [enableTwoFactorAuth, setEnableTwoFactorAuth] = useState(false);
   const [receiveSecurityAlerts, setReceiveSecurityAlerts] = useState(false);
 
-  const handleToggleChange = (setter) => (e) => {
-    setter(e.target.checked);
+  useEffect(() => {
+    const savedShareFriendsList = JSON.parse(localStorage.getItem(`${accountName}_shareFriendsList`));
+    const savedShareLocationInfo = JSON.parse(localStorage.getItem(`${accountName}_shareLocationInfo`));
+    const savedEnableTwoFactorAuth = JSON.parse(localStorage.getItem(`${accountName}_enableTwoFactorAuth`));
+    const savedReceiveSecurityAlerts = JSON.parse(localStorage.getItem(`${accountName}_receiveSecurityAlerts`));
+
+    if (savedShareFriendsList !== null) setShareFriendsList(savedShareFriendsList);
+    if (savedShareLocationInfo !== null) setShareLocationInfo(savedShareLocationInfo);
+    if (savedEnableTwoFactorAuth !== null) setEnableTwoFactorAuth(savedEnableTwoFactorAuth);
+    if (savedReceiveSecurityAlerts !== null) setReceiveSecurityAlerts(savedReceiveSecurityAlerts);
+  }, [accountName]);
+
+  const handleToggleChange = (setter, key) => (e) => {
+    const value = e.target.checked;
+    setter(value);
+    localStorage.setItem(`${accountName}_${key}`, JSON.stringify(value));
   };
 
   return (
@@ -20,7 +34,7 @@ export default function SecurityTab({ accountName }) {
           type="checkbox"
           id="shareFriendsList"
           checked={shareFriendsList}
-          onChange={handleToggleChange(setShareFriendsList)}
+          onChange={handleToggleChange(setShareFriendsList, "shareFriendsList")}
         />
       </div>
       <div className="form-group">
@@ -29,7 +43,7 @@ export default function SecurityTab({ accountName }) {
           type="checkbox"
           id="shareLocationInfo"
           checked={shareLocationInfo}
-          onChange={handleToggleChange(setShareLocationInfo)}
+          onChange={handleToggleChange(setShareLocationInfo, "shareLocationInfo")}
         />
       </div>
       <div className="form-group">
@@ -38,7 +52,7 @@ export default function SecurityTab({ accountName }) {
           type="checkbox"
           id="enableTwoFactorAuth"
           checked={enableTwoFactorAuth}
-          onChange={handleToggleChange(setEnableTwoFactorAuth)}
+          onChange={handleToggleChange(setEnableTwoFactorAuth, "enableTwoFactorAuth")}
         />
       </div>
       <div className="form-group">
@@ -47,7 +61,7 @@ export default function SecurityTab({ accountName }) {
           type="checkbox"
           id="receiveSecurityAlerts"
           checked={receiveSecurityAlerts}
-          onChange={handleToggleChange(setReceiveSecurityAlerts)}
+          onChange={handleToggleChange(setReceiveSecurityAlerts, "receiveSecurityAlerts")}
         />
       </div>
     </div>
