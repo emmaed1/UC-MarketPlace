@@ -16,16 +16,20 @@ export default function ProfilePage({ accountName, userData, onUserDataChange })
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
-    if (file && file.size <= 1024 * 1024) { // Check if file size is within 1MB
-      const reader = new FileReader();
-      reader.onloadend = () => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      try {
         setProfilePhoto(reader.result);
         localStorage.setItem(`${accountName}_profilePhoto`, reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("File size exceeds 1MB. Please choose a smaller file.");
-    }
+      } catch (error) {
+        if (error.name === "QuotaExceededError") {
+          alert("Unable to save photo. Local storage quota exceeded.");
+        } else {
+          console.error("Error saving photo:", error);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   useEffect(() => {
