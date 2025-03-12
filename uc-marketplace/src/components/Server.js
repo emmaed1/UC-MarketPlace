@@ -12,7 +12,6 @@ const axios = require('axios');
 const FormData = require('form-data');
 const stripe = require('stripe')('sk_test_51Qyy4aKCv8fIXaN0G9vgCE4TBbt4I5e4DfKGyvkrIuPRtewz53WUTErFOswyTiN7YzBBmjbEfIChjLQB9qsT3bcV00fmhOVYCB');
 
-
 const prisma = new PrismaClient();
 const app = express();
 const port = 3001;
@@ -541,21 +540,26 @@ app.delete("/services/:serviceId", async (req, res) => {
   }
 });
 
-// Create Setup Intent
-app.post('/create-setup-intent', async (req, res) => {
+app.post('/create-payment-intent', async (req, res) => {
   try {
-      const setupIntent = await stripe.setupIntents.create();
-      res.send({ clientSecret: setupIntent.client_secret });
+    const { amount } = req.body; // Amount in cents
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'usd', // Or your currency
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
   } catch (error) {
-      res.status(500).send({ error: error.message });
+    console.error('Error creating payment intent:', error);
+    res.status(500).send({ error: error.message });
   }
 });
-
-// Confirmation route
-app.get('/confirmation', (req, res) => {
-  res.send('Payment method saved successfully!');
-});
-
 
 app.get("/user", async (req, res) => {
   try {
