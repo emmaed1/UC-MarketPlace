@@ -5,7 +5,6 @@ import Cart from "./components/ShoppingCart/ShoppingCart";
 import Login from "./pages/LoginPage/login";
 import React, { useState } from "react";
 import SignUp from "./pages/SignUpPage/signup";
-const stripe = require('stripe')('sk_test_51Qyy4aKCv8fIXaN0G9vgCE4TBbt4I5e4DfKGyvkrIuPRtewz53WUTErFOswyTiN7YzBBmjbEfIChjLQB9qsT3bcV00fmhOVYCB'); 
 
 function setToken(userToken) {
   sessionStorage.setItem("token", JSON.stringify(userToken));
