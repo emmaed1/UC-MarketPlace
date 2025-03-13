@@ -148,3 +148,123 @@ label {
 .submit-button:hover {
   background-color: #535e5e;
 }
+
+.payment-status {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.payment-status p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #333;
+}
+
+.status-label, .method-label {
+    font-weight: 600;
+    color: #666;
+    margin-right: 8px;
+}
+
+.status-value.success {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.method-value {
+    color: #e00122;
+    font-weight: 600;
+}
+
+.edit-button {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+    background-color: #5a6268;
+}
+
+.primary-button {
+    background-color: #e00122;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.primary-button:hover {
+    background-color: #535e5e;
+}
+
+.payment-form-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.payment-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-form-header h3 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: #e00122;
+}
+
+.save-payment-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #e00122;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.save-payment-button:hover {
+    background-color: #535e5e;
+}
+
+.save-payment-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

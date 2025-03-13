@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 import { Elements, useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
 const stripePromise = loadStripe('pk_test_51Qyy4aKCv8fIXaN0RXYuZGuKmD19pibpZRuFYtHeFkZmV9nCZ3o5nESKDEkZedec96SSwLrmLB19pKFtdIZPR5Ec00zB3bezLw');
 
-const PaymentForm = ({ clientSecret, onClosePaymentModal }) => {
+const PaymentForm = ({ clientSecret, onClosePaymentModal, onCancel }) => {
     const stripe = useStripe();
     const elements = useElements();
     const [errorMessage, setErrorMessage] = useState(null);
@@ -52,14 +53,31 @@ const PaymentForm = ({ clientSecret, onClosePaymentModal }) => {
 
     return React.createElement(
         'div',
-        null,
+        { className: 'payment-form-container' },
+        React.createElement(
+            'div',
+            { className: 'payment-form-header' },
+            React.createElement('h3', null, 'Enter Payment Details'),
+            React.createElement(
+                'button',
+                { 
+                    className: 'close-button',
+                    onClick: onCancel,
+                    type: 'button'
+                },
+                '×'
+            )
+        ),
         React.createElement(
             'form',
             { onSubmit: handleSubmit },
             React.createElement(PaymentElement, null),
             React.createElement(
                 'button',
-                { disabled: !stripe || loading },
+                { 
+                    disabled: !stripe || loading,
+                    className: 'save-payment-button'
+                },
                 loading ? 'Processing...' : 'Save Payment'
             ),
             errorMessage && React.createElement('div', { style: { color: 'red' } }, errorMessage)
@@ -83,6 +101,7 @@ const PaymentForm = ({ clientSecret, onClosePaymentModal }) => {
 
 const Checkout = () => {
     const navigate = useNavigate();
+    const { clearCart } = useContext(cartContext);
     const [cartData, setCartData] = useState({ items: [], total: 0 });
     const [clientSecret, setClientSecret] = useState(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -136,6 +155,10 @@ const Checkout = () => {
         setShowPaymentModal(false);
     };
 
+    const handleClosePaymentModal = () => {
+        setShowPaymentModal(false);
+    };
+
     const handleSubmitOrder = () => {
         if (paymentSuccess) {
             setPopupMessage("Order submitted successfully!");
@@ -148,6 +171,7 @@ const Checkout = () => {
     const closePopup = () => {
         setShowPopup(false);
         if (paymentSuccess) {
+            clearCart();
             const formattedItems = cartData.items.map(item => ({
                 title: item.name,
                 price: item.price,
@@ -212,10 +236,26 @@ const Checkout = () => {
             'div',
             { className: 'payment-section' },
             React.createElement('h3', null, 'Payment Method'),
+            paymentSuccess && React.createElement(
+                'div',
+                { className: 'payment-status' },
+                React.createElement('p', null, 
+                    React.createElement('span', { className: 'status-label' }, 'Status: '),
+                    React.createElement('span', { className: 'status-value success' }, 'Payment Method Saved ✓')
+                ),
+                React.createElement('p', null, 
+                    React.createElement('span', { className: 'method-label' }, 'Method: '),
+                    React.createElement('span', { className: 'method-value' }, 'Credit Card')
+                )
+            ),
             React.createElement(
                 'button',
-                { onClick: handleEditPayment, disabled: paymentIntentLoading },
-                paymentIntentLoading ? 'Loading...' : 'Edit Payment'
+                { 
+                    onClick: handleEditPayment, 
+                    disabled: paymentIntentLoading,
+                    className: paymentSuccess ? 'edit-button' : 'primary-button'
+                },
+                paymentIntentLoading ? 'Loading...' : (paymentSuccess ? 'Change Payment Method' : 'Add Payment Method')
             ),
             paymentIntentError && React.createElement('p', { style: { color: 'red' } }, paymentIntentError),
             showPaymentModal && clientSecret && React.createElement(
@@ -223,7 +263,8 @@ const Checkout = () => {
                 { stripe: stripePromise, options: { clientSecret } },
                 React.createElement(PaymentForm, {
                     clientSecret: clientSecret,
-                    onClosePaymentModal: handlePaymentSuccess
+                    onClosePaymentModal: handlePaymentSuccess,
+                    onCancel: handleClosePaymentModal
                 })
             )
         ),
