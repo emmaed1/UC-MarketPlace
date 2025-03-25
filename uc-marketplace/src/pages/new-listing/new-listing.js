@@ -88,7 +88,7 @@ const NewListing = () => {
       setPrice(0);
       setQuantity(0);
       setSelectedCategories([]);
-      setSelectedFile();
+      setSelectedFile(null);
 
     } catch (error) {
       console.error(`Error creating ${type}:`, error);
