@@ -11,8 +11,8 @@ const NewListing = () => {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [img, setImage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [user, setUser] = useState("")
 
   const productCategories = [
     { id: 1, name: "Academic Materials" },
@@ -50,7 +50,10 @@ const NewListing = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    const token = sessionStorage.getItem("token")
+    const parsedInfo = JSON.parse(token)
+    setUser(parsedInfo.name)
+
     try {
       const formData = new FormData();
       formData.append('name', name);
@@ -61,6 +64,7 @@ const NewListing = () => {
       if (selectedFile) {
         formData.append('image', selectedFile);
       }
+      formData.append('user', user);
 
       // Choose endpoint based on type
       const endpoint = type === 'product' ? 'products' : 'services';
@@ -84,7 +88,7 @@ const NewListing = () => {
       setPrice(0);
       setQuantity(0);
       setSelectedCategories([]);
-      setSelectedFile(null);
+      setSelectedFile();
 
     } catch (error) {
       console.error(`Error creating ${type}:`, error);

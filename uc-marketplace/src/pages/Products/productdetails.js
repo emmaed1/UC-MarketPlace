@@ -33,7 +33,8 @@ const ProductDetails = (props) => {
       <div className="product-details">
         <div className="product-image">
           <img
-            src={'/'+product.img} key={id}
+            src={"/" + product.img}
+            key={id}
             alt={
               product ? `${product.name} Image` : "Product Image Not Available"
             }
@@ -44,8 +45,8 @@ const ProductDetails = (props) => {
             <>
               <h2 className="product-title">{product.name}</h2>
               <p>{product.desc}</p>
-              <p  className="product-categories">
-                  {product.categories && product.categories.length
+              <p className="product-categories">
+                {product.categories && product.categories.length
                   ? product.categories.map((c) => c.name).join(", ")
                   : "No Category"}
               </p>
@@ -59,23 +60,19 @@ const ProductDetails = (props) => {
               </button>
               <div>
                 <div class="seller-info">
-                  <img
+                  {/* <img
                     src="path_to_seller_profile_image.jpg"
                     alt="Seller Profile Image"
                     class="seller-profile-img"
-                  />
+                  /> */}
                   <div class="seller-details">
-                    <a href="/account-view" class="seller-name">
-                      Seller Name
-                    </a>
-                    <p class="seller-description">
-                      Specializing in [product type or category the seller
-                      specializes in]
+                    <p>
+                      Seller: {product.userName}
                     </p>
                   </div>
                 </div>
               </div>
-              <Link to="/message-seller" className="message-button">
+              <Link to="/chatpage" className="message-button">
                 Message the Seller
               </Link>
 
