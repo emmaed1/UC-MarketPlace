@@ -3,7 +3,7 @@ INSERT INTO "ProductCategory" (name) VALUES
   ('Academic Materials'),
   ('Home Essentials'),
   ('Clothing'),
-  ('Accesories'),
+  ('Accessories'),
   ('Technology & Electronics'),
   ('Food & Beverage'),
   ('Entertainment'),
