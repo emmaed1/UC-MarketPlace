@@ -63,14 +63,14 @@ const ProductDetails = (props) => {
                 {isAdded ? "Added" : "Add to cart"}
               </button>
               <div>
-                <div class="seller-info">
+                <div class="provider-info">
                   {/* <img
                     src="path_to_seller_profile_image.jpg"
                     alt="Seller Profile Image"
                     class="seller-profile-img"
                   /> */}
-                  <div class="seller-details">
-                    <p className="seller-name">
+                  <div class="provider-details">
+                    <p className="provider-name">
                       Seller:{" "}
                       {product.user?.name || "Seller Name Not Available"}
                     </p>

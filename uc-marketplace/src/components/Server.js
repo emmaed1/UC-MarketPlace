@@ -372,6 +372,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
     const result = await prisma.product.create({
       data,
       include: {
+        user: true,
         categories: true
       }
     });
@@ -395,7 +396,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
 app.post("/services", upload.single('image'), async (req, res) => {
   try {
     console.log('Service creation attempt:', req.body);
-    const { name, desc, price, quantity, categoryIds } = req.body;
+    const { name, desc, price, quantity, categoryIds, userId } = req.body;
     
     // Validate price
     const parsedPrice = parseFloat(price);
@@ -428,6 +429,7 @@ app.post("/services", upload.single('image'), async (req, res) => {
       quantity: parseInt(quantity),
       rating: 0,
       img,
+      user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
         connect: categories
       }
@@ -438,6 +440,7 @@ app.post("/services", upload.single('image'), async (req, res) => {
     const result = await prisma.service.create({
       data,
       include: {
+        user: true,
         categories: true
       }
     });
@@ -461,7 +464,8 @@ app.get("/products", async (req, res) => {
   try {
 
     const products = await prisma.product.findMany({
-      include: { 
+      include: {
+        user: true,
         categories: true,
       },
     });
@@ -505,6 +509,7 @@ app.get("/services", async (req, res) => {
   try {
     const services = await prisma.service.findMany({
       include: {
+        user: true,
         categories: true,
       },
     });
@@ -520,6 +525,7 @@ app.get("/services/:serviceId", async (req, res) => {
     const services = await prisma.service.findUnique({
       where: { serviceId: serviceId },
       include: {
+        user: true,
         categories: true,
       },
     });

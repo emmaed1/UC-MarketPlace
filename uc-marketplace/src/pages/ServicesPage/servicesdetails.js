@@ -24,6 +24,10 @@ const ServiceDetails = (props) => {
           });
       }, [id]);
 
+        useEffect(() => {
+          console.log(service);
+        });
+
     return (
         <div>
             <div className="service-details">
@@ -54,10 +58,10 @@ const ServiceDetails = (props) => {
                             </button>
 
                             <div className="provider-info">
-                                <img src="path_to_provider_profile_image.jpg" alt="Provider Profile Image" className="provider-profile-img" />
+                                {/* <img src="path_to_provider_profile_image.jpg" alt="Profile Image" className="provider-profile-img" /> */}
                                 <div className="provider-details">
-                                    <a href="/account-view" className="provider-name">Provider Name</a> 
-                                    <p className="provider-description">Specializing in [service type or category the provider specializes in]</p>
+                                    <p href="/account-view" className="provider-name">Seller:{" "}
+                                    {service.user?.name || "Seller Name Not Available"}</p> 
                                 </div>
                             </div>
 
