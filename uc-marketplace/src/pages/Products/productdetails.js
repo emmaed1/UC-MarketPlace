@@ -59,11 +59,11 @@ const ProductDetails = (props) => {
               </button>
               <div>
                 <div class="seller-info">
-                  <img
+                  {/* <img
                     src="path_to_seller_profile_image.jpg"
                     alt="Seller Profile Image"
                     class="seller-profile-img"
-                  />
+                  /> */}
                   <div class="seller-details">
                     <a href="/account-view" class="seller-name">
                       Seller Name

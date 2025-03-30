@@ -349,7 +349,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
       }
     }
 
-    const { name, desc, price, quantity, categoryIds } = req.body;
+    const { name, desc, price, quantity, categoryIds, userId } = req.body;
     
     // Parse category IDs
     const parsedCategoryIds = JSON.parse(categoryIds).map(id => parseInt(id));
@@ -361,6 +361,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
       quantity: parseInt(quantity),
       rating: 0,
       img: req.file ? `/uploads/${req.file.filename}` : null,
+      user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
         connect: parsedCategoryIds.map(id => ({ id }))
       }
