@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { data, Link, useParams } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import "./products.css";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
@@ -28,12 +28,17 @@ const ProductDetails = (props) => {
       });
   }, [id]);
 
+  useEffect(() => {
+    console.log(product);
+  });
+
   return (
     <div>
       <div className="product-details">
         <div className="product-image">
           <img
-            src={'/'+product.img} key={id}
+            src={"/" + product.img}
+            key={id}
             alt={
               product ? `${product.name} Image` : "Product Image Not Available"
             }
@@ -44,8 +49,8 @@ const ProductDetails = (props) => {
             <>
               <h2 className="product-title">{product.name}</h2>
               <p>{product.desc}</p>
-              <p  className="product-categories">
-                  {product.categories && product.categories.length
+              <p className="product-categories">
+                {product.categories && product.categories.length
                   ? product.categories.map((c) => c.name).join(", ")
                   : "No Category"}
               </p>
@@ -65,12 +70,9 @@ const ProductDetails = (props) => {
                     class="seller-profile-img"
                   /> */}
                   <div class="seller-details">
-                    <a href="/account-view" class="seller-name">
-                      Seller Name
-                    </a>
-                    <p class="seller-description">
-                      Specializing in [product type or category the seller
-                      specializes in]
+                    <p className="seller-name">
+                      Seller:{" "}
+                      {product.user?.name || "Seller Name Not Available"}
                     </p>
                   </div>
                 </div>
