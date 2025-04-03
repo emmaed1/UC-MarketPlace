@@ -4,12 +4,21 @@ import "./products.css";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
 const ProductDetails = (props) => {
-  const { id } = useParams();
+  const { id, } = useParams();
+  const {img, desc, name, price, categories } = props
   const { addItem } = useContext(cartContext);
   const [product, getProduct] = useState([]);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
-    const item = { ...props };
+    const item = {
+      id: id,
+      name: name,
+      price: price,
+      img: img,
+      quantity: 1,
+      desc: desc,
+      categories: categories
+     };
     addItem(item);
 
     setIsAdded(true);
@@ -37,7 +46,7 @@ const ProductDetails = (props) => {
       <div className="product-details">
         <div className="product-image">
           <img
-            src={"/" + product.img}
+            src={product.img}
             key={id}
             alt={
               product ? `${product.name} Image` : "Product Image Not Available"
