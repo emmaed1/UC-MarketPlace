@@ -33,7 +33,7 @@ const ServiceDetails = (props) => {
             <div className="service-details">
                 <div className="service-image">
                     <img 
-                        src={'/'+service.img} key={id}
+                        src={service.img} key={id}
                         alt={service ? `${service.name} Image` : "Service Image Not Available"} 
                     />
                 </div>
