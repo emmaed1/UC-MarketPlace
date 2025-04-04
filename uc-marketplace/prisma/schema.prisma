@@ -18,6 +18,8 @@ model User {
   friendOf          User[]    @relation("UserFriends")
   favoriteFriends   User[]    @relation("UserFavorites")
   favoritedBy       User[]    @relation("UserFavorites")
+  products          Product[] @relation("UserProducts")
+  services          Service[] @relation("UserServices")
 }
 
 model Product {
@@ -29,6 +31,8 @@ model Product {
   rating     Float?
   img        String?
   categories ProductCategory[] @relation("ProductToProductCategory")
+  userId     Int?
+  user       User?             @relation("UserProducts", fields: [userId], references: [id])
 }
 
 model ProductCategory {
@@ -46,6 +50,8 @@ model Service {
   rating     Float?
   img        String?
   categories ServiceCategory[] @relation("ServiceToServiceCategory")
+  userId     Int?
+  user       User?             @relation("UserServices", fields: [userId], references: [id])
 }
 
 model ServiceCategory {

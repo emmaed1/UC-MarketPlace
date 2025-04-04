@@ -1,15 +1,24 @@
-import { Link, useParams } from "react-router-dom";
+import { data, Link, useParams } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import "./products.css";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
 const ProductDetails = (props) => {
-  const { id } = useParams();
+  const { id, } = useParams();
+  const {img, desc, name, price, categories } = props
   const { addItem } = useContext(cartContext);
   const [product, getProduct] = useState([]);
   const [isAdded, setIsAdded] = useState(false);
   const handleAddToCart = () => {
-    const item = { ...props };
+    const item = {
+      id: id,
+      name: name,
+      price: price,
+      img: img,
+      quantity: 1,
+      desc: desc,
+      categories: categories
+     };
     addItem(item);
 
     setIsAdded(true);
@@ -28,12 +37,17 @@ const ProductDetails = (props) => {
       });
   }, [id]);
 
+  useEffect(() => {
+    console.log(product);
+  });
+
   return (
     <div>
       <div className="product-details">
         <div className="product-image">
           <img
-            src={'/'+product.img} key={id}
+            src={product.img}
+            key={id}
             alt={
               product ? `${product.name} Image` : "Product Image Not Available"
             }
@@ -44,8 +58,8 @@ const ProductDetails = (props) => {
             <>
               <h2 className="product-title">{product.name}</h2>
               <p>{product.desc}</p>
-              <p  className="product-categories">
-                  {product.categories && product.categories.length
+              <p className="product-categories">
+                {product.categories && product.categories.length
                   ? product.categories.map((c) => c.name).join(", ")
                   : "No Category"}
               </p>
@@ -58,19 +72,16 @@ const ProductDetails = (props) => {
                 {isAdded ? "Added" : "Add to cart"}
               </button>
               <div>
-                <div class="seller-info">
-                  <img
+                <div class="provider-info">
+                  {/* <img
                     src="path_to_seller_profile_image.jpg"
                     alt="Seller Profile Image"
                     class="seller-profile-img"
-                  />
-                  <div class="seller-details">
-                    <a href="/account-view" class="seller-name">
-                      Seller Name
-                    </a>
-                    <p class="seller-description">
-                      Specializing in [product type or category the seller
-                      specializes in]
+                  /> */}
+                  <div class="provider-details">
+                    <p className="provider-name">
+                      Seller:{" "}
+                      {product.user?.name || "Seller Name Not Available"}
                     </p>
                   </div>
                 </div>

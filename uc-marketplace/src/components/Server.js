@@ -39,7 +39,7 @@ if (!fs.existsSync('public/uploads')) {
 
 app.use(express.json());
 app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 const server = http.createServer(app);
 
@@ -349,7 +349,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
       }
     }
 
-    const { name, desc, price, quantity, categoryIds } = req.body;
+    const { name, desc, price, quantity, categoryIds, userId } = req.body;
     
     // Parse category IDs
     const parsedCategoryIds = JSON.parse(categoryIds).map(id => parseInt(id));
@@ -361,6 +361,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
       quantity: parseInt(quantity),
       rating: 0,
       img: req.file ? `/uploads/${req.file.filename}` : null,
+      user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
         connect: parsedCategoryIds.map(id => ({ id }))
       }
@@ -371,6 +372,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
     const result = await prisma.product.create({
       data,
       include: {
+        user: true,
         categories: true
       }
     });
@@ -394,7 +396,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
 app.post("/services", upload.single('image'), async (req, res) => {
   try {
     console.log('Service creation attempt:', req.body);
-    const { name, desc, price, quantity, categoryIds } = req.body;
+    const { name, desc, price, quantity, categoryIds, userId } = req.body;
     
     // Validate price
     const parsedPrice = parseFloat(price);
@@ -427,6 +429,7 @@ app.post("/services", upload.single('image'), async (req, res) => {
       quantity: parseInt(quantity),
       rating: 0,
       img,
+      user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
         connect: categories
       }
@@ -437,6 +440,7 @@ app.post("/services", upload.single('image'), async (req, res) => {
     const result = await prisma.service.create({
       data,
       include: {
+        user: true,
         categories: true
       }
     });
@@ -460,7 +464,8 @@ app.get("/products", async (req, res) => {
   try {
 
     const products = await prisma.product.findMany({
-      include: { 
+      include: {
+        user: true,
         categories: true,
       },
     });
@@ -477,6 +482,7 @@ app.get("/products/:productId", async (req, res) => {
     const product = await prisma.product.findUnique({
       where: { productId: productId },
       include: {
+        user: true,
         categories: true,
       },
     });
@@ -503,6 +509,7 @@ app.get("/services", async (req, res) => {
   try {
     const services = await prisma.service.findMany({
       include: {
+        user: true,
         categories: true,
       },
     });
@@ -518,6 +525,7 @@ app.get("/services/:serviceId", async (req, res) => {
     const services = await prisma.service.findUnique({
       where: { serviceId: serviceId },
       include: {
+        user: true,
         categories: true,
       },
     });
