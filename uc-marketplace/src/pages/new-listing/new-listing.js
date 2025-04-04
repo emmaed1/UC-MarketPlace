@@ -1,7 +1,7 @@
 import "./new-listing.css";
 import logo from "../../assets/uc-MP-logo.png";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const NewListing = () => {
@@ -13,6 +13,17 @@ const NewListing = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [img, setImage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [userId, SetUserId] = useState();
+
+  useEffect(() => {
+    const accountInfo = sessionStorage.getItem("token");
+    if (accountInfo) {
+      const parsedInfo = JSON.parse(accountInfo);
+      const userId = parsedInfo.id
+      console.log(userId)
+      SetUserId(userId);
+    }
+  }, []);
 
   const productCategories = [
     { id: 1, name: "Academic Materials" },
@@ -58,6 +69,7 @@ const NewListing = () => {
       formData.append('price', price);
       formData.append('quantity', quantity);
       formData.append('categoryIds', JSON.stringify(selectedCategories));
+      formData.append('userId', JSON.stringify(userId))
       if (selectedFile) {
         formData.append('image', selectedFile);
       }

@@ -184,15 +184,16 @@
 }
 
 .product-button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #000000;
-  border-radius: 6px;
+  color: #fff;
+  background-color: #e00122;
+  text-align: center;
   text-decoration: none;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease-in-out;
+  display: inline-block;
+  border: none;
 }
 
 .product-button:hover {
@@ -206,13 +207,14 @@
 }
 
 .cart-button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #000000;
-  border-radius: 6px;
+  color: #fff;
+  background-color: #e00122;
+  text-align: center;
   text-decoration: none;
-  transition: background-color 0.3s ease-in
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease-in-out;
+  display: inline-block;
+  border: none;
 }
