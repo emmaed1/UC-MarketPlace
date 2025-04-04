@@ -1,57 +1,53 @@
-import { data, Link, useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import "./products.css";
 import cartContext from "../../components/ShoppingCart/Context/CartContext";
 
-const ProductDetails = (props) => {
-  const { id, } = useParams();
-  const {img, desc, name, price, categories } = props
+const ProductDetails = () => {
+  const { id } = useParams();
   const { addItem } = useContext(cartContext);
-  const [product, getProduct] = useState([]);
+  const [product, setProduct] = useState(null); // Initialize as null
   const [isAdded, setIsAdded] = useState(false);
+
   const handleAddToCart = () => {
-    const item = {
-      id: id,
-      name: name,
-      price: price,
-      img: img,
-      quantity: 1,
-      desc: desc,
-      categories: categories
-     };
-    addItem(item);
-
-    setIsAdded(true);
-
-    setTimeout(() => {
-      setIsAdded(false);
-    }, 3000);
+    if (product) {
+      const item = {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        quantity: 1,
+        desc: product.desc,
+        categories: product.categories,
+      };
+      addItem(item);
+      setIsAdded(true);
+      setTimeout(() => {
+        setIsAdded(false);
+      }, 3000);
+    }
   };
 
   useEffect(() => {
     fetch(`http://localhost:3001/products/${id}`, { method: "GET" })
       .then((res) => res.json())
-      .then((data) => getProduct(data))
+      .then((data) => setProduct(data))
       .catch((err) => {
-        console.log("Error getting products", err);
+        console.error("Error getting product", err);
+        setProduct(null); // Set product to null on error
       });
   }, [id]);
-
-  useEffect(() => {
-    console.log(product);
-  });
 
   return (
     <div>
       <div className="product-details">
         <div className="product-image">
-          <img
-            src={product.img}
-            key={id}
-            alt={
-              product ? `${product.name} Image` : "Product Image Not Available"
-            }
-          />
+          {product && (
+            <img
+              src={product.img}
+              alt={product.name ? `${product.name} Image` : "Product Image"}
+            />
+          )}
         </div>
         <div className="product-description">
           {product ? (
@@ -72,16 +68,10 @@ const ProductDetails = (props) => {
                 {isAdded ? "Added" : "Add to cart"}
               </button>
               <div>
-                <div class="provider-info">
-                  {/* <img
-                    src="path_to_seller_profile_image.jpg"
-                    alt="Seller Profile Image"
-                    class="seller-profile-img"
-                  /> */}
-                  <div class="provider-details">
+                <div className="provider-info">
+                  <div className="provider-details">
                     <p className="provider-name">
-                      Seller:{" "}
-                      {product.user?.name || "Seller Name Not Available"}
+                      Seller: {product.user?.name || "Seller Name Not Available"}
                     </p>
                   </div>
                 </div>
@@ -89,11 +79,10 @@ const ProductDetails = (props) => {
               <Link to="/message-seller" className="message-button">
                 Message the Seller
               </Link>
-
               <Link to="/products" className="product-button">
                 Back to Products
               </Link>
-            </> /*Link to seller will link to the buyer's view of the account page where the edit/add productbutons are unavailble. It should just show the seller's profile */
+            </>
           ) : (
             <div>
               <Link to="/products" className="product-button">
