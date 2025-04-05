@@ -110,6 +110,8 @@ const Checkout = () => {
     const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
+    const [useMeetingLocation, setUseMeetingLocation] = useState(false); // New state
+    const [meetingLocation, setMeetingLocation] = useState(""); // New state
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -160,7 +162,14 @@ const Checkout = () => {
     };
 
     const handleSubmitOrder = () => {
-        if (paymentSuccess) {
+        if (useMeetingLocation) {
+            if (!meetingLocation.trim()) {
+                alert("Please provide a meeting location.");
+                return;
+            }
+            setPopupMessage("Order submitted successfully with meeting location!");
+            setShowPopup(true);
+        } else if (paymentSuccess) {
             setPopupMessage("Order submitted successfully!");
             setShowPopup(true);
         } else {
@@ -170,7 +179,7 @@ const Checkout = () => {
 
     const closePopup = () => {
         setShowPopup(false);
-        if (paymentSuccess) {
+        if (paymentSuccess || useMeetingLocation) {
             clearCart();
             const formattedItems = cartData.items.map(item => ({
                 title: item.name,
@@ -182,7 +191,8 @@ const Checkout = () => {
                 state: {
                     cartItems: formattedItems,
                     cartTotal: cartData.total,
-                    paymentMethod: "Credit Card"
+                    paymentMethod: useMeetingLocation ? "Meeting Location" : "Credit Card",
+                    meetingLocation: useMeetingLocation ? meetingLocation : null
                 },
             });
         }
@@ -233,41 +243,75 @@ const Checkout = () => {
             React.createElement('p', { className: 'cart-total' }, `$${cartData.total.toFixed(2)}`)
         ),
         React.createElement(
-            'div',
-            { className: 'payment-section' },
-            React.createElement('h3', null, 'Payment Method'),
-            paymentSuccess && React.createElement(
+    'div',
+    { className: 'toggle-switch' },
+    React.createElement('span', { className: 'option-label option-label-left' }, 'Stripe Payment'),
+    React.createElement(
+        'div',
+        { className: 'toggle-switch' },
+        React.createElement('span', { className: 'option-label option-label-left' }, 'Stripe Payment'),
+        React.createElement(
+            'label',
+            { className: 'toggle-switch' },
+            React.createElement('input', {
+                type: 'checkbox',
+                checked: useMeetingLocation,
+                onChange: () => setUseMeetingLocation(!useMeetingLocation)
+            }),
+            React.createElement('span', { className: 'slider' })
+        ),
+        React.createElement('span', { className: 'option-label option-label-right' }, 'Meeting Location')
+    )
+        ),
+        useMeetingLocation
+            ? React.createElement(
                 'div',
-                { className: 'payment-status' },
-                React.createElement('p', null, 
-                    React.createElement('span', { className: 'status-label' }, 'Status: '),
-                    React.createElement('span', { className: 'status-value success' }, 'Payment Method Saved ✓')
-                ),
-                React.createElement('p', null, 
-                    React.createElement('span', { className: 'method-label' }, 'Method: '),
-                    React.createElement('span', { className: 'method-value' }, 'Credit Card')
-                )
-            ),
-            React.createElement(
-                'button',
-                { 
-                    onClick: handleEditPayment, 
-                    disabled: paymentIntentLoading,
-                    className: paymentSuccess ? 'edit-button' : 'primary-button'
-                },
-                paymentIntentLoading ? 'Loading...' : (paymentSuccess ? 'Change Payment Method' : 'Add Payment Method')
-            ),
-            paymentIntentError && React.createElement('p', { style: { color: 'red' } }, paymentIntentError),
-            showPaymentModal && clientSecret && React.createElement(
-                Elements,
-                { stripe: stripePromise, options: { clientSecret } },
-                React.createElement(PaymentForm, {
-                    clientSecret: clientSecret,
-                    onClosePaymentModal: handlePaymentSuccess,
-                    onCancel: handleClosePaymentModal
+                { className: 'meeting-location-section' },
+                React.createElement('h3', null, 'Meeting Location'),
+                React.createElement('input', {
+                    type: 'text',
+                    value: meetingLocation,
+                    onChange: (e) => setMeetingLocation(e.target.value),
+                    placeholder: 'Enter meeting location',
+                    className: 'meeting-location-input'
                 })
             )
-        ),
+            : React.createElement(
+                'div',
+                { className: 'payment-section' },
+                React.createElement('h3', null, 'Payment Method'),
+                paymentSuccess && React.createElement(
+                    'div',
+                    { className: 'payment-status' },
+                    React.createElement('p', null, 
+                        React.createElement('span', { className: 'status-label' }, 'Status: '),
+                        React.createElement('span', { className: 'status-value success' }, 'Payment Method Saved ✓')
+                    ),
+                    React.createElement('p', null, 
+                        React.createElement('span', { className: 'method-label' }, 'Method: '),
+                        React.createElement('span', { className: 'method-value' }, 'Credit Card')
+                    )
+                ),
+                React.createElement(
+                    'button',
+                    { 
+                        onClick: handleEditPayment, 
+                        disabled: paymentIntentLoading,
+                        className: paymentSuccess ? 'edit-button' : 'primary-button'
+                    },
+                    paymentIntentLoading ? 'Loading...' : (paymentSuccess ? 'Change Payment Method' : 'Add Payment Method')
+                ),
+                paymentIntentError && React.createElement('p', { style: { color: 'red' } }, paymentIntentError),
+                showPaymentModal && clientSecret && React.createElement(
+                    Elements,
+                    { stripe: stripePromise, options: { clientSecret } },
+                    React.createElement(PaymentForm, {
+                        clientSecret: clientSecret,
+                        onClosePaymentModal: handlePaymentSuccess,
+                        onCancel: handleClosePaymentModal
+                    })
+                )
+            ),
         React.createElement(
             'button',
             { className: 'submit-button', onClick: handleSubmitOrder },
