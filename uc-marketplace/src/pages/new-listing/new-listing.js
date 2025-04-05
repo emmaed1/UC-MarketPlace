@@ -14,6 +14,7 @@ const NewListing = () => {
   const [img, setImage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [userId, SetUserId] = useState();
+  const [availability, setAvailability] = useState([]);
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -59,6 +60,52 @@ const NewListing = () => {
     );
   };
 
+  const AvailabilitySelector = () => {
+    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const timeSlots = [
+      "9:00 AM", "10:00 AM", "11:00 AM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"
+    ];
+
+    const handleAvailabilityChange = (day, time, isChecked) => {
+      setAvailability(prev => {
+        if (isChecked) {
+          return [...prev, { day, time }];
+        } else {
+          return prev.filter(slot => !(slot.day === day && slot.time === time));
+        }
+      });
+    };
+
+    return (
+      <div className="availability-selector">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              {daysOfWeek.map(day => <th key={day}>{day}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {timeSlots.map(time => (
+              <tr key={time}>
+                <td>{time}</td>
+                {daysOfWeek.map(day => (
+                  <td key={`${day}-${time}`}>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => handleAvailabilityChange(day, time, e.target.checked)}
+                      checked={availability.some(slot => slot.day === day && slot.time === time)}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -69,7 +116,10 @@ const NewListing = () => {
       formData.append('price', price);
       formData.append('quantity', quantity);
       formData.append('categoryIds', JSON.stringify(selectedCategories));
-      formData.append('userId', JSON.stringify(userId))
+      formData.append('userId', JSON.stringify(userId));
+      if (type === 'service') {
+        formData.append('availability', JSON.stringify(availability));
+      }
       if (selectedFile) {
         formData.append('image', selectedFile);
       }
@@ -201,6 +251,13 @@ const NewListing = () => {
               ))}
             </div>
           </div>
+
+          {type === 'service' && (
+            <div className="form-group">
+              <label>Set Your Availability:</label>
+              <AvailabilitySelector />
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="photos">Upload Photos:</label>
