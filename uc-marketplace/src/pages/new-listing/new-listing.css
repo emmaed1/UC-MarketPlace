@@ -73,3 +73,27 @@
 .submit-button:hover {
   background-color: #c0001b;
 }
+.availability-selector {
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+.availability-selector table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.availability-selector th,
+.availability-selector td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.availability-selector th {
+  background-color: #f4f4f4;
+}
+
+.availability-selector input[type="checkbox"] {
+  transform: scale(1.2);
+}

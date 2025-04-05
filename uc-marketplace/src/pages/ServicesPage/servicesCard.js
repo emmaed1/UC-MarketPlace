@@ -1,15 +1,27 @@
-// servicesCard.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import BookingCalendar from "./BookingCalender";
+import BookingCalendar from "./BookingCalender"; 
 import "./Services.css";
 
 const ServicesCard = (props) => {
   const { serviceId, name, desc, rating, price, img, categories } = props;
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
+  
+  const serviceAvailability = [
+    { day: "Monday", time: "9:00 AM" },
+    { day: "Monday", time: "10:00 AM" },
+    { day: "Wednesday", time: "1:00 PM" },
+    { day: "Friday", time: "3:00 PM" },
+  ];
+
   const handleCloseCalendar = () => {
     setIsCalendarOpen(false);
+  };
+
+  const handleBookingConfirm = (bookingDetails) => {
+    console.log("Booking confirmed:", bookingDetails);
+    // Handle booking confirmation
   };
 
   return (
@@ -38,7 +50,14 @@ const ServicesCard = (props) => {
 
       {isCalendarOpen && (
         <div className="calendar-modal">
-          <BookingCalendar onClose={handleCloseCalendar} />
+          <div className="calendar-modal-content">
+            <button className="close-button" onClick={handleCloseCalendar}>×</button>
+            <BookingCalendar 
+              onClose={handleCloseCalendar} 
+              onBookingConfirm={handleBookingConfirm}
+              serviceAvailability={serviceAvailability} 
+            />
+          </div>
         </div>
       )}
     </div>

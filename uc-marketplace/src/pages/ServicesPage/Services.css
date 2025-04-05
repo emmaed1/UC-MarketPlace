@@ -266,3 +266,331 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in
 }
+/* Reset and box-sizing for consistent layout */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Container */
+.sleek-booking-calendar {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #2d3748;
+  width: 100%;
+  max-width: 500px; /* Constrain width for better layout */
+  margin: 0 auto;
+  background-color: #f8fafc;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+/* Header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  background-color: #edf2f7;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.calendar-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1a202c;
+}
+
+.calendar-availability-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #4a5568;
+  background-color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.availability-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #3182ce;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* Calendar core styles */
+.sleek-calendar {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
+}
+
+/* Calendar nav */
+.sleek-calendar .react-calendar__navigation {
+  display: flex;
+  margin-bottom: 0.75rem;
+  background-color: #edf2f7;
+  border-radius: 6px;
+  padding: 0.25rem;
+}
+
+.sleek-calendar .react-calendar__navigation button {
+  min-width: 32px;
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  color: #4a5568;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 0.1rem;
+  transition: 0.2s ease;
+}
+
+.sleek-calendar .react-calendar__navigation__label {
+  font-weight: 600;
+  color: #1a202c;
+  font-size: 0.9rem;
+  padding: 0.25rem;
+  background-color: #fff;
+}
+
+/* Weekday headers */
+.sleek-calendar .react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.65rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  background-color: #edf2f7;
+  border-radius: 6px;
+  padding: 0.25rem 0;
+}
+
+.sleek-calendar .react-calendar__month-view__weekdays__weekday {
+  padding: 0.25rem 0;
+}
+
+/* Calendar days */
+.sleek-calendar .react-calendar__month-view__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  background-color: #f8fafc;
+  padding: 0.25rem;
+  border-radius: 6px;
+}
+
+.sleek-calendar .react-calendar__tile {
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  padding: 0.5rem;
+  word-wrap: break-word;
+}
+
+.sleek-calendar .react-calendar__tile:disabled {
+  background-color: #f1f5f9;
+  color: #a0aec0;
+}
+
+.sleek-calendar .react-calendar__tile.available-day:enabled::after {
+  content: '';
+  display: block;
+  margin: 4px auto 0;
+  width: 3px;
+  height: 3px;
+  background-color: #3182ce;
+  border-radius: 50%;
+}
+
+.sleek-calendar .react-calendar__tile--active {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.4);
+}
+
+.sleek-calendar .react-calendar__tile--now {
+  border: 2px solid #3b82f6;
+  font-weight: bold;
+}
+
+/* Time selection */
+.time-selection-container {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+.time-selection-container h3 {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  background-color: #edf2f7;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.date-indicator {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  font-size: 0.75rem;
+  background-color: #2563eb;
+  color: white;
+  text-align: center;
+  line-height: 32px;
+  border-radius: 50%;
+}
+
+.date-text {
+  font-size: 0.8rem;
+}
+
+.time-selection-prompt {
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+  color: #4a5568;
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.time-slots-container {
+  margin-bottom: 0.75rem;
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+.time-slot {
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.time-slot:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.time-slot.selected {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.no-slots-message {
+  padding: 1rem 0;
+  font-size: 0.8rem;
+  background-color: #f1f5f9;
+  border-radius: 6px;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Booking summary */
+.booking-summary {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: #edf2f7;
+  border: 1px solid #cbd5e1;
+}
+
+.booking-summary h4 {
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+  color: #1e293b;
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.summary-details {
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.summary-item {
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.summary-label {
+  width: 50px;
+  color: #475569;
+}
+
+.summary-value {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.confirm-button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirm-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .sleek-calendar {
+    padding: 0.5rem;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+  }
+
+  .sleek-calendar .react-calendar__tile {
+    font-size: 0.65rem;
+    padding: 0.3rem;
+  }
+
+  .calendar-header h3 {
+    font-size: 0.85rem;
+  }
+
+  .date-indicator {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+    line-height: 28px;
+  }
+}
