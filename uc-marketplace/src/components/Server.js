@@ -698,6 +698,53 @@ app.post("/user/refresh-token", async (req, res) => {
   }
 });
 
+// Endpoint to fetch user-specific products
+app.get("/api/listings/products", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+      const decoded = jwt.verify(token, JWT_SECRET); // Replace JWT_SECRET
+      const userId = decoded.userId;
+
+      const products = await prisma.product.findMany({
+          where: {
+              userId: userId,
+          },
+          include: {
+              user: true,
+              categories: true,
+          },
+      });
+      res.status(200).json(products);
+  } catch (error) {
+      console.error("Error getting seller products:", error);
+      res.status(401).json({ error: "Unauthorized", details: error.message });
+  }
+});
+
+app.get("/api/listings/services", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+      const decoded = jwt.verify(token, JWT_SECRET); // Replace JWT_SECRET
+      const userId = decoded.userId;
+
+      const services = await prisma.service.findMany({
+          where: {
+              userId: userId,
+          },
+      });
+      res.status(200).json(services);
+  } catch (error) {
+      console.error("Error getting seller services:", error);
+      res.status(401).json({ error: "Unauthorized", details: error.message });
+  }
+});
+
 app.get("/favorites/:accountName", async (req, res) => {
   const accountName = req.params.accountName;
   try {
