@@ -805,6 +805,10 @@ app.get("/api/listings/services", async (req, res) => {
           where: {
               userId: userId,
           },
+          include: {
+              user: true,
+              categories: true,
+          },
       });
       res.status(200).json(services);
   } catch (error) {

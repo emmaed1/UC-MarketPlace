@@ -14,6 +14,8 @@ const ListingProductCard = ({ productId, name, desc, price, img, categories, onP
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [status, setStatus] = useState("available");
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -159,6 +161,15 @@ const ListingProductCard = ({ productId, name, desc, price, img, categories, onP
     }
   };
 
+  const toggleStatusDropdown = () => {
+    setIsStatusDropdownOpen(!isStatusDropdownOpen);
+  };
+
+  const handleStatusChange = (newStatus) => {
+    setStatus(newStatus);
+    setIsStatusDropdownOpen(false);
+  };
+
   return (
     <div className="listing-card">
       {isEditing ? (
@@ -260,7 +271,36 @@ const ListingProductCard = ({ productId, name, desc, price, img, categories, onP
           <div className="categories">
             {categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}
           </div>
-          <button className="edit-button" onClick={handleEdit}>Edit</button>
+          <div className="card-actions">
+            <button className="edit-button" onClick={handleEdit}>Edit</button>
+            <div className="status-dropdown-container">
+              <button className="status-button" onClick={toggleStatusDropdown}>
+                Status: {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+              {isStatusDropdownOpen && (
+                <div className="status-dropdown">
+                  <div 
+                    className={`status-option ${status === "available" ? "active" : ""}`}
+                    onClick={() => handleStatusChange("available")}
+                  >
+                    Available
+                  </div>
+                  <div 
+                    className={`status-option ${status === "pending" ? "active" : ""}`}
+                    onClick={() => handleStatusChange("pending")}
+                  >
+                    Pending
+                  </div>
+                  <div 
+                    className={`status-option ${status === "sold" ? "active" : ""}`}
+                    onClick={() => handleStatusChange("sold")}
+                  >
+                    Sold
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </>
       )}
     </div>
@@ -409,12 +449,12 @@ export default function MyListingsTab({ userId }) {
         );
     };
 
+    if (loading) return <div className="loading">Loading...</div>;
+    if (error) return <div className="error">{error}</div>;
+
     return (
         <div className="my-listings-tab">
             <h2>My Listings</h2>
-
-            {loading && <p>Loading...</p>}
-            {error && <p className="error-message">{error}</p>}
 
             {mainView === "all" && (
                 <>
@@ -437,9 +477,6 @@ export default function MyListingsTab({ userId }) {
                         <button onClick={() => handleViewChange("all")}>Back</button>
                         <button onClick={() => setSubView("all_products")}>All Products</button>
                         <button onClick={() => setSubView("orders")}>Orders</button>
-                        <button onClick={() => setSubView("available")}>Available</button>
-                        <button onClick={() => setSubView("pending")}>Pending</button>
-                        <button onClick={() => setSubView("sold")}>Sold</button>
                     </div>
                     <div className="listing-content">
                         {subView === "all_products" && (
@@ -458,9 +495,6 @@ export default function MyListingsTab({ userId }) {
                             </div>
                         )}
                         {subView === "orders" && (<ul><li>Order 1</li><li>Order 2</li></ul>)}
-                        {subView === "available" && (<ul><li>Available Product 1</li><li>Available Product 2</li></ul>)}
-                        {subView === "pending" && (<ul><li>Pending Product 1</li><li>Pending Product 2</li></ul>)}
-                        {subView === "sold" && (<ul><li>Sold Product 1</li><li>Sold Product 2</li></ul>)}
                     </div>
                 </div>
             )}
