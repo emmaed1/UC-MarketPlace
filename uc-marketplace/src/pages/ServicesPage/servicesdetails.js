@@ -68,7 +68,7 @@ const ServiceDetails = (props) => {
               </div>
 
               {/* Message the Seller Button */}
-              <Link to="/message-seller" className="message-button">
+              <Link to={{pathname: "/account-view", search: `?sellerName=${service.user?.name || ""}`,}}className="message-button">
                 Message the Seller
               </Link>
               <Link to="/services" className="service-button">
