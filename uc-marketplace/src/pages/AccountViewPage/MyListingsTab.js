@@ -48,8 +48,24 @@ export default function MyListingsTab({ userId }) {
                 setLoading(true);
                 setError(null);
                 try {
+                    // Get the token from sessionStorage
+                    const accountInfo = sessionStorage.getItem("token");
+                    if (!accountInfo) {
+                        setError("Authentication token not found. Please log in again.");
+                        setLoading(false);
+                        return;
+                    }
+
+                    const parsedInfo = JSON.parse(accountInfo);
+                    const token = parsedInfo.token;
+                    
                     console.log("Fetching products for userId:", userId);
-                    const response = await fetch(`http://localhost:3001/api/listings/products?userId=${userId}`);
+                    const response = await fetch(`http://localhost:3001/api/listings/products`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
                     if (!response.ok) {
                         const errorData = await response.json();
                         setError(`Error fetching products. Status: ${response.status}. ${errorData?.error || 'Unknown error'}`);
@@ -76,8 +92,24 @@ export default function MyListingsTab({ userId }) {
                 setLoading(true);
                 setError(null);
                 try {
+                    // Get the token from sessionStorage
+                    const accountInfo = sessionStorage.getItem("token");
+                    if (!accountInfo) {
+                        setError("Authentication token not found. Please log in again.");
+                        setLoading(false);
+                        return;
+                    }
+
+                    const parsedInfo = JSON.parse(accountInfo);
+                    const token = parsedInfo.token;
+                    
                     console.log("Fetching services for userId:", userId);
-                    const response = await fetch(`http://localhost:3001/api/listings/services?userId=${userId}`);
+                    const response = await fetch(`http://localhost:3001/api/listings/services`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
                     if (!response.ok) {
                         const errorData = await response.json();
                         setError(`Error fetching services. Status: ${response.status}. ${errorData?.error || 'Unknown error'}`);
@@ -189,7 +221,7 @@ export default function MyListingsTab({ userId }) {
                                 )}
                             </div>
                         )}
-                        {subView === "bookings" && (<ul><li>Booking 1</li><li>Booking 2</li></ul>)}
+                        {subView === "bookings" && (<ul><li>Booking a</li><li>Booking 2</li></ul>)}
                     </div>
                 </div>
             )}
