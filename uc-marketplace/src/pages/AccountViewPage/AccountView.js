@@ -5,8 +5,8 @@ import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage";
 import FriendsTab from "./FriendsTab";
 import ProfilePage from "./ProfilePage";
-import SecurityTab from "./SecurityTab"; // Import the SecurityTab component
-import MyListingsTab from "./MyListingsTab"; // Import the MyListingsTab component
+import SecurityTab from "./SecurityTab";
+import MyListingsTab from "./MyListingsTab";
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -15,6 +15,8 @@ export default function AccountView() {
   const [accountName, setAccountName] = useState("");
   const [selectedChatUser, setSelectedChatUser] = useState(null);
   const [userData, setUserData] = useState({});
+  const [productView, setProductView] = useState("all");
+  const [serviceView, setServiceView] = useState("all");
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
@@ -23,7 +25,7 @@ export default function AccountView() {
       if (parsedInfo.name) {
         console.log(parsedInfo.name);
         setAccountName(parsedInfo.name);
-        setUserData(parsedInfo); // Store the entire user data
+        setUserData(parsedInfo);
       }
     }
   }, []);
@@ -50,6 +52,24 @@ export default function AccountView() {
     }));
     if (updatedUserData.name) {
       setAccountName(updatedUserData.name);
+    }
+  };
+
+  const handleProductViewChange = (view) => {
+    if (view === "all") {
+      setOption("My Listings");
+    } else {
+      setProductView(view);
+      setOption("Products");
+    }
+  };
+
+  const handleServiceViewChange = (view) => {
+    if (view === "all") {
+      setOption("My Services");
+    } else {
+      setServiceView(view);
+      setOption("Services");
     }
   };
 
@@ -111,32 +131,32 @@ export default function AccountView() {
         </ul>
       </div>
 
-      {/* Profile Section */}
       {option === "Profile" && (
         <ProfilePage accountName={accountName} userData={userData} onUserDataChange={handleUserDataChange} />
       )}
 
-      {/* Chat Section */}
       {option === "Messages" && (
         <div id="chat" className="content">
           <Chat accountName={accountName} selectedChatUser={selectedChatUser} />
         </div>
       )}
 
-      {/* Friends Section */}
       {option === "Friends" && (
         <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
       )}
 
-      {/* Security Section */}
       {option === "Security" && (
         <SecurityTab accountName={accountName} />
       )}
 
-      {/* My Listings Section */}
       {option === "My Listings" && (
         <div>
           <MyListingsTab accountName={accountName} />
+          <div className="product-button-container">
+            <button className="product-view-nav-button" onClick={() => handleProductViewChange("all")}>All</button>
+            <button className="product-view-nav-button" onClick={() => handleProductViewChange("products")}>Products</button>
+            <button className="product-view-nav-button" onClick={() => handleServiceViewChange("services")}>Services</button>
+          </div>
           <div className="newlisting-reviews-container">
             <div className="newlisting">
               <h3 className="newlist-title">
@@ -148,11 +168,69 @@ export default function AccountView() {
         </div>
       )}
 
-      <ListingDetailsModal
-        show={showModal}
-        onClose={closeModal}
-        listingId={selectedListingId}
-      />
+      {option === "Products" && (
+        <div className="product-view">
+          <div className="product-view-nav">
+            <button className="product-view-nav-button" onClick={() => handleProductViewChange("all")}>All</button>
+            <button className="product-view-nav-button" onClick={() => setProductView("orders")}>Orders</button>
+            <button className="product-view-nav-button" onClick={() => setProductView("available")}>Available</button>
+            <button className="product-view-nav-button" onClick={() => setProductView("pending")}>Pending</button>
+            <button className="product-view-nav-button" onClick={() => setProductView("sold")}>Sold</button>
+          </div>
+          <div className="product-list">
+            {productView === "orders" && (
+              <ul>
+                <li>Order 1</li>
+                <li>Order 2</li>
+              </ul>
+            )}
+            {productView === "available" && (
+              <ul>
+                <li>Available Product 1</li>
+                <li>Available Product 2</li>
+              </ul>
+            )}
+            {productView === "pending" && (
+              <ul>
+                <li>Pending Product 1</li>
+                <li>Pending Product 2</li>
+              </ul>
+            )}
+            {productView === "sold" && (
+              <ul>
+                <li>Sold Product 1</li>
+                <li>Sold Product 2</li>
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
+      {option === "Services" && (
+        <div className="product-view">
+          <div className="product-view-nav">
+          <button className="product-view-nav-button" onClick={() => handleProductViewChange("all")}>All</button>
+            <button className="product-view-nav-button" onClick={() => handleServiceViewChange("services")}>All Services</button>
+            <button className="product-view-nav-button" onClick={() => setServiceView("bookings")}>Bookings</button>
+          </div>
+          <div className="product-list">
+            {serviceView === "bookings" && (
+              <ul>
+                <li>Booking 1</li>
+                <li>Booking 2</li>
+              </ul>
+            )}
+            {serviceView === "services" && (
+              <ul>
+                <li>Service 1</li>
+                <li>Service 2</li>
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
+      <ListingDetailsModal show={showModal} onClose={closeModal} listingId={selectedListingId} />
     </div>
   );
 }
