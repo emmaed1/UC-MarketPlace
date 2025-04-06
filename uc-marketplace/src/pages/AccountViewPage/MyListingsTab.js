@@ -3,16 +3,266 @@ import "./MyListingsTab.css";
 import ServicesCard from "../ServicesPage/servicesCard";
 
 // Custom Product Card component without Add to Cart and View More buttons
-const ListingProductCard = ({ productId, name, desc, price, img, categories }) => {
+const ListingProductCard = ({ productId, name, desc, price, img, categories, onProductUpdated }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProduct, setEditedProduct] = useState({
+    name,
+    desc,
+    price,
+    img,
+    categories
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedProduct({
+      name,
+      desc,
+      price,
+      img,
+      categories
+    });
+    setError(null);
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Get the token from sessionStorage
+      const accountInfo = sessionStorage.getItem("token");
+      if (!accountInfo) {
+        setError("Authentication token not found. Please log in again.");
+        setIsLoading(false);
+        return;
+      }
+
+      const parsedInfo = JSON.parse(accountInfo);
+      const token = parsedInfo.token;
+      
+      // Create form data for the update
+      const formData = new FormData();
+      formData.append('name', editedProduct.name);
+      formData.append('desc', editedProduct.desc);
+      formData.append('price', editedProduct.price);
+      
+      // If there's a new image file, append it
+      if (editedProduct.newImage) {
+        formData.append('image', editedProduct.newImage);
+      }
+      
+      // Make the API call to update the product
+      const response = await fetch(`http://localhost:3001/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || 'Failed to update product');
+      }
+      
+      // Get the updated product data
+      const updatedProduct = await response.json();
+      
+      // Show success alert
+      alert("Product updated successfully!");
+      
+      // Exit edit mode
+      setIsEditing(false);
+      
+      // Call the parent component's callback to refresh the product list
+      if (onProductUpdated) {
+        onProductUpdated(updatedProduct);
+      }
+      
+    } catch (err) {
+      console.error("Error updating product:", err);
+      setError(err.message || "Failed to update product. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Get the token from sessionStorage
+      const accountInfo = sessionStorage.getItem("token");
+      if (!accountInfo) {
+        setError("Authentication token not found. Please log in again.");
+        setIsLoading(false);
+        return;
+      }
+
+      const parsedInfo = JSON.parse(accountInfo);
+      const token = parsedInfo.token;
+      
+      // Make the API call to delete the product
+      const response = await fetch(`http://localhost:3001/products/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || 'Failed to delete product');
+      }
+      
+      // Show success alert
+      alert("Product deleted successfully!");
+      
+      // Refresh the page to update the product list
+      window.location.reload();
+      
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      setError(err.message || "Failed to delete product. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProduct(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditedProduct(prev => ({
+        ...prev,
+        newImage: file
+      }));
+    }
+  };
+
   return (
     <div className="listing-card">
-      <img src={img} alt={name} />
-      <h4>{name}</h4>
-      <p>{desc}</p>
-      <div className="price">${price.toLocaleString()}</div>
-      <div className="categories">
-        {categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}
-      </div>
+      {isEditing ? (
+        <div className="edit-mode">
+          <h3>Edit Product</h3>
+          {error && <div className="error-message">{error}</div>}
+          <div className="form-group">
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={editedProduct.name}
+              onChange={handleInputChange}
+              placeholder="Enter Product Name"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="desc">Description:</label>
+            <textarea
+              id="desc"
+              name="desc"
+              value={editedProduct.desc}
+              onChange={handleInputChange}
+              placeholder="Enter Product Description"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="price">Price:</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={editedProduct.price}
+              onChange={handleInputChange}
+              placeholder="Enter Price"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Image:</label>
+            <div className="image-preview">
+              <img src={editedProduct.img} alt={editedProduct.name} />
+            </div>
+            <input
+              type="file"
+              id="img"
+              name="img"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Categories:</label>
+            <div className="categories-display">
+              {editedProduct.categories && editedProduct.categories.length 
+                ? editedProduct.categories.map(c => c.name).join(", ") 
+                : "No Category"}
+            </div>
+          </div>
+          
+          <div className="edit-buttons">
+            <button 
+              className="save-button" 
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save"}
+            </button>
+            <button 
+              className="cancel-button" 
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+            <button 
+              className="delete-button" 
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <img src={img} alt={name} />
+          <h4>{name}</h4>
+          <p>{desc}</p>
+          <div className="price">${price.toLocaleString()}</div>
+          <div className="categories">
+            {categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}
+          </div>
+          <button className="edit-button" onClick={handleEdit}>Edit</button>
+        </>
+      )}
     </div>
   );
 };
@@ -150,6 +400,15 @@ export default function MyListingsTab({ userId }) {
         }
     };
 
+    const handleProductUpdated = (updatedProduct) => {
+        // Update the products list with the updated product
+        setProducts(prevProducts => 
+            prevProducts.map(product => 
+                product.productId === updatedProduct.productId ? updatedProduct : product
+            )
+        );
+    };
+
     return (
         <div className="my-listings-tab">
             <h2>My Listings</h2>
@@ -187,7 +446,11 @@ export default function MyListingsTab({ userId }) {
                             <div className="products-content">
                                 {products.length > 0 ? (
                                     products.map((item) => (
-                                        <ListingProductCard key={item.productId} {...item} />
+                                        <ListingProductCard 
+                                            key={item.productId} 
+                                            {...item} 
+                                            onProductUpdated={handleProductUpdated}
+                                        />
                                     ))
                                 ) : (
                                     <p>You have no products listed.</p>

@@ -505,6 +505,74 @@ app.delete("/products/:productId", async (req, res) => {
   }
 });
 
+// Add PUT endpoint for updating products
+app.put("/products/:productId", upload.single('image'), async (req, res) => {
+  const productId = parseInt(req.params.productId);
+  try {
+    console.log('Updating product:', productId);
+    console.log('Request body:', req.body);
+    
+    // Check for image content if a new image is uploaded
+    if (req.file) {
+      try {
+        const imageCheck = await checkImageContent(req.file.path);
+        
+        if (!imageCheck.isAppropriate) {
+          // Delete the uploaded file
+          fs.unlinkSync(req.file.path);
+          return res.status(400).json({
+            error: "Inappropriate image content detected"
+          });
+        }
+      } catch (error) {
+        // Delete the uploaded file if image check fails
+        if (req.file.path && fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+        throw error;
+      }
+    }
+
+    const { name, desc, price } = req.body;
+    
+    // Prepare update data
+    const updateData = {
+      name: String(name),
+      desc: String(desc),
+      price: parseFloat(price),
+    };
+    
+    // If a new image was uploaded, update the image path
+    if (req.file) {
+      updateData.img = `/uploads/${req.file.filename}`;
+    }
+    
+    console.log('Updating product with data:', updateData);
+    
+    // Update the product in the database
+    const updatedProduct = await prisma.product.update({
+      where: { productId: productId },
+      data: updateData,
+      include: {
+        user: true,
+        categories: true,
+      },
+    });
+    
+    res.json(updatedProduct);
+  } catch (error) {
+    // Clean up uploaded file if there's an error
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    
+    console.error('Product update error:', error);
+    res.status(500).json({ 
+      error: error.message || "Error updating product"
+    });
+  }
+});
+
 app.get("/services", async (req, res) => {
   try {
     const services = await prisma.service.findMany({
