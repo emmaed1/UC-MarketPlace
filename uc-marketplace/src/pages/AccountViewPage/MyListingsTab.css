@@ -8,6 +8,8 @@
   .my-listings-tab h2 {
     margin-bottom: 20px;
     color: #333;
+    font-size: 2rem;
+    text-align: center;
   }
   
   .my-listings-tab .listings {
@@ -31,4 +33,180 @@
   .my-listings-tab .listings li p {
     margin: 0;
     color: #555;
+  }
+
+  .product-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .product-button-container button {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    background-color: #e00122;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .product-button-container button:hover {
+    background-color: #c3001d;
+  }
+  
+  .newlisting-reviews-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  
+  .newlisting {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .newlist-title {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .newlisting a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e00122;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .newlisting a:hover {
+    background-color: #c3001d;
+  }
+  
+  .listing-view {
+    margin-top: 20px;
+  }
+  
+  .listing-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .listing-nav button {
+    padding: 8px 15px;
+    background-color: #e00122;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .listing-nav button:hover {
+    background-color: #c3001d;
+  }
+  
+  .listing-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .products-content, .services-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px 0;
+  }
+  
+  /* Custom styling for listing cards */
+  .listing-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s;
+  }
+  
+  .listing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .listing-card img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .listing-card h4 {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #333;
+    text-align: center;
+  }
+  
+  .listing-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 5px 0;
+    text-align: center;
+  }
+  
+  .listing-card .price {
+    font-weight: bold;
+    color: #e00122;
+    margin: 5px 0;
+  }
+  
+  .listing-card .categories {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+    text-align: center;
+  }
+  
+  .error-message {
+    color: #e00122;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #ffebee;
+    border-radius: 5px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .products-content, .services-content {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .listing-nav {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .listing-nav button {
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 5px;
+    }
   }
