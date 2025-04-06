@@ -7,6 +7,8 @@ import FriendsTab from "./FriendsTab";
 import ProfilePage from "./ProfilePage";
 import SecurityTab from "./SecurityTab";
 import MyListingsTab from "./MyListingsTab";
+import { useLocation } from "react-router-dom"; // Added import
+import axios from "axios"; // Added import
 
 export default function AccountView() {
   const [option, setOption] = useState("Profile");
@@ -17,18 +19,38 @@ export default function AccountView() {
   const [userData, setUserData] = useState({});
   const [productView, setProductView] = useState("all");
   const [serviceView, setServiceView] = useState("all");
+  const location = useLocation(); // Added location state
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
     if (accountInfo) {
       const parsedInfo = JSON.parse(accountInfo);
       if (parsedInfo.name) {
-        console.log(parsedInfo.name);
         setAccountName(parsedInfo.name);
         setUserData(parsedInfo);
       }
     }
   }, []);
+
+  useEffect(() => {
+    const sellerName = new URLSearchParams(location.search).get("sellerName");
+    if (sellerName) {
+      const fetchSeller = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3001/user?name=${sellerName}`
+          );
+          if (response.data && response.data.length > 0) {
+            setSelectedChatUser(response.data[0]);
+            setOption("Messages");
+          }
+        } catch (error) {
+          console.error("Failed to fetch seller:", error);
+        }
+      };
+      fetchSeller();
+    }
+  }, [location.search]); // Added useEffect to handle sellerName query parameter
 
   const openModal = (id) => {
     setSelectedListingId(id);
@@ -137,7 +159,7 @@ export default function AccountView() {
 
       {option === "Messages" && (
         <div id="chat" className="content">
-          <Chat accountName={accountName} selectedChatUser={selectedChatUser} />
+          <Chat accountName={accountName} selectedChatUser={selectedChatUser} /> {/* selectedChatUser prop added */}
         </div>
       )}
 
@@ -209,7 +231,7 @@ export default function AccountView() {
       {option === "Services" && (
         <div className="product-view">
           <div className="product-view-nav">
-          <button className="product-view-nav-button" onClick={() => handleProductViewChange("all")}>All</button>
+            <button className="product-view-nav-button" onClick={() => handleProductViewChange("all")}>All</button>
             <button className="product-view-nav-button" onClick={() => handleServiceViewChange("services")}>All Services</button>
             <button className="product-view-nav-button" onClick={() => setServiceView("bookings")}>Bookings</button>
           </div>

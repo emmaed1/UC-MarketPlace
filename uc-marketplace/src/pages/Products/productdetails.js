@@ -76,7 +76,7 @@ const ProductDetails = () => {
                   </div>
                 </div>
               </div>
-              <Link to="/message-seller" className="message-button">
+              <Link to={{pathname: "/account-view", search: `?sellerName=${product.user?.name || ""}`,}}className="message-button">
                 Message the Seller
               </Link>
               <Link to="/products" className="product-button">
