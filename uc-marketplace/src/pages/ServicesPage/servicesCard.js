@@ -4,16 +4,8 @@ import BookingCalendar from "./BookingCalender";
 import "./Services.css";
 
 const ServicesCard = (props) => {
-  const { serviceId, name, desc, rating, price, img, categories } = props;
+  const { serviceId, name, desc, rating, price, img, categories, availability } = props;
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
-  
-  const serviceAvailability = [
-    { day: "Monday", time: "9:00 AM" },
-    { day: "Monday", time: "10:00 AM" },
-    { day: "Wednesday", time: "1:00 PM" },
-    { day: "Friday", time: "3:00 PM" },
-  ];
 
   const handleCloseCalendar = () => {
     setIsCalendarOpen(false);
@@ -55,13 +47,13 @@ const ServicesCard = (props) => {
             <BookingCalendar 
               onClose={handleCloseCalendar} 
               onBookingConfirm={handleBookingConfirm}
-              serviceAvailability={serviceAvailability} 
+              serviceAvailability={availability} 
             />
           </div>
         </div>
       )}
     </div>
   );
-};
+};  
 
 export default ServicesCard;

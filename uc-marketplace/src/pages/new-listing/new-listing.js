@@ -3,6 +3,10 @@ import logo from "../../assets/uc-MP-logo.png";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import BookingCalendar from "../ServicesPage/BookingCalender";
+import CalendarAvailabilitySelector from "../ServicesPage/CalendarAvailabilitySelector"
+
+
 
 const NewListing = () => {
   const [type, setType] = useState("product");
@@ -15,13 +19,14 @@ const NewListing = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [userId, SetUserId] = useState();
   const [availability, setAvailability] = useState([]);
+  const [showCalendarPreview, setShowCalendarPreview] = useState(false);
 
   useEffect(() => {
     const accountInfo = sessionStorage.getItem("token");
     if (accountInfo) {
       const parsedInfo = JSON.parse(accountInfo);
-      const userId = parsedInfo.id
-      console.log(userId)
+      const userId = parsedInfo.id;
+      console.log(userId);
       SetUserId(userId);
     }
   }, []);
@@ -60,77 +65,49 @@ const NewListing = () => {
     );
   };
 
-  const AvailabilitySelector = () => {
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const timeSlots = [
-      "9:00 AM", "10:00 AM", "11:00 AM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"
-    ];
-
-    const handleAvailabilityChange = (day, time, isChecked) => {
-      setAvailability(prev => {
-        if (isChecked) {
-          return [...prev, { day, time }];
-        } else {
-          return prev.filter(slot => !(slot.day === day && slot.time === time));
-        }
-      });
-    };
-
-    return (
-      <div className="availability-selector">
-        <table>
-          <thead>
-            <tr>
-              <th>Time</th>
-              {daysOfWeek.map(day => <th key={day}>{day}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {timeSlots.map(time => (
-              <tr key={time}>
-                <td>{time}</td>
-                {daysOfWeek.map(day => (
-                  <td key={`${day}-${time}`}>
-                    <input
-                      type="checkbox"
-                      onChange={(e) => handleAvailabilityChange(day, time, e.target.checked)}
-                      checked={availability.some(slot => slot.day === day && slot.time === time)}
-                    />
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
+  // Format the availability data for the BookingCalendar component
+  // BookingCalendar expects data in the format with date or day properties
+  const formatAvailabilityForCalendar = () => {
+    return availability.map(slot => ({
+      date: slot.date,    // YYYY-MM-DD format
+      time: slot.time     // Time slot (9:00 AM, etc.)
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    // 🔒 Prevent form submission if service and no availability selected
+    if (type === "service" && availability.length === 0) {
+      Swal.fire({
+        title: "Missing Availability",
+        text: "Please select your available time slots before posting your service.",
+        icon: "warning",
+      });
+      return;
+    }
+
     try {
       const formData = new FormData();
-      formData.append('name', name);
-      formData.append('desc', desc);
-      formData.append('price', price);
-      formData.append('quantity', quantity);
-      formData.append('categoryIds', JSON.stringify(selectedCategories));
-      formData.append('userId', JSON.stringify(userId));
-      if (type === 'service') {
-        formData.append('availability', JSON.stringify(availability));
+      formData.append("name", name);
+      formData.append("desc", desc);
+      formData.append("price", price);
+      formData.append("quantity", quantity);
+      formData.append("categoryIds", JSON.stringify(selectedCategories));
+      formData.append("userId", JSON.stringify(userId));
+      if (type === "service") {
+        formData.append("availability", JSON.stringify(availability));
       }
       if (selectedFile) {
-        formData.append('image', selectedFile);
+        formData.append("image", selectedFile);
       }
 
-      // Choose endpoint based on type
-      const endpoint = type === 'product' ? 'products' : 'services';
-      
+      const endpoint = type === "product" ? "products" : "services";
+
       const response = await axios.post(`http://localhost:3001/${endpoint}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       console.log(`${type} created:`, response.data);
@@ -139,7 +116,7 @@ const NewListing = () => {
         text: `Your ${type} was successfully posted!`,
         icon: "success",
       });
-      
+
       // Clear form
       setName("");
       setDesc("");
@@ -147,18 +124,21 @@ const NewListing = () => {
       setQuantity(0);
       setSelectedCategories([]);
       setSelectedFile(null);
-
+      setAvailability([]);
+      setShowCalendarPreview(false);
     } catch (error) {
       console.error(`Error creating ${type}:`, error);
-      
       const errorMessage = error.response?.data?.error || `Failed to create ${type}`;
-      
       Swal.fire({
         title: "Error!",
         text: errorMessage,
         icon: "error",
       });
     }
+  };
+
+  const toggleCalendarPreview = () => {
+    setShowCalendarPreview(!showCalendarPreview);
   };
 
   return (
@@ -252,11 +232,43 @@ const NewListing = () => {
             </div>
           </div>
 
-          {type === 'service' && (
-            <div className="form-group">
-              <label>Set Your Availability:</label>
-              <AvailabilitySelector />
-            </div>
+          {type === "service" && (
+            <>
+              <div className="form-group">
+                <label>Set Your Availability:</label>
+                <p className="availability-instruction">
+                  Click on dates in the calendar and select available time slots.
+                </p>
+                <CalendarAvailabilitySelector 
+                  availability={availability}
+                  setAvailability={setAvailability}
+                />
+              </div>
+              
+              {availability.length > 0 && (
+                <div className="form-group calendar-preview-section">
+                  <button 
+                    type="button" 
+                    className="preview-calendar-button"
+                    onClick={toggleCalendarPreview}
+                  >
+                    {showCalendarPreview ? "Hide Customer View" : "Preview Customer View"}
+                  </button>
+                  
+                  {showCalendarPreview && (
+                    <div className="calendar-preview">
+                      <h3>Customer Booking View</h3>
+                      <p>This is how your availability will appear to customers:</p>
+                      <BookingCalendar 
+                        serviceAvailability={formatAvailabilityForCalendar()}
+                        onBookingConfirm={() => {}}
+                        onClose={() => setShowCalendarPreview(false)}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           <div className="form-group">
