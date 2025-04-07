@@ -232,4 +232,56 @@
   .clear-all-btn:hover {
     background-color: #c0392b;
   }
+  .react-calendar__tile {
+    color: #333;
+    background-color: white;
+  }
+  
+  /* Highlight selected tile */
+  .react-calendar__tile--active {
+    background-color: #4b6cb7 !important;
+    color: white !important;
+    border-radius: 8px;
+  }
+  
+  /* Highlight today's date */
+  .react-calendar__tile--now {
+    background-color: #f7faff !important;
+    border: 1px solid #4b6cb7;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #2a4a8c;
+  }
+  
+  /* Fix for overlapping selected + has-availability */
+  .react-calendar__tile--active.has-availability {
+    background-color: #4b6cb7 !important;
+    color: white !important;
+  }
+  .react-calendar__tile:disabled {
+    background-color: #f8f8f8 !important;
+    color: #ccc !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .react-calendar__navigation {
+    background-color: #f4f6fa;
+    border-bottom: 1px solid #e0e0e0;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .react-calendar__navigation__label,
+  .react-calendar__navigation__arrow {
+    color: #2a4a8c;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  
+  .react-calendar__navigation__arrow:disabled,
+  .react-calendar__navigation__label:disabled {
+    color: #ccc;
+    opacity: 0.5;
+  }
+  
   
