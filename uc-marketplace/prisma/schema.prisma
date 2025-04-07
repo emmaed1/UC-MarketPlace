@@ -30,6 +30,7 @@ model Product {
   quantity   Int
   rating     Float?
   img        String?
+  status     String?           @default("available")
   categories ProductCategory[] @relation("ProductToProductCategory")
   userId     Int?
   user       User?             @relation("UserProducts", fields: [userId], references: [id])

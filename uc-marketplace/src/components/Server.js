@@ -360,6 +360,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
       price: parseFloat(price),
       quantity: parseInt(quantity),
       rating: 0,
+      status: "available",
       img: req.file ? `/uploads/${req.file.filename}` : null,
       user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
@@ -569,6 +570,35 @@ app.put("/products/:productId", upload.single('image'), async (req, res) => {
     console.error('Product update error:', error);
     res.status(500).json({ 
       error: error.message || "Error updating product"
+    });
+  }
+});
+
+// Add PUT endpoint for updating product status
+app.put("/products/:productId/status", async (req, res) => {
+  const productId = parseInt(req.params.productId);
+  const { status } = req.body;
+  
+  try {
+    console.log('Updating product status:', productId, status);
+    console.log('Request body:', req.body);
+    
+    // Update the product status in the database
+    const updatedProduct = await prisma.product.update({
+      where: { productId: productId },
+      data: { status: status },
+      include: {
+        user: true,
+        categories: true,
+      },
+    });
+    
+    console.log('Product updated successfully:', updatedProduct);
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error('Product status update error:', error);
+    res.status(500).json({ 
+      error: error.message || "Error updating product status"
     });
   }
 });

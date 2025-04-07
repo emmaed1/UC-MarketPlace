@@ -3,7 +3,7 @@ import "./MyListingsTab.css";
 import ServicesCard from "../ServicesPage/servicesCard";
 
 // Custom Product Card component without Add to Cart and View More buttons
-const ListingProductCard = ({ productId, name, desc, price, img, categories, onProductUpdated }) => {
+const ListingProductCard = ({ productId, name, desc, price, img, categories, status: initialStatus, onProductUpdated }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState({
     name,
@@ -14,8 +14,17 @@ const ListingProductCard = ({ productId, name, desc, price, img, categories, onP
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [status, setStatus] = useState("available");
+  const [status, setStatus] = useState(initialStatus || "unavailable");
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+
+  // Update status if initialStatus changes
+  useEffect(() => {
+    if (initialStatus) {
+      setStatus(initialStatus);
+    } else {
+      setStatus("unavailable"); // Default for products without status
+    }
+  }, [initialStatus]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -165,9 +174,48 @@ const ListingProductCard = ({ productId, name, desc, price, img, categories, onP
     setIsStatusDropdownOpen(!isStatusDropdownOpen);
   };
 
-  const handleStatusChange = (newStatus) => {
+  const handleStatusChange = async (newStatus) => {
     setStatus(newStatus);
     setIsStatusDropdownOpen(false);
+    
+    try {
+      // Get the token from sessionStorage
+      const accountInfo = sessionStorage.getItem("token");
+      if (!accountInfo) {
+        setError("Authentication token not found. Please log in again.");
+        return;
+      }
+
+      const parsedInfo = JSON.parse(accountInfo);
+      const token = parsedInfo.token;
+      
+      // Make the API call to update the product status
+      const response = await fetch(`http://localhost:3001/products/${productId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || 'Failed to update product status');
+      }
+      
+      // Get the updated product data
+      const updatedProduct = await response.json();
+      
+      // Call the parent component's callback to refresh the product list
+      if (onProductUpdated) {
+        onProductUpdated(updatedProduct);
+      }
+      
+    } catch (err) {
+      console.error("Error updating product status:", err);
+      setError(err.message || "Failed to update product status. Please try again.");
+    }
   };
 
   return (
@@ -486,6 +534,7 @@ export default function MyListingsTab({ userId }) {
                                         <ListingProductCard 
                                             key={item.productId} 
                                             {...item} 
+                                            status={item.status || "unavailable"}
                                             onProductUpdated={handleProductUpdated}
                                         />
                                     ))
