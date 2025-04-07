@@ -356,16 +356,268 @@ const ListingProductCard = ({ productId, name, desc, price, img, categories, sta
 };
 
 // Custom Service Card component without Add to Cart and View More buttons
-const ListingServiceCard = ({ serviceId, name, desc, price, img, categories }) => {
+const ListingServiceCard = ({ serviceId, name, desc, price, img, categories, onServiceUpdated }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedService, setEditedService] = useState({
+    name,
+    desc,
+    price,
+    img,
+    categories
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedService({
+      name,
+      desc,
+      price,
+      img,
+      categories
+    });
+    setError(null);
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Get the token from sessionStorage
+      const accountInfo = sessionStorage.getItem("token");
+      if (!accountInfo) {
+        setError("Authentication token not found. Please log in again.");
+        setIsLoading(false);
+        return;
+      }
+
+      const parsedInfo = JSON.parse(accountInfo);
+      const token = parsedInfo.token;
+      
+      // Create form data for the update
+      const formData = new FormData();
+      formData.append('name', editedService.name);
+      formData.append('desc', editedService.desc);
+      formData.append('price', editedService.price);
+      
+      // If there's a new image file, append it
+      if (editedService.newImage) {
+        formData.append('image', editedService.newImage);
+      }
+      
+      // Make the API call to update the service
+      const response = await fetch(`http://localhost:3001/services/${serviceId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || 'Failed to update service');
+      }
+      
+      // Get the updated service data
+      const updatedService = await response.json();
+      
+      // Show success alert
+      alert("Service updated successfully!");
+      
+      // Exit edit mode
+      setIsEditing(false);
+      
+      // Call the parent component's callback to refresh the service list
+      if (onServiceUpdated) {
+        onServiceUpdated(updatedService);
+      }
+      
+    } catch (err) {
+      console.error("Error updating service:", err);
+      setError(err.message || "Failed to update service. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this service?")) {
+      return;
+    }
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Get the token from sessionStorage
+      const accountInfo = sessionStorage.getItem("token");
+      if (!accountInfo) {
+        setError("Authentication token not found. Please log in again.");
+        setIsLoading(false);
+        return;
+      }
+
+      const parsedInfo = JSON.parse(accountInfo);
+      const token = parsedInfo.token;
+      
+      // Make the API call to delete the service
+      const response = await fetch(`http://localhost:3001/services/${serviceId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || 'Failed to delete service');
+      }
+      
+      // Show success alert
+      alert("Service deleted successfully!");
+      
+      // Refresh the page to update the service list
+      window.location.reload();
+      
+    } catch (err) {
+      console.error("Error deleting service:", err);
+      setError(err.message || "Failed to delete service. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedService(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditedService(prev => ({
+        ...prev,
+        newImage: file
+      }));
+    }
+  };
+
   return (
     <div className="listing-card">
-      <img src={img} alt={name} />
-      <h4>{name}</h4>
-      <p>{desc}</p>
-      <div className="price">${price.toLocaleString()}</div>
-      <div className="categories">
-        {categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}
-      </div>
+      {isEditing ? (
+        <div className="edit-mode">
+          <h3>Edit Service</h3>
+          {error && <div className="error-message">{error}</div>}
+          <div className="form-group">
+            <label htmlFor="name">Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={editedService.name}
+              onChange={handleInputChange}
+              placeholder="Enter Service Name"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="desc">Description:</label>
+            <textarea
+              id="desc"
+              name="desc"
+              value={editedService.desc}
+              onChange={handleInputChange}
+              placeholder="Enter Service Description"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="price">Price:</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={editedService.price}
+              onChange={handleInputChange}
+              placeholder="Enter Price"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Image:</label>
+            <div className="image-preview">
+              <img src={editedService.img} alt={editedService.name} />
+            </div>
+            <input
+              type="file"
+              id="img"
+              name="img"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>Categories:</label>
+            <div className="categories-display">
+              {editedService.categories && editedService.categories.length 
+                ? editedService.categories.map(c => c.name).join(", ") 
+                : "No Category"}
+            </div>
+          </div>
+          
+          <div className="edit-buttons">
+            <button 
+              className="save-button" 
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save"}
+            </button>
+            <button 
+              className="cancel-button" 
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+            <button 
+              className="delete-button" 
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <img src={img} alt={name} />
+          <h4>{name}</h4>
+          <p>{desc}</p>
+          <div className="price">${price.toLocaleString()}</div>
+          <div className="categories">
+            {categories && categories.length ? categories.map(c => c.name).join(", ") : "No Category"}
+          </div>
+          <div className="card-actions">
+            <button className="edit-button" onClick={handleEdit}>Edit</button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -497,6 +749,15 @@ export default function MyListingsTab({ userId }) {
         );
     };
 
+    const handleServiceUpdated = (updatedService) => {
+        // Update the services list with the updated service
+        setServices(prevServices => 
+            prevServices.map(service => 
+                service.serviceId === updatedService.serviceId ? updatedService : service
+            )
+        );
+    };
+
     if (loading) return <div className="loading">Loading...</div>;
     if (error) return <div className="error">{error}</div>;
 
@@ -560,7 +821,11 @@ export default function MyListingsTab({ userId }) {
                             <div className="services-content">
                                 {services.length > 0 ? (
                                     services.map((item) => (
-                                        <ListingServiceCard key={item.serviceId} {...item} />
+                                        <ListingServiceCard 
+                                            key={item.serviceId} 
+                                            {...item} 
+                                            onServiceUpdated={handleServiceUpdated}
+                                        />
                                     ))
                                 ) : (
                                     <p>You have no services listed.</p>
