@@ -52,6 +52,7 @@ model Service {
   categories ServiceCategory[] @relation("ServiceToServiceCategory")
   userId     Int?
   user       User?             @relation("UserServices", fields: [userId], references: [id])
+  availability Json?  
 }
 
 model ServiceCategory {

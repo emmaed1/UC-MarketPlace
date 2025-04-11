@@ -1,4 +1,3 @@
-// services.js
 import ServicesCard from './servicesCard';
 import { useEffect, useState } from "react";
 import "./Services.css";
@@ -29,7 +28,10 @@ const Services = () => {
   const fetchServices = () => {
     fetch('http://localhost:3001/services', { method: "GET" })
       .then(res => res.json())
-      .then(data => setServices(data))
+      .then(data => {
+        console.log("Services data from API:", data); // Log to check if availability is included
+        setServices(data);
+      })
       .catch(err => console.log("Error getting services", err));
   };
 
@@ -91,14 +93,14 @@ const Services = () => {
   });
 
   return (
-    <> {/* Added Fragment here */}
+    <>
       <div className="content">
-        <div className="services-content"> {/* Added this div */}
-          <div className="services-text"> {/* Added this div */}
+        <div className="services-content">
+          <div className="services-text">
             <h1>Explore Our Services</h1>
             <p>Find the services tailored to your academic needs and beyond.</p>
-          </div> {/* close services-text */}
-        </div> {/* close services-content */}
+          </div>
+        </div>
 
         <div className="search-bar">
           <input
@@ -169,7 +171,7 @@ const Services = () => {
           </div>
         )}
 
-        <div className="services-content"> {/* Added this div */}
+        <div className="services-content">
           {filteredServices.length > 0 ? (
             filteredServices.map((item) => (
               <ServicesCard key={item.serviceId} {...item} />
@@ -177,7 +179,7 @@ const Services = () => {
           ) : (
             <p>No services found.</p>
           )}
-        </div> {/* close services-content */}
+        </div>
         <div className="features-container">
           {/* ... (featured sections) */}
         </div>
@@ -185,7 +187,7 @@ const Services = () => {
           {/* ... (FAQ section) */}
         </div>
       </div>
-    </> // Close the fragment
+    </>
   );
 };
 

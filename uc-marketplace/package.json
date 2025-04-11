@@ -30,7 +30,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.83.1",
     "stripe": "^17.7.0",
-    "sweetalert2": "^11.15.10",
+    "sweetalert2": "^11.17.2",
     "uc-marketplace": "file:",
     "web-vitals": "^4.2.4",
     "websocket": "^1.0.35"
