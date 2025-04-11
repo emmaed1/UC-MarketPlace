@@ -4,11 +4,30 @@ import cartContext from "../../components/ShoppingCart/Context/CartContext";
 import './products.css'
 
 const ProductsCard = (props) => {
-  const { productId, desc, name, price, img, categories } = props;
+  const { productId, desc, name, price, img, categories, status } = props;
   const { addItem } = useContext(cartContext);
   const [isAdded, setIsAdded] = useState(false);
 
+  const getStatusDisplay = () => {
+    switch (status) {
+      case 'available':
+        return { text: 'Available', class: 'status-available' };
+      case 'pending':
+        return { text: 'Pending', class: 'status-pending' };
+      case 'sold':
+        return { text: 'Sold', class: 'status-sold' };
+      case 'unavailable':
+        return { text: 'Unavailable', class: 'status-unavailable' };
+      default:
+        return { text: 'Unknown', class: 'status-unavailable' };
+    }
+  };
+
   const handleAddToCart = () => {
+    if (status !== 'available') {
+      return;
+    }
+
     const item = {
       id: productId,
       name: name,
@@ -28,6 +47,8 @@ const ProductsCard = (props) => {
     }, 3000);
   };
 
+  const statusInfo = getStatusDisplay();
+
   return (
     <div className="products">
       <figure>
@@ -42,8 +63,9 @@ const ProductsCard = (props) => {
         type="button"
         className={`btn ${isAdded ? "added" : ""}`}
         onClick={handleAddToCart}
+        disabled={status !== 'available'}
       >
-        {isAdded ? "Added" : "Add to cart"}
+        {isAdded ? "Added" : status === 'available' ? "Add to cart" : statusInfo.text}
       </button>
       <Link className="details" to={`/products/${productId}`}>
         View More
@@ -51,6 +73,5 @@ const ProductsCard = (props) => {
     </div>
   );
 };
-
 
 export default ProductsCard;

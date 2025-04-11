@@ -37,9 +37,9 @@
   background-color: #ffffff;
   color: #000000;
   font-size: 18px;
-  list-style: none; /* Removes bullet points */
+  list-style: none;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
 }
 
@@ -58,8 +58,8 @@
 .listings ul {
   display: flex;
   padding: 0;
-  gap: 1rem; /* Adds space between list items */
-  flex-wrap: wrap; /* Ensures items wrap to the next line if necessary */
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .imgresize {
@@ -72,11 +72,11 @@
   height: auto;
   max-height: 150px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a small shadow around the image */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .listings li {
-  flex: 1 1 30%; /* Ensures items take up 30% of the container width */
+  flex: 1 1 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,10 +111,10 @@
   display: flex;
   gap: 2rem;
   margin-top: 2rem;
-  max-width: 100%; /* Ensures that the container doesn't exceed the screen width */
-  box-sizing: border-box; /* Includes padding and borders in the element's width */
-  overflow: hidden; /* Prevents horizontal overflow */
-  padding: 0 1rem; /* Adds a bit of padding to the sides to avoid touching the screen edges */
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0 1rem;
 }
 
 .newlisting {
@@ -128,8 +128,8 @@
   justify-content: center;
   align-items: center;
   transition: transform 0.2s ease-in-out;
-  flex: 0 0 30%; /* Takes up 30% of the width */
-  box-sizing: border-box; /* Ensures padding is included in the width */
+  flex: 0 0 30%;
+  box-sizing: border-box;
 }
 
 .newlisting:hover {
@@ -169,8 +169,8 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-top: 1rem;
   transition: transform 0.2s ease-in-out;
-  flex: 0 0 70%; /* Takes up 70% of the width */
-  box-sizing: border-box; /* Ensures padding is included in the width */
+  flex: 0 0 70%;
+  box-sizing: border-box;
 }
 
 .reviews:hover {
@@ -204,12 +204,12 @@
   text-align: center;
   padding: 1rem;
   background-color: #ffffff;
-  border: 1px solid #e0e0e0; /* Adds a subtle border around each cell */
+  border: 1px solid #e0e0e0;
   transition: background-color 0.2s ease;
 }
 
 .review-content td:hover {
-  background-color: #f0f0f0; /* Light background on hover */
+  background-color: #f0f0f0;
 }
 
 .faq {
@@ -256,16 +256,16 @@
   display: block;
   font-size: 1.2em;
   color: #000000;
-  -webkit-transition-duration: 0.15s; /* Safari */
+  -webkit-transition-duration: 0.15s;
   transition-duration: 0.15s;
 }
+
 .menu-item:hover {
   background: #edecec;
   color: #000000;
   border-left: 5px solid #e00122;
 }
 
-/* Chat Section Styling */
 #chat {
   margin-top: 20px;
   padding: 20px;
@@ -317,4 +317,50 @@
 
 #chat button:hover {
   background-color: #0056b3;
+}
+
+.product-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  gap: 1rem; /* Add gap for spacing between buttons */
+}
+
+.product-view {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-view-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.product-view-nav-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #e00122;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-view-nav-button:hover {
+  background-color: #c3001d;
+}
+
+.product-list {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.product-list ul {
+  list-style: none;
+  padding: 0;
 }

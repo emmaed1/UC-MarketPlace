@@ -5,154 +5,162 @@ import ListingDetailsModal from "./ListingDetailsModal";
 import Chat from "../Chat/ChatPage";
 import FriendsTab from "./FriendsTab";
 import ProfilePage from "./ProfilePage";
-import SecurityTab from "./SecurityTab"; // Import the SecurityTab component
-import MyListingsTab from "./MyListingsTab"; // Import the MyListingsTab component
+import SecurityTab from "./SecurityTab";
+import MyListingsTab from "./MyListingsTab";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 export default function AccountView() {
-  const [option, setOption] = useState("Profile");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedListingId, setSelectedListingId] = useState(null);
-  const [accountName, setAccountName] = useState("");
-  const [selectedChatUser, setSelectedChatUser] = useState(null);
-  const [userData, setUserData] = useState({});
+    const [option, setOption] = useState("Profile");
+    const [showModal, setShowModal] = useState(false);
+    const [selectedListingId, setSelectedListingId] = useState(null);
+    const [accountName, setAccountName] = useState("");
+    const [selectedChatUser, setSelectedChatUser] = useState(null);
+    const [userData, setUserData] = useState({});
+    const location = useLocation();
 
-  useEffect(() => {
-    const accountInfo = sessionStorage.getItem("token");
-    if (accountInfo) {
-      const parsedInfo = JSON.parse(accountInfo);
-      if (parsedInfo.name) {
-        console.log(parsedInfo.name);
-        setAccountName(parsedInfo.name);
-        setUserData(parsedInfo); // Store the entire user data
-      }
-    }
-  }, []);
+    useEffect(() => {
+        const accountInfo = sessionStorage.getItem("token");
+        if (accountInfo) {
+            try {
+                const parsedInfo = JSON.parse(accountInfo);
+                console.log("Parsed account info:", parsedInfo);
+                if (parsedInfo.name) {
+                    setAccountName(parsedInfo.name);
+                    setUserData(parsedInfo);
+                }
+            } catch (error) {
+                console.error("Error parsing account info:", error);
+            }
+        }
+    }, []);
 
-  const openModal = (id) => {
-    setSelectedListingId(id);
-    setShowModal(true);
-  };
+    useEffect(() => {
+        const sellerName = new URLSearchParams(location.search).get("sellerName");
+        if (sellerName) {
+            const fetchSeller = async () => {
+                try {
+                    const response = await axios.get(
+                        `http://localhost:3001/user?name=${sellerName}`
+                    );
+                    if (response.data && response.data.length > 0) {
+                        setSelectedChatUser(response.data[0]);
+                        setOption("Messages");
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch seller:", error);
+                }
+            };
+            fetchSeller();
+        }
+    }, [location.search]);
 
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedListingId(null);
-  };
+    const openModal = (id) => {
+        setSelectedListingId(id);
+        setShowModal(true);
+    };
 
-  const handleMessageFriend = (friend) => {
-    setSelectedChatUser(friend);
-    setOption("Messages");
-  };
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedListingId(null);
+    };
 
-  const handleUserDataChange = (updatedUserData) => {
-    setUserData((prevUserData) => ({
-      ...prevUserData,
-      ...updatedUserData,
-    }));
-    if (updatedUserData.name) {
-      setAccountName(updatedUserData.name);
-    }
-  };
+    const handleMessageFriend = (friend) => {
+        setSelectedChatUser(friend);
+        setOption("Messages");
+    };
 
-  return (
-    <div className="account-content">
-      <div className="welcome-content">
-        <img src={logo} alt="uc marketplace-logo" />
-        <div className="welcome-text">
-          <h1>Welcome to your account, {userData.name}</h1>
-        </div>
-      </div>
-      <div className="nav">
-        <ul className="options">
-          <li
-            onClick={() => {
-              setOption("Profile");
-            }}
-          >
-            <a href="#profile" className="menu-item">
-              Profile
-            </a>
-          </li>
-          <li
-            onClick={() => {
-              setOption("My Listings");
-            }}
-          >
-            <a href="#listings" className="menu-item">
-              My Listings
-            </a>
-          </li>
-          <li
-            onClick={() => {
-              setOption("Messages");
-            }}
-          >
-            <a href="#messages" className="menu-item">
-              Messages
-            </a>
-          </li>
-          <li
-            onClick={() => {
-              setOption("Security");
-            }}
-          >
-            <a href="#security" className="menu-item">
-              Security
-            </a>
-          </li>
-          <li
-            onClick={() => {
-              setOption("Friends");
-            }}
-          >
-            <a href="#friends" className="menu-item">
-              Friends
-            </a>
-          </li>
-        </ul>
-      </div>
+    const handleUserDataChange = (updatedUserData) => {
+        setUserData((prevUserData) => ({
+            ...prevUserData,
+            ...updatedUserData,
+        }));
+        if (updatedUserData.name) {
+            setAccountName(updatedUserData.name);
+        }
+    };
 
-      {/* Profile Section */}
-      {option === "Profile" && (
-        <ProfilePage accountName={accountName} userData={userData} onUserDataChange={handleUserDataChange} />
-      )}
-
-      {/* Chat Section */}
-      {option === "Messages" && (
-        <div id="chat" className="content">
-          <Chat accountName={accountName} selectedChatUser={selectedChatUser} />
-        </div>
-      )}
-
-      {/* Friends Section */}
-      {option === "Friends" && (
-        <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
-      )}
-
-      {/* Security Section */}
-      {option === "Security" && (
-        <SecurityTab accountName={accountName} />
-      )}
-
-      {/* My Listings Section */}
-      {option === "My Listings" && (
-        <div>
-          <MyListingsTab accountName={accountName} />
-          <div className="newlisting-reviews-container">
-            <div className="newlisting">
-              <h3 className="newlist-title">
-                Have another product or service to sell?
-              </h3>
-              <a href="/new-listing">Create Listing</a>
+    return (
+        <div className="account-content">
+            <div className="welcome-content">
+                <img src={logo} alt="uc marketplace-logo" />
+                <div className="welcome-text">
+                    <h1>Welcome to your account, {userData.name}</h1>
+                </div>
             </div>
-          </div>
-        </div>
-      )}
+            <div className="nav">
+                <ul className="options">
+                    <li
+                        onClick={() => {
+                            setOption("Profile");
+                        }}
+                    >
+                        <a href="#profile" className="menu-item">
+                            Profile
+                        </a>
+                    </li>
+                    <li
+                        onClick={() => {
+                            setOption("My Listings");
+                        }}
+                    >
+                        <a href="#listings" className="menu-item">
+                            My Listings
+                        </a>
+                    </li>
+                    <li
+                        onClick={() => {
+                            setOption("Messages");
+                        }}
+                    >
+                        <a href="#messages" className="menu-item">
+                            Messages
+                        </a>
+                    </li>
+                    <li
+                        onClick={() => {
+                            setOption("Security");
+                        }}
+                    >
+                        <a href="#security" className="menu-item">
+                            Security
+                        </a>
+                    </li>
+                    <li
+                        onClick={() => {
+                            setOption("Friends");
+                        }}
+                    >
+                        <a href="#friends" className="menu-item">
+                            Friends
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-      <ListingDetailsModal
-        show={showModal}
-        onClose={closeModal}
-        listingId={selectedListingId}
-      />
-    </div>
-  );
+            {option === "Profile" && (
+                <ProfilePage accountName={accountName} userData={userData} onUserDataChange={handleUserDataChange} />
+            )}
+
+            {option === "Messages" && (
+                <div id="chat" className="content">
+                    <Chat accountName={accountName} selectedChatUser={selectedChatUser} />
+                </div>
+            )}
+
+            {option === "Friends" && (
+                <FriendsTab accountName={accountName} onMessageFriend={handleMessageFriend} />
+            )}
+
+            {option === "Security" && (
+                <SecurityTab accountName={accountName} />
+            )}
+
+            {option === "My Listings" && (
+                <MyListingsTab userId={userData.id} />
+            )}
+
+            <ListingDetailsModal show={showModal} onClose={closeModal} listingId={selectedListingId} />
+        </div>
+    );
 }

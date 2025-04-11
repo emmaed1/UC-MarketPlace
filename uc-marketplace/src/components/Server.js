@@ -360,6 +360,7 @@ app.post("/products", upload.single('image'), async (req, res) => {
       price: parseFloat(price),
       quantity: parseInt(quantity),
       rating: 0,
+      status: "available",
       img: req.file ? `/uploads/${req.file.filename}` : null,
       user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
@@ -501,6 +502,103 @@ app.delete("/products/:productId", async (req, res) => {
     res.json(deletedProduct);
   } catch (error) {
     res.status(500).json({ error: "Errors deleting product" });
+  }
+});
+
+// Add PUT endpoint for updating products
+app.put("/products/:productId", upload.single('image'), async (req, res) => {
+  const productId = parseInt(req.params.productId);
+  try {
+    console.log('Updating product:', productId);
+    console.log('Request body:', req.body);
+    
+    // Check for image content if a new image is uploaded
+    if (req.file) {
+      try {
+        const imageCheck = await checkImageContent(req.file.path);
+        
+        if (!imageCheck.isAppropriate) {
+          // Delete the uploaded file
+          fs.unlinkSync(req.file.path);
+          return res.status(400).json({
+            error: "Inappropriate image content detected"
+          });
+        }
+      } catch (error) {
+        // Delete the uploaded file if image check fails
+        if (req.file.path && fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+        throw error;
+      }
+    }
+
+    const { name, desc, price } = req.body;
+    
+    // Prepare update data
+    const updateData = {
+      name: String(name),
+      desc: String(desc),
+      price: parseFloat(price),
+    };
+    
+    // If a new image was uploaded, update the image path
+    if (req.file) {
+      updateData.img = `/uploads/${req.file.filename}`;
+    }
+    
+    console.log('Updating product with data:', updateData);
+    
+    // Update the product in the database
+    const updatedProduct = await prisma.product.update({
+      where: { productId: productId },
+      data: updateData,
+      include: {
+        user: true,
+        categories: true,
+      },
+    });
+    
+    res.json(updatedProduct);
+  } catch (error) {
+    // Clean up uploaded file if there's an error
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+    
+    console.error('Product update error:', error);
+    res.status(500).json({ 
+      error: error.message || "Error updating product"
+    });
+  }
+});
+
+// Add PUT endpoint for updating product status
+app.put("/products/:productId/status", async (req, res) => {
+  const productId = parseInt(req.params.productId);
+  const { status } = req.body;
+  
+  try {
+    console.log('Updating product status:', productId, status);
+    console.log('Request body:', req.body);
+    
+    // Update the product status in the database
+    const updatedProduct = await prisma.product.update({
+      where: { productId: productId },
+      data: { status: status },
+      include: {
+        user: true,
+        categories: true,
+      },
+    });
+    
+    console.log('Product updated successfully:', updatedProduct);
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error('Product status update error:', error);
+    res.status(500).json({ 
+      error: error.message || "Error updating product status"
+    });
   }
 });
 
@@ -694,6 +792,57 @@ app.post("/user/refresh-token", async (req, res) => {
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: "Error refreshing token" });
+  }
+});
+
+// Endpoint to fetch user-specific products
+app.get("/api/listings/products", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+      const decoded = jwt.verify(token, JWT_SECRET); // Replace JWT_SECRET
+      const userId = decoded.userId;
+
+      const products = await prisma.product.findMany({
+          where: {
+              userId: userId,
+          },
+          include: {
+              user: true,
+              categories: true,
+          },
+      });
+      res.status(200).json(products);
+  } catch (error) {
+      console.error("Error getting seller products:", error);
+      res.status(401).json({ error: "Unauthorized", details: error.message });
+  }
+});
+
+app.get("/api/listings/services", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+      const decoded = jwt.verify(token, JWT_SECRET); // Replace JWT_SECRET
+      const userId = decoded.userId;
+
+      const services = await prisma.service.findMany({
+          where: {
+              userId: userId,
+          },
+          include: {
+              user: true,
+              categories: true,
+          },
+      });
+      res.status(200).json(services);
+  } catch (error) {
+      console.error("Error getting seller services:", error);
+      res.status(401).json({ error: "Unauthorized", details: error.message });
   }
 });
 
