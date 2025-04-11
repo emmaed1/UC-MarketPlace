@@ -397,27 +397,25 @@ app.post("/products", upload.single('image'), async (req, res) => {
 app.post("/services", upload.single('image'), async (req, res) => {
   try {
     console.log('Service creation attempt:', req.body);
-    const { name, desc, price, quantity, categoryIds, userId } = req.body;
-    
-    // Validate price
+    const { name, desc, price, quantity, categoryIds, userId, availability } = req.body;
+
     const parsedPrice = parseFloat(price);
     if (isNaN(parsedPrice) || parsedPrice < 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: "Invalid price",
         details: "Price must be a positive number"
       });
     }
 
-    // Handle the uploaded file
     const img = req.file ? `/uploads/${req.file.filename}` : null;
     console.log('Uploaded file:', req.file);
 
-    // Parse categoryIds
     let categories;
     try {
-      categories = categoryIds ? 
-        (Array.isArray(categoryIds) ? categoryIds : JSON.parse(categoryIds))
-        .map(id => ({ id: parseInt(id) })) : [];
+      categories = categoryIds
+        ? (Array.isArray(categoryIds) ? categoryIds : JSON.parse(categoryIds))
+          .map(id => ({ id: parseInt(id) }))
+        : [];
     } catch (e) {
       console.error('Error parsing categoryIds:', e);
       categories = [];
@@ -430,6 +428,7 @@ app.post("/services", upload.single('image'), async (req, res) => {
       quantity: parseInt(quantity),
       rating: 0,
       img,
+      availability: availability ? JSON.parse(availability) : [],
       user: userId ? { connect: { id: parseInt(userId) } } : null,
       categories: {
         connect: categories
@@ -446,7 +445,6 @@ app.post("/services", upload.single('image'), async (req, res) => {
       }
     });
 
-    // Add full URL to image
     if (result.img) {
       result.img = `http://localhost:3001${result.img}`;
     }
@@ -454,12 +452,13 @@ app.post("/services", upload.single('image'), async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error('Service creation error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error creating service",
-      details: error.message 
+      details: error.message
     });
   }
 });
+
 
 app.get("/products", async (req, res) => {
   try {
